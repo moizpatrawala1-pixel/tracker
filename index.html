@@ -598,7 +598,7 @@ body {
     <div class="form-grid">
       <div class="form-group full">
         <label class="form-label">Your name</label>
-        <input class="form-input" type="text" id="f-name" placeholder="e.g. Moiz Patrawala" autocomplete="given-name">
+        <input class="form-input" type="text" id="f-name" placeholder="e.g. Moiz Ahmed" autocomplete="given-name">
       </div>
       <div class="form-group">
         <label class="form-label">Exam date</label>
@@ -1440,10 +1440,137 @@ function renderAnalytics() {
 
 /* ─────────────────────────────────────
    EXPORT PDF
-   Builds a self-contained report div, renders to canvas, saves as PDF.
+   Strategy: render fresh Chart.js instances into hidden off-screen canvases,
+   capture each as a dataURL, inject as <img> tags into the report div,
+   then html2canvas the whole thing → jsPDF. This avoids cross-origin/
+   off-screen issues with the live chart canvases.
 ───────────────────────────────────── */
+
+/** Renders a Chart.js config into a hidden canvas and returns a PNG dataURL */
+function renderChartToDataURL(config, width, height) {
+  return new Promise(resolve => {
+    const canvas = document.createElement('canvas');
+    canvas.width = width * 2;   // 2x for retina sharpness in PDF
+    canvas.height = height * 2;
+    canvas.style.position = 'absolute';
+    canvas.style.top = '-9999px';
+    canvas.style.left = '-9999px';
+    document.body.appendChild(canvas);
+
+    const chart = new Chart(canvas, config);
+
+    // Chart.js fires 'afterRender' when animation completes
+    chart.options.animation = {
+      duration: 0,  // instant — no animation needed for export
+      onComplete: () => {
+        const dataURL = canvas.toDataURL('image/png');
+        chart.destroy();
+        document.body.removeChild(canvas);
+        resolve(dataURL);
+      }
+    };
+    chart.update();
+  });
+}
+
+/** Build all four chart configs with export-safe font sizes and solid backgrounds */
+async function buildExportChartImages() {
+  const overall = getOverall();
+  const ts = getTestStats();
+  const ms = getMockStats();
+  const consData = getWeeklyConsistency();
+
+  const axisStyle = {
+    grid: { color: 'rgba(255,255,255,0.06)', drawBorder: false },
+    ticks: { color: '#7a7871', font: { family: 'monospace', size: 11 } }
+  };
+  const pluginBase = { legend: { display: false } };
+
+  // ── Chart A: Subject completion bar ─────────────────────────
+  const subjPcts = SUBJECTS.map(s => getSubjectStats(s).pct);
+  const subjColors = subjPcts.map(p => p === 100 ? '#6bbd8b' : p > 50 ? '#c8a96e' : '#8fc4b4');
+  const chartA = await renderChartToDataURL({
+    type: 'bar',
+    data: {
+      labels: SUBJECTS.map(s => s.length > 14 ? s.slice(0,13)+'…' : s),
+      datasets: [{ data: subjPcts, backgroundColor: subjColors, borderRadius: 4, borderSkipped: false }]
+    },
+    options: {
+      responsive: false,
+      plugins: { ...pluginBase, tooltip: { enabled: false } },
+      scales: { x: axisStyle, y: { ...axisStyle, min: 0, max: 100 } }
+    }
+  }, 820, 240);
+
+  // ── Chart B: Tests doughnut ──────────────────────────────────
+  const chartB = await renderChartToDataURL({
+    type: 'doughnut',
+    data: {
+      labels: ['Done', 'Pending'],
+      datasets: [{ data: [ts.done, ts.total - ts.done],
+        backgroundColor: ['#6bbd8b','#1a1e28'],
+        borderColor: ['#6bbd8b','rgba(255,255,255,0.07)'],
+        borderWidth: 1 }]
+    },
+    options: {
+      responsive: false,
+      cutout: '65%',
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { color: '#7a7871', font: { family: 'monospace', size: 11 }, padding: 14 } },
+        tooltip: { enabled: false }
+      }
+    }
+  }, 360, 220);
+
+  // ── Chart C: Weekly consistency line ────────────────────────
+  const chartC = await renderChartToDataURL({
+    type: 'line',
+    data: {
+      labels: consData.map(w => `W${w.week}`),
+      datasets: [{
+        data: consData.map(w => w.pct),
+        borderColor: '#c8a96e',
+        backgroundColor: 'rgba(200,169,110,0.1)',
+        borderWidth: 2, tension: 0.35, fill: true,
+        pointBackgroundColor: '#c8a96e', pointRadius: 3
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: { ...pluginBase, tooltip: { enabled: false } },
+      scales: { x: axisStyle, y: { ...axisStyle, min: 0, max: 100 } }
+    }
+  }, 360, 220);
+
+  // ── Chart D: Mock progress line ──────────────────────────────
+  const mockTasks = SCHEDULE.flatMap(w => w.tasks).filter(t => t.type === 'mock');
+  const mockDone = mockTasks.map(t => isChecked(t.id) ? 1 : 0)
+    .reduce((acc, v, i) => { acc.push((acc[i-1] || 0) + v); return acc; }, []);
+  const mockTarget = mockTasks.map((_, i) => Math.round((i+1) / mockTasks.length * ms.total));
+  const chartD = await renderChartToDataURL({
+    type: 'line',
+    data: {
+      labels: mockTasks.map((_, i) => `Mock ${i+1}`),
+      datasets: [
+        { label: 'Completed', data: mockDone, borderColor: '#c47a7a', backgroundColor: 'rgba(196,122,122,0.1)', borderWidth: 2, tension: 0.3, fill: true, pointBackgroundColor: '#c47a7a', pointRadius: 4 },
+        { label: 'Target', data: mockTarget, borderColor: 'rgba(255,255,255,0.2)', borderDash: [4,4], borderWidth: 1.5, tension: 0, fill: false, pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { color: '#7a7871', font: { family: 'monospace', size: 11 }, padding: 14 } },
+        tooltip: { enabled: false }
+      },
+      scales: { x: axisStyle, y: { ...axisStyle, min: 0, max: ms.total || 8 } }
+    }
+  }, 820, 200);
+
+  return { chartA, chartB, chartC, chartD };
+}
+
 async function exportPDF() {
-  showToast('Generating your report…', 'success');
+  showToast('Building charts for export…', 'success');
 
   const overall = getOverall();
   const ts = getTestStats();
@@ -1451,80 +1578,166 @@ async function exportPDF() {
   const exam = new Date(profile.examDate);
   const today = new Date();
   const daysLeft = Math.max(0, Math.ceil((exam - today) / 86400000));
-  const subjRows = SUBJECTS.map(s => { const st = getSubjectStats(s); return `
-    <div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-        <span style="font-size:12px;color:#e8e6df">${s}</span>
-        <span style="font-size:12px;font-family:DM Mono,monospace;color:#c8a96e">${st.pct}%</span>
-      </div>
-      <div style="height:5px;background:#1a1e28;border-radius:3px;overflow:hidden">
-        <div style="height:100%;width:${st.pct}%;background:${st.pct===100?'#6bbd8b':st.pct>50?'#c8a96e':'#8fc4b4'};border-radius:3px"></div>
-      </div>
-    </div>`; }).join('');
 
+  // Render all four charts to images first
+  let chartImgs;
+  try {
+    chartImgs = await buildExportChartImages();
+  } catch(err) {
+    console.error('Chart render failed:', err);
+    showToast('Chart render failed — try again', 'error');
+    return;
+  }
+
+  showToast('Composing report…', 'success');
+
+  // Subject progress bars (HTML, not chart)
+  const subjRows = SUBJECTS.map(s => {
+    const st = getSubjectStats(s);
+    return `<div style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:11px;color:#e8e6df">${s}</span>
+        <span style="font-size:11px;font-family:monospace;color:${st.pct===100?'#6bbd8b':st.pct>50?'#c8a96e':'#8fc4b4'}">${st.pct}%  (${st.done}/${st.total})</span>
+      </div>
+      <div style="height:4px;background:#1a1e28;border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${st.pct}%;background:${st.pct===100?'#6bbd8b':st.pct>50?'#c8a96e':'#8fc4b4'};border-radius:2px"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Build the full report HTML (all inline styles, dark bg, A4-ish width)
   const report = document.getElementById('export-report');
   report.style.display = 'block';
   report.innerHTML = `
-    <div style="border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:24px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end">
-      <div>
-        <div style="font-family:DM Serif Display,Georgia,serif;font-size:28px;color:#c8a96e;margin-bottom:4px">CFA Level 2 Progress Report</div>
-        <div style="font-size:12px;color:#7a7871;letter-spacing:0.08em;text-transform:uppercase">${profile.name} · Generated ${formatDisplayDate(today)}</div>
+    <div style="font-family:Georgia,serif;background:#0d0f14;padding:48px;width:900px;color:#e8e6df">
+
+      <!-- HEADER -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:24px;margin-bottom:32px;border-bottom:1px solid rgba(255,255,255,0.1)">
+        <div>
+          <div style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#7a7871;margin-bottom:8px">CFA Level 2 · Precision Study Tracker</div>
+          <div style="font-size:30px;color:#c8a96e;line-height:1.1">Progress Report</div>
+          <div style="font-size:13px;color:#7a7871;margin-top:6px">${profile.name} &nbsp;·&nbsp; Generated ${formatDisplayDate(today)}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:10px;color:#7a7871;margin-bottom:3px;letter-spacing:0.08em;text-transform:uppercase">Exam Date</div>
+          <div style="font-size:22px;color:#e8e6df">${formatDisplayDate(exam)}</div>
+          <div style="font-size:11px;color:#c8a96e;margin-top:3px">${daysLeft} days remaining</div>
+        </div>
       </div>
-      <div style="text-align:right">
-        <div style="font-size:11px;color:#7a7871;margin-bottom:2px">Exam Date</div>
-        <div style="font-family:DM Serif Display,Georgia,serif;font-size:18px;color:#e8e6df">${formatDisplayDate(exam)}</div>
-        <div style="font-size:11px;color:#7a7871;margin-top:2px">${daysLeft} days remaining</div>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px">
-      ${[
-        {label:'Overall',val:overall.pct+'%',sub:`${overall.done}/${overall.total} tasks`,col:'#c8a96e'},
-        {label:'Tests done',val:`${ts.done}/${ts.total}`,sub:`${ts.total?Math.round(ts.done/ts.total*100):0}% complete`,col:'#6ea8d8'},
-        {label:'Mocks done',val:`${ms.done}/${ms.total}`,sub:`${ms.total?Math.round(ms.done/ms.total*100):0}% complete`,col:'#c47a7a'},
-        {label:'Level',val:profile.level,sub:`${profile.hours}h/day target`,col:'#8fc4b4'},
-      ].map(c=>`<div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px">
-        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a7871;margin-bottom:6px">${c.label}</div>
-        <div style="font-family:DM Mono,monospace;font-size:22px;font-weight:500;color:${c.col}">${c.val}</div>
-        <div style="font-size:10px;color:#7a7871;margin-top:3px">${c.sub}</div>
-      </div>`).join('')}
-    </div>
-    <div style="margin-bottom:28px">
-      <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#7a7871;margin-bottom:16px">Subject-wise completion</div>
-      ${subjRows}
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:16px">
-        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a7871;margin-bottom:12px">Phase progress</div>
-        ${[1,2,3].map(p=>{const pct=getPhasePct(p);return`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;color:#e8e6df">${PHASE_NAMES[p]}</span><span style="font-size:12px;font-family:DM Mono,monospace;color:${PHASE_HEX[p]}">${pct}%</span></div><div style="height:4px;background:#1a1e28;border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${PHASE_HEX[p]};border-radius:2px"></div></div></div>`;}).join('')}
-      </div>
-      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:16px">
-        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a7871;margin-bottom:12px">Study profile</div>
+
+      <!-- KPI CARDS -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px">
         ${[
-          ['Study level', profile.level],
-          ['Daily target', profile.hours + ' hours/day'],
-          ['Start date', formatDisplayDate(new Date(profile.startDate))],
-          ['Exam date', formatDisplayDate(exam)],
-          ['Total weeks', SCHEDULE.length + ' weeks'],
-        ].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="font-size:11px;color:#7a7871">${k}</span><span style="font-size:11px;color:#e8e6df">${v}</span></div>`).join('')}
+          { label:'Overall',      val: overall.pct+'%',       sub: `${overall.done}/${overall.total} tasks`, col:'#c8a96e' },
+          { label:'Tests done',   val: `${ts.done}/${ts.total}`, sub: `${ts.total?Math.round(ts.done/ts.total*100):0}% complete`, col:'#6ea8d8' },
+          { label:'Mocks done',   val: `${ms.done}/${ms.total}`, sub: `${ms.total?Math.round(ms.done/ms.total*100):0}% complete`, col:'#c47a7a' },
+          { label:'Study level',  val: profile.level,         sub: `${profile.hours}h/day target`,         col:'#8fc4b4' },
+        ].map(c => `
+          <div style="background:#13161d;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px 16px">
+            <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7a7871;margin-bottom:7px">${c.label}</div>
+            <div style="font-family:monospace;font-size:24px;font-weight:500;color:${c.col};line-height:1">${c.val}</div>
+            <div style="font-size:10px;color:#7a7871;margin-top:5px">${c.sub}</div>
+          </div>`).join('')}
       </div>
-    </div>
-    <div style="margin-top:28px;border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;font-size:10px;color:#555048;text-align:center">
-      CFA Level 2 Precision Study Tracker · Generated ${new Date().toLocaleString()}
+
+      <!-- CHART A: Subject completion bar (full width) -->
+      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px 20px 14px;margin-bottom:20px">
+        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Subject-wise completion %</div>
+        <img src="${chartImgs.chartA}" style="width:100%;display:block;border-radius:4px">
+      </div>
+
+      <!-- CHARTS B + C: side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px 20px 14px">
+          <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Tests: completed vs pending</div>
+          <img src="${chartImgs.chartB}" style="width:100%;display:block;border-radius:4px">
+        </div>
+        <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px 20px 14px">
+          <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Weekly consistency</div>
+          <img src="${chartImgs.chartC}" style="width:100%;display:block;border-radius:4px">
+        </div>
+      </div>
+
+      <!-- CHART D: Mock progress (full width) -->
+      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px 20px 14px;margin-bottom:20px">
+        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Mock exam progress vs target trajectory</div>
+        <img src="${chartImgs.chartD}" style="width:100%;display:block;border-radius:4px">
+      </div>
+
+      <!-- SUBJECT DETAIL BARS -->
+      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
+        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:16px">Subject detail</div>
+        ${subjRows}
+      </div>
+
+      <!-- PHASE PROGRESS + STUDY PROFILE -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px">
+        <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
+          <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Phase progress</div>
+          ${[1,2,3].map(p => {
+            const pct = getPhasePct(p);
+            return `<div style="margin-bottom:11px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:11px;color:#e8e6df">${PHASE_NAMES[p]}</span>
+                <span style="font-size:11px;font-family:monospace;color:${PHASE_HEX[p]}">${pct}%</span>
+              </div>
+              <div style="height:4px;background:#1a1e28;border-radius:2px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:${PHASE_HEX[p]};border-radius:2px"></div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
+          <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Study profile</div>
+          ${[
+            ['Study level',  profile.level],
+            ['Daily target', profile.hours + ' hours/day'],
+            ['Start date',   formatDisplayDate(new Date(profile.startDate))],
+            ['Exam date',    formatDisplayDate(exam)],
+            ['Total weeks',  SCHEDULE.length + ' weeks'],
+            ['Current week', 'Week ' + getCurrentWeekNum()],
+          ].map(([k,v]) => `
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+              <span style="font-size:11px;color:#7a7871">${k}</span>
+              <span style="font-size:11px;color:#e8e6df">${v}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;font-size:10px;color:#555048;text-align:center">
+        CFA Level 2 Precision Study Tracker &nbsp;·&nbsp; ${new Date().toLocaleString()} &nbsp;·&nbsp; Confidential
+      </div>
+
     </div>`;
 
   try {
-    await new Promise(r => setTimeout(r, 300)); // Let fonts render
-    const canvas = await html2canvas(report, { backgroundColor: '#0d0f14', scale: 2, useCORS: true, logging: false });
+    // Give the browser one frame to paint the injected <img> tags
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 200)));
+
+    const canvas = await html2canvas(report.firstElementChild, {
+      backgroundColor: '#0d0f14',
+      scale: 1.5,
+      useCORS: true,
+      logging: false,
+      width: 900,
+      windowWidth: 900
+    });
+
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [900, canvas.height / 2] });
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 900, canvas.height / 2);
+    // Use the canvas aspect ratio to set PDF page height correctly
+    const pdfW = 900;
+    const pdfH = Math.round(canvas.height / 1.5);
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [pdfW, pdfH] });
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfW, pdfH);
     pdf.save(`CFA-L2-Report-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`);
     showToast('Report exported! ✓', 'success');
   } catch(err) {
-    console.error(err);
-    showToast('Export failed — try again', 'error');
+    console.error('PDF export error:', err);
+    showToast('Export failed — check console', 'error');
   } finally {
     report.style.display = 'none';
+    report.innerHTML = '';
   }
 }
 
