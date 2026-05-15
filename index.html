@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CFA Level 2 — Study Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -16,804 +17,1118 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0d0f14;
-  --surface: #13161d;
-  --surface2: #1a1e28;
-  --surface3: #20253200;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.13);
-  --border3: rgba(255,255,255,0.2);
-  --text: #e8e6df;
-  --muted: #7a7871;
-  --muted2: #555048;
-  --accent: #c8a96e;
-  --accent2: #8fc4b4;
-  --accent3: #c47a7a;
-  --green: #6bbd8b;
-  --amber: #e8b84b;
-  --red: #d96060;
-  --blue: #6ea8d8;
-  --purple: #c678dd;
-  --phase1: #8fc4b4;
-  --phase2: #c8a96e;
-  --phase3: #c47a7a;
-  --font-serif: 'DM Serif Display', Georgia, serif;
-  --font-sans: 'Syne', sans-serif;
-  --font-mono: 'DM Mono', monospace;
-  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-  --radius: 10px;
+–bg:       #080a0f;
+–bg2:      #0b0d14;
+–surface:  #0f1219;
+–surface2: #141820;
+–surface3: #1a1f2d;
+–border:   rgba(255,255,255,0.055);
+–border2:  rgba(255,255,255,0.1);
+–border3:  rgba(255,255,255,0.18);
+–text:     #ddd9d0;
+–text2:    #a09890;
+–muted:    #5a5650;
+–muted2:   #3d3a35;
+
+–gold:     #c9a96e;
+–gold2:    #e0c48a;
+–gold-dim: rgba(201,169,110,0.12);
+–teal:     #5fb8a8;
+–rose:     #c47a7a;
+–blue:     #6a9fd8;
+–green:    #6abf8e;
+–amber:    #e0a84b;
+–purple:   #a87fc8;
+
+–phase1:   #5fb8a8;
+–phase2:   #c9a96e;
+–phase3:   #c47a7a;
+–phase1h:  #5fb8a8;
+–phase2h:  #c9a96e;
+–phase3h:  #c47a7a;
+
+–font-serif: ‘Playfair Display’, Georgia, serif;
+–font-mono:  ‘Space Mono’, monospace;
+–font-sans:  ‘Outfit’, sans-serif;
+
+–radius:     8px;
+–radius2:    12px;
+–transition: 0.2s cubic-bezier(0.4,0,0.2,1);
 }
 
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  min-height: 100vh;
-  line-height: 1.6;
-  overflow-x: hidden;
+background: var(–bg);
+color: var(–text);
+font-family: var(–font-sans);
+min-height: 100vh;
+line-height: 1.6;
+overflow-x: hidden;
+}
+
+/* Subtle grain overlay */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 9999;
+opacity: 0.4;
 }
 
 /* ═══════════════════════════════════════
-   ONBOARDING MODAL
+ONBOARDING MODAL
 ═══════════════════════════════════════ */
 .onboarding-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(16px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  animation: fadeIn 0.4s ease;
+position: fixed; inset: 0;
+background: rgba(4,5,8,0.92);
+backdrop-filter: blur(20px);
+z-index: 1000;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 1rem;
+animation: fadeIn 0.4s ease;
 }
 .onboarding-overlay.hidden { display: none; }
 
 .onboarding-modal {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 520px;
-  padding: 2.5rem;
-  animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1);
+background: var(–surface);
+border: 1px solid var(–border2);
+border-radius: 16px;
+width: 100%;
+max-width: 500px;
+padding: 2.5rem;
+animation: slideUp 0.45s cubic-bezier(0.4,0,0.2,1);
+position: relative;
+overflow: hidden;
 }
 
-.onboarding-logo {
-  font-family: var(--font-serif);
-  font-size: 1.1rem;
-  color: var(--accent);
-  margin-bottom: 0.25rem;
-  letter-spacing: 0.02em;
+.onboarding-modal::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: linear-gradient(90deg, transparent, var(–gold), transparent);
 }
-.onboarding-tagline { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2rem; }
+
+.onboarding-eyebrow {
+font-family: var(–font-mono);
+font-size: 0.62rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(–gold);
+margin-bottom: 1.5rem;
+display: flex;
+align-items: center;
+gap: 0.6rem;
+}
+.onboarding-eyebrow::before {
+content: ‘’;
+width: 20px;
+height: 1px;
+background: var(–gold);
+}
 
 .onboarding-modal h2 {
-  font-family: var(--font-serif);
-  font-size: 1.8rem;
-  color: var(--text);
-  margin-bottom: 0.4rem;
+font-family: var(–font-serif);
+font-size: 1.9rem;
+color: var(–text);
+margin-bottom: 0.35rem;
+line-height: 1.2;
 }
-.onboarding-modal p { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.75rem; }
+.onboarding-modal > p { font-size: 0.8rem; color: var(–text2); margin-bottom: 2rem; }
 
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
 .form-group.full { grid-column: 1 / -1; }
 
-.form-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.form-label {
+font-family: var(–font-mono);
+font-size: 0.6rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(–muted);
+}
 
 .form-input, .form-select {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
-  padding: 0.6rem 0.85rem;
-  width: 100%;
-  transition: border-color var(--transition);
-  outline: none;
-  -webkit-appearance: none;
+background: var(–surface2);
+border: 1px solid var(–border2);
+border-radius: var(–radius);
+color: var(–text);
+font-family: var(–font-sans);
+font-size: 0.85rem;
+font-weight: 400;
+padding: 0.65rem 0.9rem;
+width: 100%;
+transition: border-color var(–transition), box-shadow var(–transition);
+outline: none;
+-webkit-appearance: none;
 }
-.form-input:focus, .form-select:focus { border-color: var(--accent); }
-.form-select option { background: var(--surface2); }
+.form-input:focus, .form-select:focus {
+border-color: var(–gold);
+box-shadow: 0 0 0 3px rgba(201,169,110,0.08);
+}
+.form-select option { background: var(–surface2); }
 
 .level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
 .level-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  color: var(--muted);
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  font-weight: 500;
-  padding: 0.55rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  text-align: center;
+background: var(–surface2);
+border: 1px solid var(–border2);
+border-radius: var(–radius);
+color: var(–text2);
+font-family: var(–font-mono);
+font-size: 0.7rem;
+font-weight: 400;
+letter-spacing: 0.06em;
+padding: 0.55rem;
+cursor: pointer;
+transition: all var(–transition);
+text-align: center;
+text-transform: uppercase;
 }
-.level-btn:hover { border-color: var(--border3); color: var(--text); }
-.level-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(200,169,110,0.08); }
+.level-btn:hover { border-color: var(–border3); color: var(–text); }
+.level-btn.active {
+border-color: var(–gold);
+color: var(–gold);
+background: var(–gold-dim);
+}
 
 .form-submit {
-  width: 100%;
-  margin-top: 1.5rem;
-  background: var(--accent);
-  border: none;
-  border-radius: 8px;
-  color: #0d0f14;
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 0.8rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  text-transform: uppercase;
+width: 100%;
+margin-top: 1.5rem;
+background: var(–gold);
+border: none;
+border-radius: var(–radius);
+color: #080a0f;
+font-family: var(–font-mono);
+font-size: 0.78rem;
+font-weight: 700;
+letter-spacing: 0.12em;
+padding: 0.85rem;
+cursor: pointer;
+transition: all var(–transition);
+text-transform: uppercase;
 }
-.form-submit:hover { background: #d4b87a; transform: translateY(-1px); }
+.form-submit:hover { background: var(–gold2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(201,169,110,0.2); }
 .form-submit:active { transform: translateY(0); }
 
 /* ═══════════════════════════════════════
-   SCORE MODAL
+SCORE MODAL
 ═══════════════════════════════════════ */
 .score-modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(12px);
-  z-index: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  animation: fadeIn 0.2s ease;
+position: fixed; inset: 0;
+background: rgba(4,5,8,0.8);
+backdrop-filter: blur(14px);
+z-index: 600;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 1rem;
+animation: fadeIn 0.2s ease;
 }
 .score-modal-overlay.hidden { display: none; }
 
 .score-modal {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 14px;
-  width: 100%;
-  max-width: 420px;
-  padding: 1.75rem;
-  animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+background: var(–surface);
+border: 1px solid var(–border2);
+border-radius: var(–radius2);
+width: 100%;
+max-width: 400px;
+padding: 1.75rem;
+animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+position: relative;
+overflow: hidden;
+}
+.score-modal::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, var(–gold), transparent);
 }
 
-.modal-type-tag { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; font-family: var(--font-mono); }
-.modal-task-title { font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.3; margin-bottom: 0.2rem; }
-.modal-task-meta { font-size: 0.72rem; color: var(--muted); margin-bottom: 1.25rem; }
+.modal-type-tag {
+font-family: var(–font-mono);
+font-size: 0.58rem;
+letter-spacing: 0.18em;
+text-transform: uppercase;
+color: var(–gold);
+margin-bottom: 0.35rem;
+}
+.modal-task-title { font-family: var(–font-serif); font-size: 1.2rem; line-height: 1.3; margin-bottom: 0.2rem; }
+.modal-task-meta { font-family: var(–font-mono); font-size: 0.68rem; color: var(–text2); margin-bottom: 1.5rem; }
 
 .score-input-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
 .score-field { flex: 1; }
-.score-field-label { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; display: block; }
+.score-field-label {
+font-family: var(–font-mono);
+font-size: 0.58rem;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 0.4rem;
+display: block;
+}
 .score-number-input {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 1.4rem;
-  padding: 0.6rem 0.85rem;
-  width: 100%;
-  outline: none;
-  transition: border-color var(--transition);
-  text-align: center;
-  -moz-appearance: textfield;
+background: var(–surface2);
+border: 1px solid var(–border2);
+border-radius: var(–radius);
+color: var(–text);
+font-family: var(–font-mono);
+font-size: 1.5rem;
+padding: 0.65rem 0.85rem;
+width: 100%;
+outline: none;
+transition: border-color var(–transition), box-shadow var(–transition);
+text-align: center;
+-moz-appearance: textfield;
 }
 .score-number-input::-webkit-inner-spin-button,
 .score-number-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-.score-number-input:focus { border-color: var(--accent); }
-.score-number-input[readonly] { opacity: 0.5; cursor: not-allowed; }
+.score-number-input:focus { border-color: var(–gold); box-shadow: 0 0 0 3px rgba(201,169,110,0.08); }
+.score-number-input[readonly] { opacity: 0.4; cursor: not-allowed; }
 
-.score-slash { font-family: var(--font-mono); font-size: 1.6rem; color: var(--muted); padding-top: 1.4rem; flex-shrink: 0; }
+.score-slash { font-family: var(–font-mono); font-size: 1.6rem; color: var(–muted); padding-top: 1.45rem; flex-shrink: 0; }
 
 .score-preview {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 0.85rem 1rem;
+margin-bottom: 1.25rem;
+display: flex;
+align-items: center;
+gap: 1rem;
 }
-.preview-pct { font-family: var(--font-mono); font-size: 1.8rem; font-weight: 500; min-width: 60px; transition: color 0.2s; }
+.preview-pct { font-family: var(–font-mono); font-size: 1.9rem; font-weight: 700; min-width: 64px; transition: color 0.2s; }
 .preview-right { flex: 1; }
-.preview-label { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
-.preview-bar-bg { background: var(--surface); border-radius: 3px; height: 6px; overflow: hidden; }
-.preview-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s ease, background 0.3s ease; }
-.preview-grade { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
+.preview-label { font-family: var(–font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(–muted); margin-bottom: 0.4rem; }
+.preview-bar-bg { background: var(–surface); border-radius: 2px; height: 5px; overflow: hidden; }
+.preview-bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s ease, background 0.3s ease; }
+.preview-grade { font-family: var(–font-mono); font-size: 0.65rem; color: var(–muted); margin-top: 0.3rem; }
 
 .modal-btn-row { display: flex; gap: 0.65rem; }
 .modal-btn-save {
-  flex: 1;
-  background: var(--accent);
-  border: none;
-  border-radius: 8px;
-  color: #0d0f14;
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 0.65rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  text-transform: uppercase;
+flex: 1;
+background: var(–gold);
+border: none;
+border-radius: var(–radius);
+color: #080a0f;
+font-family: var(–font-mono);
+font-size: 0.72rem;
+font-weight: 700;
+letter-spacing: 0.1em;
+padding: 0.7rem;
+cursor: pointer;
+transition: all var(–transition);
+text-transform: uppercase;
 }
-.modal-btn-save:hover { background: #d4b87a; transform: translateY(-1px); }
+.modal-btn-save:hover { background: var(–gold2); transform: translateY(-1px); }
 .modal-btn-cancel {
-  background: none;
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  color: var(--muted);
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  padding: 0.65rem 1rem;
-  cursor: pointer;
-  transition: all var(--transition);
+background: none;
+border: 1px solid var(–border2);
+border-radius: var(–radius);
+color: var(–text2);
+font-family: var(–font-mono);
+font-size: 0.72rem;
+padding: 0.7rem 1rem;
+cursor: pointer;
+transition: all var(–transition);
+letter-spacing: 0.06em;
 }
-.modal-btn-cancel:hover { border-color: var(--border3); color: var(--text); }
+.modal-btn-cancel:hover { border-color: var(–border3); color: var(–text); }
 .modal-btn-clear {
-  background: none;
-  border: 1px solid rgba(196,122,122,0.3);
-  border-radius: 8px;
-  color: var(--accent3);
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  padding: 0.65rem 1rem;
-  cursor: pointer;
-  transition: all var(--transition);
+background: none;
+border: 1px solid rgba(196,122,122,0.25);
+border-radius: var(–radius);
+color: var(–rose);
+font-family: var(–font-mono);
+font-size: 0.72rem;
+padding: 0.7rem 1rem;
+cursor: pointer;
+transition: all var(–transition);
 }
 .modal-btn-clear:hover { background: rgba(196,122,122,0.08); }
 
 /* ═══════════════════════════════════════
-   SCORE CHIP (inline on checklist items)
+SCORE CHIP
 ═══════════════════════════════════════ */
 .score-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.62rem;
-  font-family: var(--font-mono);
-  padding: 3px 8px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
-  border: 1px solid var(--border2);
-  color: var(--muted);
-  user-select: none;
+display: inline-flex;
+align-items: center;
+gap: 5px;
+font-size: 0.6rem;
+font-family: var(–font-mono);
+padding: 3px 8px;
+border-radius: 20px;
+cursor: pointer;
+transition: all var(–transition);
+white-space: nowrap;
+border: 1px solid var(–border2);
+color: var(–muted);
+user-select: none;
+letter-spacing: 0.05em;
 }
-.score-chip:hover { border-color: var(--accent); color: var(--accent); }
-.score-chip.has-score { background: rgba(200,169,110,0.12); border-color: var(--accent); color: var(--accent); }
-.score-chip.mock.has-score { background: rgba(196,122,122,0.12); border-color: var(--accent3); color: var(--accent3); }
-.score-chip-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.score-chip:hover { border-color: var(–gold); color: var(–gold); }
+.score-chip.has-score { background: rgba(201,169,110,0.1); border-color: var(–gold); color: var(–gold); }
+.score-chip.mock.has-score { background: rgba(196,122,122,0.1); border-color: var(–rose); color: var(–rose); }
+.score-chip-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 
 /* ═══════════════════════════════════════
-   NAVIGATION
+NAVIGATION
 ═══════════════════════════════════════ */
 .nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem 2rem;
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  background: rgba(13,15,20,0.94);
-  backdrop-filter: blur(16px);
-  z-index: 100;
-  gap: 1rem;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0 2rem;
+height: 58px;
+border-bottom: 1px solid var(–border);
+position: sticky;
+top: 0;
+background: rgba(8,10,15,0.95);
+backdrop-filter: blur(20px);
+z-index: 100;
+gap: 1rem;
 }
 
-.nav-logo { font-family: var(--font-serif); font-size: 1.1rem; color: var(--accent); letter-spacing: 0.02em; flex-shrink: 0; }
-.nav-logo span { color: var(--muted); font-size: 0.72rem; font-family: var(--font-sans); display: block; letter-spacing: 0.1em; text-transform: uppercase; }
+.nav-logo {
+display: flex;
+flex-direction: column;
+flex-shrink: 0;
+}
+.nav-logo-main {
+font-family: var(–font-serif);
+font-size: 1rem;
+color: var(–gold);
+line-height: 1;
+letter-spacing: 0.01em;
+}
+.nav-logo-sub {
+font-family: var(–font-mono);
+font-size: 0.55rem;
+letter-spacing: 0.16em;
+text-transform: uppercase;
+color: var(–muted);
+margin-top: 2px;
+}
 
 .nav-tabs {
-  display: flex;
-  gap: 0.2rem;
-  background: var(--surface);
-  padding: 4px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+display: flex;
+gap: 0;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 7px;
+padding: 3px;
 }
 
 .tab-btn {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.38rem 0.85rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
+background: none;
+border: none;
+color: var(–muted);
+font-family: var(–font-mono);
+font-size: 0.62rem;
+font-weight: 400;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+padding: 0.38rem 0.9rem;
+border-radius: 5px;
+cursor: pointer;
+transition: all var(–transition);
+white-space: nowrap;
 }
-.tab-btn:hover { color: var(--text); }
-.tab-btn.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border2); }
+.tab-btn:hover { color: var(–text); }
+.tab-btn.active {
+background: var(–surface2);
+color: var(–gold);
+border: 1px solid var(–border2);
+}
 
 .nav-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
+display: flex;
+align-items: center;
+gap: 0.75rem;
+flex-shrink: 0;
 }
-.nav-student { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); text-align: right; }
-.nav-student strong { color: var(--text); display: block; }
+.nav-student {
+font-family: var(–font-mono);
+font-size: 0.62rem;
+color: var(–muted);
+text-align: right;
+line-height: 1.5;
+}
+.nav-student strong { color: var(–text); display: block; font-size: 0.72rem; }
 .nav-edit-btn {
-  background: none;
-  border: 1px solid var(--border2);
-  border-radius: 6px;
-  color: var(--muted);
-  font-family: var(--font-sans);
-  font-size: 0.68rem;
-  padding: 0.28rem 0.6rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  white-space: nowrap;
+background: none;
+border: 1px solid var(–border2);
+border-radius: 6px;
+color: var(–muted);
+font-family: var(–font-mono);
+font-size: 0.58rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+padding: 0.32rem 0.65rem;
+cursor: pointer;
+transition: all var(–transition);
+white-space: nowrap;
 }
-.nav-edit-btn:hover { border-color: var(--accent); color: var(--accent); }
+.nav-edit-btn:hover { border-color: var(–gold); color: var(–gold); }
+
+/* Separator line under nav */
+.nav::after {
+content: ‘’;
+position: absolute;
+bottom: 0;
+left: 10%;
+right: 10%;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(201,169,110,0.15), transparent);
+pointer-events: none;
+}
 
 /* ═══════════════════════════════════════
-   VIEWS
+VIEWS
 ═══════════════════════════════════════ */
 .view {
-  display: none;
-  padding: 2rem;
-  max-width: 1100px;
-  margin: 0 auto;
-  animation: fadeIn 0.25s ease;
+display: none;
+padding: 2rem 2.5rem;
+max-width: 1120px;
+margin: 0 auto;
+animation: fadeIn 0.25s ease;
 }
 .view.active { display: block; }
 
 /* ═══════════════════════════════════════
-   DASHBOARD
+SHARED COMPONENTS
 ═══════════════════════════════════════ */
-.dash-header { margin-bottom: 1.75rem; }
-.dash-title { font-family: var(--font-serif); font-size: 2rem; color: var(--text); }
-.dash-subtitle { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; letter-spacing: 0.05em; }
+.eyebrow {
+font-family: var(–font-mono);
+font-size: 0.58rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(–gold);
+margin-bottom: 0.35rem;
+display: flex;
+align-items: center;
+gap: 0.6rem;
+}
+.eyebrow::before {
+content: ‘’;
+width: 16px;
+height: 1px;
+background: var(–gold);
+flex-shrink: 0;
+}
+
+.page-title {
+font-family: var(–font-serif);
+font-size: 2rem;
+color: var(–text);
+line-height: 1.1;
+}
+.page-sub {
+font-family: var(–font-mono);
+font-size: 0.68rem;
+color: var(–text2);
+margin-top: 0.3rem;
+letter-spacing: 0.04em;
+}
+
+.section-divider {
+display: flex;
+align-items: center;
+gap: 0.85rem;
+margin: 1.75rem 0 1rem;
+}
+.section-divider-label {
+font-family: var(–font-mono);
+font-size: 0.58rem;
+letter-spacing: 0.18em;
+text-transform: uppercase;
+color: var(–muted);
+white-space: nowrap;
+flex-shrink: 0;
+}
+.section-divider::before,
+.section-divider::after {
+content: ‘’;
+flex: 1;
+height: 1px;
+background: var(–border);
+}
+
+.progress-track { background: var(–surface3); border-radius: 2px; height: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+
+/* ═══════════════════════════════════════
+DASHBOARD
+═══════════════════════════════════════ */
+.dash-header {
+margin-bottom: 1.75rem;
+padding-bottom: 1.5rem;
+border-bottom: 1px solid var(–border);
+}
 
 .countdown-bar {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.75rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius2);
+padding: 1.25rem 1.75rem;
+display: flex;
+align-items: center;
+gap: 2rem;
+margin-bottom: 1.25rem;
+flex-wrap: wrap;
+position: relative;
+overflow: hidden;
 }
+.countdown-bar::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent);
+}
+
 .countdown-block { flex-shrink: 0; }
-.countdown-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.1rem; }
-.countdown-num { font-family: var(--font-serif); font-size: 2rem; color: var(--accent); line-height: 1; }
-.countdown-unit { font-size: 0.65rem; color: var(--muted); }
-.countdown-divider { width: 1px; height: 36px; background: var(--border); flex-shrink: 0; }
-.overall-bar-wrap { flex: 1; min-width: 160px; }
-.overall-bar-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-bottom: 0.4rem; }
-
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.1rem 1.15rem;
-  transition: border-color var(--transition);
+.countdown-label {
+font-family: var(–font-mono);
+font-size: 0.56rem;
+letter-spacing: 0.18em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 0.2rem;
 }
-.stat-card:hover { border-color: var(--border2); }
-.stat-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.45rem; }
-.stat-val { font-family: var(--font-mono); font-size: 1.85rem; font-weight: 500; line-height: 1; }
-.stat-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+.countdown-num {
+font-family: var(–font-serif);
+font-size: 2.2rem;
+color: var(–gold);
+line-height: 1;
+font-style: italic;
+}
+.countdown-unit { font-family: var(–font-mono); font-size: 0.58rem; color: var(–muted); margin-top: 1px; letter-spacing: 0.1em; text-transform: uppercase; }
 
-.progress-bar-wrap { background: var(--surface2); border-radius: 3px; height: 4px; overflow: hidden; margin-top: 0.65rem; }
-.progress-bar { height: 100%; border-radius: 3px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+.countdown-sep { width: 1px; height: 44px; background: var(–border); flex-shrink: 0; }
+
+.overall-bar-wrap { flex: 1; min-width: 180px; }
+.overall-bar-label { display: flex; justify-content: space-between; font-family: var(–font-mono); font-size: 0.62rem; color: var(–muted); margin-bottom: 0.55rem; letter-spacing: 0.06em; }
+.overall-bar-label span:last-child { color: var(–gold); }
+.overall-tasks-sub { font-family: var(–font-mono); font-size: 0.6rem; color: var(–muted2); margin-top: 0.35rem; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; margin-bottom: 1.25rem; }
+.stat-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius2);
+padding: 1.15rem 1.25rem;
+transition: border-color var(–transition), transform var(–transition);
+position: relative;
+overflow: hidden;
+}
+.stat-card:hover { border-color: var(–border2); transform: translateY(-2px); }
+.stat-card::after {
+content: ‘’;
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 2px;
+background: var(–stat-color, var(–gold));
+opacity: 0.4;
+}
+.stat-label {
+font-family: var(–font-mono);
+font-size: 0.56rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 0.5rem;
+}
+.stat-val {
+font-family: var(–font-mono);
+font-size: 1.9rem;
+font-weight: 700;
+line-height: 1;
+}
+.stat-sub { font-size: 0.72rem; color: var(–text2); margin-top: 0.3rem; }
+.stat-bar { margin-top: 0.85rem; }
 
 .phases-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
 .phase-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.15rem;
-  border-top: 2px solid var(--phase-color, var(--accent));
-  transition: transform var(--transition), border-color var(--transition);
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius2);
+padding: 1.1rem 1.25rem;
+transition: transform var(–transition), border-color var(–transition);
+position: relative;
+overflow: hidden;
 }
-.phase-card:hover { transform: translateY(-2px); }
-.phase-name { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.phase-title { font-family: var(--font-serif); font-size: 0.95rem; margin: 0.2rem 0; }
-.phase-dates { font-size: 0.68rem; color: var(--muted); font-family: var(--font-mono); }
-.phase-pct { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 500; margin: 0.45rem 0; }
-
-.section-title {
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.phase-card:hover { transform: translateY(-2px); border-color: var(–border2); }
+.phase-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
 }
-.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.phase-num {
+font-family: var(–font-mono);
+font-size: 0.56rem;
+letter-spacing: 0.18em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 0.25rem;
+}
+.phase-card-title { font-family: var(–font-serif); font-size: 0.95rem; margin-bottom: 0.2rem; font-style: italic; }
+.phase-card-dates { font-family: var(–font-mono); font-size: 0.62rem; color: var(–text2); }
+.phase-card-pct {
+font-family: var(–font-mono);
+font-size: 1.5rem;
+font-weight: 700;
+margin: 0.5rem 0 0.5rem;
+}
 
-.week-timeline { display: flex; flex-direction: column; gap: 0.4rem; }
+/* Timeline */
+.week-timeline { display: flex; flex-direction: column; gap: 0.35rem; }
 .week-row {
-  display: grid;
-  grid-template-columns: 130px 1fr 56px;
-  align-items: center;
-  gap: 1rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid transparent;
-  border-radius: 8px;
-  padding: 0.55rem 0.9rem;
-  cursor: pointer;
-  transition: all var(--transition);
+display: grid;
+grid-template-columns: 140px 1fr 52px;
+align-items: center;
+gap: 1rem;
+background: var(–surface);
+border: 1px solid var(–border);
+border-left: 2px solid transparent;
+border-radius: var(–radius);
+padding: 0.6rem 1rem;
+cursor: pointer;
+transition: all var(–transition);
 }
-.week-row:hover { border-color: var(--border2); transform: translateX(2px); }
-.week-row.current { border-left-color: var(--accent) !important; }
-.week-row.done { opacity: 0.55; }
-.week-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); }
-.week-tasks { font-size: 0.78rem; }
-.week-pct-col { font-family: var(--font-mono); font-size: 0.75rem; text-align: right; }
+.week-row:hover { border-color: var(–border2); transform: translateX(3px); }
+.week-row.current { border-left-color: var(–gold) !important; background: rgba(201,169,110,0.04); }
+.week-row.done { opacity: 0.45; }
+
+.week-label { font-family: var(–font-mono); font-size: 0.62rem; color: var(–muted); letter-spacing: 0.05em; }
+.week-label strong { color: var(–text2); display: block; }
+.week-tasks-label { font-size: 0.78rem; color: var(–text2); }
+.week-tasks-bar { margin-top: 4px; }
+.week-pct-col { font-family: var(–font-mono); font-size: 0.7rem; text-align: right; font-weight: 700; }
 
 /* ═══════════════════════════════════════
-   CHECKLIST
+CHECKLIST
 ═══════════════════════════════════════ */
-.checklist-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+.checklist-header {
+display: flex;
+align-items: flex-end;
+justify-content: space-between;
+margin-bottom: 1.5rem;
+flex-wrap: wrap;
+gap: 1rem;
+}
 .week-selector { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
 
 .week-selector select {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  padding: 0.45rem 0.75rem;
-  cursor: pointer;
-  outline: none;
-  transition: border-color var(--transition);
+background: var(–surface);
+border: 1px solid var(–border2);
+border-radius: var(–radius);
+color: var(–text);
+font-family: var(–font-mono);
+font-size: 0.72rem;
+padding: 0.48rem 0.85rem;
+cursor: pointer;
+outline: none;
+transition: border-color var(–transition);
+letter-spacing: 0.04em;
 }
-.week-selector select:focus { border-color: var(--accent); }
+.week-selector select:focus { border-color: var(–gold); }
 
 .action-btn {
-  background: none;
-  border: 1px solid var(--border2);
-  border-radius: 6px;
-  color: var(--muted);
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  padding: 0.38rem 0.8rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  letter-spacing: 0.05em;
-  white-space: nowrap;
+background: none;
+border: 1px solid var(–border2);
+border-radius: var(–radius);
+color: var(–text2);
+font-family: var(–font-mono);
+font-size: 0.62rem;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+padding: 0.4rem 0.85rem;
+cursor: pointer;
+transition: all var(–transition);
+white-space: nowrap;
 }
-.action-btn:hover { border-color: var(--border3); color: var(--text); }
-.action-btn.danger:hover { border-color: var(--accent3); color: var(--accent3); }
-.action-btn.export:hover { border-color: var(--accent); color: var(--accent); }
+.action-btn:hover { border-color: var(–border3); color: var(–text); }
+.action-btn.danger:hover { border-color: var(–rose); color: var(–rose); }
 
 .week-header-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: var(–radius2);
+padding: 1.1rem 1.4rem;
+margin-bottom: 1rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 0.75rem;
+position: relative;
+overflow: hidden;
 }
-.week-info-title { font-family: var(--font-serif); font-size: 1.15rem; }
-.week-info-phase { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-.week-progress-mini { display: flex; align-items: center; gap: 0.75rem; }
-.week-pct-big { font-family: var(--font-mono); font-size: 1.4rem; }
-.week-of { font-size: 0.68rem; color: var(--muted); font-family: var(--font-mono); }
+.week-info-phase {
+font-family: var(–font-mono);
+font-size: 0.58rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(–gold);
+margin-bottom: 0.25rem;
+}
+.week-info-title { font-family: var(–font-serif); font-size: 1.15rem; font-style: italic; }
+.week-info-dates { font-family: var(–font-mono); font-size: 0.62rem; color: var(–text2); margin-top: 3px; }
+.week-progress-mini { display: flex; align-items: center; gap: 0.85rem; }
+.week-pct-big { font-family: var(–font-mono); font-size: 1.5rem; font-weight: 700; }
 
-.checklist-area { display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist-area { display: flex; flex-direction: column; gap: 0.5rem; }
+
 .check-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.85rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.85rem 1.1rem;
-  transition: all var(--transition);
-  user-select: none;
+display: flex;
+align-items: flex-start;
+gap: 0.9rem;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius2);
+padding: 0.9rem 1.15rem;
+transition: all var(–transition);
+user-select: none;
 }
-.check-item:hover { border-color: var(--border2); transform: translateX(2px); }
-.check-item.checked { opacity: 0.5; }
-.check-item.checked:hover { opacity: 0.7; }
+.check-item:hover { border-color: var(–border2); transform: translateX(2px); }
+.check-item.checked { opacity: 0.45; }
+.check-item.checked:hover { opacity: 0.65; }
 
 .check-box {
-  width: 19px; height: 19px;
-  border: 1.5px solid var(--border2);
-  border-radius: 5px;
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  margin-top: 1px;
-  transition: all var(--transition);
-  cursor: pointer;
+width: 18px; height: 18px;
+border: 1.5px solid var(–border2);
+border-radius: 4px;
+flex-shrink: 0;
+display: flex; align-items: center; justify-content: center;
+margin-top: 2px;
+transition: all var(–transition);
+cursor: pointer;
 }
-.check-item.checked .check-box { background: var(--green); border-color: var(--green); }
+.check-item.checked .check-box { background: var(–green); border-color: var(–green); }
 .check-box svg { display: none; }
 .check-item.checked .check-box svg { display: block; }
 
 .check-content { flex: 1; }
-.check-title { font-size: 0.86rem; font-weight: 500; }
-.check-item.checked .check-title { text-decoration: line-through; color: var(--muted); }
-.check-meta { display: flex; gap: 0.65rem; margin-top: 0.3rem; flex-wrap: wrap; align-items: center; }
+.check-title { font-size: 0.85rem; font-weight: 500; }
+.check-item.checked .check-title { text-decoration: line-through; color: var(–muted); }
+.check-meta { display: flex; gap: 0.6rem; margin-top: 0.3rem; flex-wrap: wrap; align-items: center; }
 
 .check-badge {
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-weight: 500;
-  font-family: var(--font-mono);
+font-family: var(–font-mono);
+font-size: 0.58rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+padding: 2px 7px;
+border-radius: 3px;
+font-weight: 400;
 }
-.badge-reading { background: rgba(111,189,139,0.12); color: var(--green); }
-.badge-test { background: rgba(200,169,110,0.15); color: var(--accent); }
-.badge-review { background: rgba(110,168,216,0.13); color: var(--blue); }
-.badge-mock { background: rgba(196,122,122,0.13); color: var(--accent3); }
-.badge-spaced { background: rgba(198,120,221,0.15); color: var(--purple); }
+.badge-reading { background: rgba(107,191,142,0.1); color: var(–green); border: 1px solid rgba(107,191,142,0.2); }
+.badge-test    { background: rgba(201,169,110,0.1); color: var(–gold);  border: 1px solid rgba(201,169,110,0.2); }
+.badge-review  { background: rgba(106,159,216,0.1); color: var(–blue);  border: 1px solid rgba(106,159,216,0.2); }
+.badge-mock    { background: rgba(196,122,122,0.1); color: var(–rose);  border: 1px solid rgba(196,122,122,0.2); }
+.badge-spaced  { background: rgba(168,127,200,0.1); color: var(–purple);border: 1px solid rgba(168,127,200,0.2); }
 
-.check-days { font-size: 0.68rem; color: var(--muted); font-family: var(--font-mono); }
+.check-days { font-family: var(–font-mono); font-size: 0.6rem; color: var(–muted); }
 
 /* ═══════════════════════════════════════
-   SCHEDULE
+SCHEDULE
 ═══════════════════════════════════════ */
-.schedule-grid { display: flex; flex-direction: column; gap: 2rem; }
-.phase-block-header { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.9rem; }
-.phase-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-.phase-block-title { font-family: var(--font-serif); font-size: 1.25rem; }
-.phase-block-sub { font-size: 0.72rem; color: var(--muted); font-family: var(--font-mono); }
-.weeks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; }
+.schedule-grid { display: flex; flex-direction: column; gap: 2.5rem; }
+.phase-block-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.phase-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.phase-block-title { font-family: var(–font-serif); font-size: 1.2rem; font-style: italic; }
+.phase-block-sub { font-family: var(–font-mono); font-size: 0.62rem; color: var(–text2); margin-top: 2px; }
+
+.weeks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
 
 .schedule-week {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.9rem 1.1rem;
-  transition: border-color var(--transition), transform var(--transition);
-  border-top-width: 2px;
+background: var(–surface);
+border: 1px solid var(–border);
+border-top: 2px solid transparent;
+border-radius: var(–radius2);
+padding: 1rem 1.15rem;
+transition: border-color var(–transition), transform var(–transition);
 }
-.schedule-week:hover { transform: translateY(-2px); border-color: var(--border2); }
-.schedule-week.current-week { box-shadow: 0 0 0 1px var(--accent) inset; }
-.sw-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.55rem; }
-.sw-num { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.08em; }
-.sw-dates { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); }
-.sw-tasks { display: flex; flex-direction: column; gap: 0.3rem; }
-.sw-task { font-size: 0.76rem; display: flex; gap: 0.45rem; align-items: flex-start; }
-.sw-task-bullet { color: var(--muted); flex-shrink: 0; font-size: 0.55rem; margin-top: 4px; }
-.sw-done-bar { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.65rem; }
-.sw-done-pct { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); }
+.schedule-week:hover { transform: translateY(-2px); border-color: var(–border2); }
+.schedule-week.current-week { box-shadow: 0 0 0 1px var(–gold) inset; }
+
+.sw-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+.sw-num { font-family: var(–font-mono); font-size: 0.6rem; color: var(–muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.sw-dates { font-family: var(–font-mono); font-size: 0.6rem; color: var(–muted); }
+.sw-tasks { display: flex; flex-direction: column; gap: 0.28rem; }
+.sw-task { font-size: 0.74rem; display: flex; gap: 0.45rem; align-items: flex-start; color: var(–text2); }
+.sw-task-bullet { color: var(–muted2); flex-shrink: 0; font-size: 0.5rem; margin-top: 4px; }
+.sw-done-bar { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.7rem; }
+.sw-done-pct { font-family: var(–font-mono); font-size: 0.62rem; color: var(–muted); }
 
 /* ═══════════════════════════════════════
-   ANALYTICS
+ANALYTICS
 ═══════════════════════════════════════ */
-.analytics-header { margin-bottom: 1.25rem; }
-
 .analytics-subtabs {
-  display: flex;
-  gap: 0.4rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
+display: flex;
+gap: 0.4rem;
+margin-bottom: 1.5rem;
+flex-wrap: wrap;
 }
 .a-tab {
-  background: none;
-  border: 1px solid var(--border2);
-  border-radius: 6px;
-  color: var(--muted);
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  padding: 0.35rem 0.85rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  letter-spacing: 0.05em;
+background: none;
+border: 1px solid var(–border2);
+border-radius: 6px;
+color: var(–muted);
+font-family: var(–font-mono);
+font-size: 0.62rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+padding: 0.38rem 0.9rem;
+cursor: pointer;
+transition: all var(–transition);
 }
-.a-tab:hover { color: var(--text); border-color: var(--border3); }
-.a-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(200,169,110,0.08); }
+.a-tab:hover { color: var(–text); border-color: var(–border3); }
+.a-tab.active { border-color: var(–gold); color: var(–gold); background: var(–gold-dim); }
+
 .a-panel { display: none; }
 .a-panel.active { display: block; animation: fadeIn 0.2s ease; }
 
 .analytics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
 .chart-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.25rem 1.25rem 1rem;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius2);
+padding: 1.4rem 1.4rem 1rem;
 }
 .chart-card.full { grid-column: 1 / -1; }
-.chart-title { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+.chart-title {
+font-family: var(–font-mono);
+font-size: 0.6rem;
+letter-spacing: 0.14em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 1.1rem;
+}
 .chart-wrap { position: relative; height: 200px; }
 .chart-wrap.tall { height: 260px; }
 
 .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
 .insight-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.1rem;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius2);
+padding: 1.1rem 1.2rem;
+position: relative;
+overflow: hidden;
+transition: border-color var(–transition);
 }
-.insight-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
-.insight-val { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 500; }
-.insight-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+.insight-card:hover { border-color: var(–border2); }
+.insight-label {
+font-family: var(–font-mono);
+font-size: 0.56rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 0.45rem;
+}
+.insight-val { font-family: var(–font-mono); font-size: 1.75rem; font-weight: 700; }
+.insight-sub { font-size: 0.72rem; color: var(–text2); margin-top: 0.2rem; }
 
 /* Scores table */
-.scores-table-wrap { border-radius: var(--radius); overflow: hidden; }
-.scores-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.scores-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
 .scores-table th {
-  font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--muted); padding: 0.6rem 0.85rem; text-align: left;
-  border-bottom: 1px solid var(--border); background: var(--surface2);
+font-family: var(–font-mono);
+font-size: 0.56rem;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–muted);
+padding: 0.65rem 0.9rem;
+text-align: left;
+border-bottom: 1px solid var(–border);
+background: var(–surface2);
 }
-.scores-table td { padding: 0.6rem 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+.scores-table td {
+padding: 0.65rem 0.9rem;
+border-bottom: 1px solid rgba(255,255,255,0.03);
+vertical-align: middle;
+}
 .scores-table tr:last-child td { border-bottom: none; }
-.scores-table tr:hover td { background: var(--surface2); }
-.score-pct-pill { font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 9px; border-radius: 20px; }
-.score-pct-pill.high { background: rgba(107,189,139,0.15); color: var(--green); }
-.score-pct-pill.mid  { background: rgba(200,169,110,0.15); color: var(--accent); }
-.score-pct-pill.low  { background: rgba(196,122,122,0.15); color: var(--accent3); }
-.mini-bar-wrap { background: var(--surface2); border-radius: 2px; height: 4px; width: 72px; overflow: hidden; }
+.scores-table tr:hover td { background: var(–surface2); }
+
+.score-pct-pill {
+font-family: var(–font-mono);
+font-size: 0.7rem;
+font-weight: 700;
+padding: 2px 9px;
+border-radius: 20px;
+letter-spacing: 0.05em;
+}
+.score-pct-pill.high { background: rgba(107,191,142,0.12); color: var(–green); }
+.score-pct-pill.mid  { background: rgba(201,169,110,0.12); color: var(–gold); }
+.score-pct-pill.low  { background: rgba(196,122,122,0.12); color: var(–rose); }
+
+.mini-bar-wrap { background: var(–surface2); border-radius: 2px; height: 4px; width: 72px; overflow: hidden; }
 .mini-bar-fill { height: 100%; border-radius: 2px; }
-.no-scores-msg { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.82rem; }
-.no-scores-msg strong { display: block; font-family: var(--font-serif); font-size: 1.1rem; color: var(--text); margin-bottom: 0.4rem; }
+
+.no-scores-msg {
+text-align: center;
+padding: 3.5rem 1rem;
+color: var(–muted);
+font-size: 0.82rem;
+}
+.no-scores-msg strong {
+display: block;
+font-family: var(–font-serif);
+font-size: 1.1rem;
+font-style: italic;
+color: var(–text);
+margin-bottom: 0.4rem;
+}
 
 /* ═══════════════════════════════════════
-   EXPORT PANEL
+EXPORT BUTTON
 ═══════════════════════════════════════ */
 .export-bar {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+display: flex;
+justify-content: flex-end;
+gap: 0.75rem;
+margin-bottom: 1.5rem;
 }
 .export-btn {
-  background: var(--accent);
-  border: none;
-  border-radius: 8px;
-  color: #0d0f14;
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 0.55rem 1.2rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+background: var(–gold);
+border: none;
+border-radius: var(–radius);
+color: #080a0f;
+font-family: var(–font-mono);
+font-size: 0.7rem;
+font-weight: 700;
+letter-spacing: 0.1em;
+padding: 0.6rem 1.3rem;
+cursor: pointer;
+transition: all var(–transition);
+text-transform: uppercase;
+display: flex;
+align-items: center;
+gap: 0.5rem;
 }
-.export-btn:hover { background: #d4b87a; transform: translateY(-1px); }
-.export-btn:active { transform: translateY(0); }
+.export-btn:hover { background: var(–gold2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,169,110,0.2); }
 
 #export-report {
-  position: fixed;
-  top: -9999px;
-  left: -9999px;
-  width: 900px;
-  background: #0d0f14;
-  color: #e8e6df;
-  font-family: 'Syne', sans-serif;
-  padding: 48px;
+position: fixed;
+top: -9999px;
+left: -9999px;
+width: 900px;
+background: #080a0f;
+color: #ddd9d0;
 }
 
 /* ═══════════════════════════════════════
-   TOAST
+TOAST
 ═══════════════════════════════════════ */
 .toast {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.82rem;
-  color: var(--text);
-  z-index: 999;
-  transform: translateY(100px);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-  pointer-events: none;
+position: fixed;
+bottom: 2rem;
+right: 2rem;
+background: var(–surface);
+border: 1px solid var(–border2);
+border-radius: var(–radius);
+padding: 0.75rem 1.25rem;
+font-family: var(–font-mono);
+font-size: 0.72rem;
+color: var(–text);
+z-index: 999;
+transform: translateY(100px);
+opacity: 0;
+transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+pointer-events: none;
+letter-spacing: 0.04em;
 }
 .toast.show { transform: translateY(0); opacity: 1; }
-.toast.success { border-color: var(--green); }
-.toast.error { border-color: var(--red); }
+.toast.success { border-color: var(–green); color: var(–green); }
+.toast.error { border-color: var(–rose); color: var(–rose); }
 
 /* ═══════════════════════════════════════
-   ANIMATIONS
+ANIMATIONS
 ═══════════════════════════════════════ */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ═══════════════════════════════════════
-   RESPONSIVE
+RESPONSIVE
 ═══════════════════════════════════════ */
-@media (max-width: 768px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .phases-row { grid-template-columns: 1fr; }
-  .analytics-grid { grid-template-columns: 1fr; }
-  .insight-grid { grid-template-columns: repeat(2, 1fr); }
-  .weeks-grid { grid-template-columns: 1fr; }
-  .nav { padding: 0.75rem 1rem; }
-  .view { padding: 1rem; }
-  .countdown-bar { gap: 1rem; }
-  .nav-tabs .tab-btn { font-size: 0.65rem; padding: 0.35rem 0.6rem; }
-  .onboarding-modal { padding: 1.75rem; }
-  .form-grid { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+.stats-grid { grid-template-columns: repeat(2, 1fr); }
+.phases-row { grid-template-columns: 1fr; }
+.analytics-grid { grid-template-columns: 1fr; }
+.insight-grid { grid-template-columns: repeat(2, 1fr); }
+.weeks-grid { grid-template-columns: 1fr; }
+.nav { padding: 0 1rem; }
+.view { padding: 1.25rem 1rem; }
 }
-@media (max-width: 480px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .insight-grid { grid-template-columns: 1fr; }
-  .week-row { grid-template-columns: 100px 1fr 44px; }
+@media (max-width: 560px) {
+.stats-grid { grid-template-columns: 1fr 1fr; }
+.insight-grid { grid-template-columns: 1fr; }
+.week-row { grid-template-columns: 110px 1fr 40px; }
+.onboarding-modal { padding: 1.75rem; }
+.form-grid { grid-template-columns: 1fr; }
 }
 </style>
+
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════
-     ONBOARDING MODAL
-═══════════════════════════════════════ -->
+<!-- ONBOARDING -->
+
 <div class="onboarding-overlay" id="onboarding">
   <div class="onboarding-modal">
-    <div class="onboarding-logo">CFA Level 2 (2026)</div>
-    <div class="onboarding-tagline">Precision Study Tracker</div>
-    <h2>Let's set you up</h2>
-    <p>This takes 30 seconds. Your schedule, timeline, and analytics will be built around your actual dates.</p>
+    <div class="onboarding-eyebrow">Precision Study Tracker · CFA Level 2</div>
+    <h2>Let's build your plan.</h2>
+    <p>Takes 30 seconds. Your schedule, timeline, and analytics adapt to your actual dates.</p>
 
-    <div class="form-grid">
-      <div class="form-group full">
-        <label class="form-label">Your name</label>
-        <input class="form-input" type="text" id="f-name" placeholder="e.g. Moiz Ahmed" autocomplete="given-name">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Exam date</label>
-        <input class="form-input" type="date" id="f-exam" value="2026-11-20">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Start date</label>
-        <input class="form-input" type="date" id="f-start" value="2026-05-18">
-      </div>
-      <div class="form-group full">
-        <label class="form-label" style="margin-bottom:0.5rem">Study level</label>
-        <div class="level-grid">
-          <button class="level-btn" data-level="Beginner" onclick="selectLevel(this)">Beginner</button>
-          <button class="level-btn active" data-level="Intermediate" onclick="selectLevel(this)">Intermediate</button>
-          <button class="level-btn" data-level="Advanced" onclick="selectLevel(this)">Advanced</button>
-        </div>
-      </div>
-      <div class="form-group full">
-        <label class="form-label">Daily study hours target (weekdays)</label>
-        <input class="form-input" type="number" id="f-hours" placeholder="e.g. 1.5" value="1.5" min="0.5" max="12" step="0.5">
-      </div>
+```
+<div class="form-grid">
+  <div class="form-group full">
+    <label class="form-label">Your name</label>
+    <input class="form-input" type="text" id="f-name" placeholder="e.g. Moiz Ahmed" autocomplete="given-name">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Exam date</label>
+    <input class="form-input" type="date" id="f-exam" value="2026-11-20">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Start date</label>
+    <input class="form-input" type="date" id="f-start" value="2026-05-18">
+  </div>
+  <div class="form-group full">
+    <label class="form-label" style="margin-bottom:0.55rem">Study level</label>
+    <div class="level-grid">
+      <button class="level-btn" data-level="Beginner" onclick="selectLevel(this)">Beginner</button>
+      <button class="level-btn active" data-level="Intermediate" onclick="selectLevel(this)">Intermediate</button>
+      <button class="level-btn" data-level="Advanced" onclick="selectLevel(this)">Advanced</button>
     </div>
+  </div>
+  <div class="form-group full">
+    <label class="form-label">Daily study hours target (weekdays)</label>
+    <input class="form-input" type="number" id="f-hours" placeholder="1.5" value="1.5" min="0.5" max="12" step="0.5">
+  </div>
+</div>
+<button class="form-submit" onclick="submitOnboarding()">Build My Study Plan →</button>
+```
 
-    <button class="form-submit" onclick="submitOnboarding()">Build My Study Plan →</button>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SCORE MODAL
-═══════════════════════════════════════ -->
+<!-- SCORE MODAL -->
+
 <div class="score-modal-overlay hidden" id="score-modal-overlay">
   <div class="score-modal">
     <div class="modal-type-tag" id="modal-type-tag">Subject Test</div>
     <div class="modal-task-title" id="modal-task-title">—</div>
     <div class="modal-task-meta" id="modal-task-meta">—</div>
-
     <div class="score-input-row">
       <div class="score-field">
         <span class="score-field-label">Your score</span>
@@ -825,7 +1140,6 @@ body {
         <input class="score-number-input" type="number" id="modal-score-outof" min="1" placeholder="—" oninput="updateScorePreview()">
       </div>
     </div>
-
     <div class="score-preview">
       <div class="preview-pct" id="preview-pct" style="color:var(--muted)">—</div>
       <div class="preview-right">
@@ -836,7 +1150,6 @@ body {
         <div class="preview-grade" id="preview-grade"></div>
       </div>
     </div>
-
     <div class="modal-btn-row">
       <button class="modal-btn-save" onclick="saveScore()">Save score</button>
       <button class="modal-btn-cancel" onclick="closeScoreModal()">Cancel</button>
@@ -845,13 +1158,12 @@ body {
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     NAV
-═══════════════════════════════════════ -->
+<!-- NAV -->
+
 <nav class="nav" id="main-nav" style="display:none">
   <div class="nav-logo">
-    CFA Level 2 (2026)
-    <span>Precision Study Tracker</span>
+    <div class="nav-logo-main">CFA Level 2 — 2026</div>
+    <div class="nav-logo-sub">Precision Study Tracker</div>
   </div>
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
@@ -864,17 +1176,17 @@ body {
       <strong id="nav-name">—</strong>
       <span id="nav-exam">Exam: —</span>
     </div>
-    <button class="nav-edit-btn" onclick="editProfile()">Edit profile</button>
+    <button class="nav-edit-btn" onclick="editProfile()">Edit Profile</button>
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════
-     DASHBOARD VIEW
-═══════════════════════════════════════ -->
+<!-- DASHBOARD -->
+
 <div class="view active" id="view-dashboard">
   <div class="dash-header">
-    <div class="dash-title" id="dash-greeting">Your Progress</div>
-    <div class="dash-subtitle" id="dash-subtitle">CFA Level 2 · November 20, 2026 Exam</div>
+    <div class="eyebrow" id="dash-eyebrow">CFA Level 2 · Progress</div>
+    <div class="page-title" id="dash-greeting">Your Progress</div>
+    <div class="page-sub" id="dash-subtitle">—</div>
   </div>
 
   <div class="countdown-bar">
@@ -883,105 +1195,105 @@ body {
       <div class="countdown-num" id="days-left">—</div>
       <div class="countdown-unit">days</div>
     </div>
-    <div class="countdown-divider"></div>
+    <div class="countdown-sep"></div>
     <div class="countdown-block">
       <div class="countdown-label">Weeks remaining</div>
       <div class="countdown-num" id="weeks-left">—</div>
       <div class="countdown-unit">weeks</div>
     </div>
-    <div class="countdown-divider"></div>
+    <div class="countdown-sep"></div>
     <div class="countdown-block">
-      <div class="countdown-label">Hours/day target</div>
-      <div class="countdown-num" id="hours-target" style="color:var(--accent2)">—</div>
-      <div class="countdown-unit">hrs</div>
+      <div class="countdown-label">Study target</div>
+      <div class="countdown-num" id="hours-target" style="color:var(--teal)">—</div>
+      <div class="countdown-unit">hrs / day</div>
     </div>
-    <div class="countdown-divider"></div>
+    <div class="countdown-sep"></div>
     <div class="overall-bar-wrap">
       <div class="overall-bar-label">
-        <span>Overall completion</span>
+        <span>Overall Completion</span>
         <span id="overall-pct-label">0%</span>
       </div>
-      <div class="progress-bar-wrap" style="height:8px">
-        <div class="progress-bar" id="overall-bar" style="background:var(--accent);width:0%"></div>
+      <div class="progress-track" style="height:6px">
+        <div class="progress-fill" id="overall-bar" style="background:var(--gold);width:0%"></div>
       </div>
-      <div style="font-size:0.68rem;color:var(--muted);margin-top:0.3rem" id="overall-tasks-label">0 / 0 tasks complete</div>
+      <div class="overall-tasks-sub" id="overall-tasks-label">0 / 0 tasks complete</div>
     </div>
   </div>
 
   <div class="stats-grid">
-    <div class="stat-card">
+    <div class="stat-card" style="--stat-color:var(--gold)">
       <div class="stat-label">Current Week</div>
-      <div class="stat-val" id="stat-week" style="color:var(--accent)">W1</div>
+      <div class="stat-val" id="stat-week" style="color:var(--gold)">W1</div>
       <div class="stat-sub" id="stat-week-phase">Phase 1</div>
-      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-bar" style="background:var(--accent);width:0%"></div></div>
+      <div class="stat-bar"><div class="progress-track"><div class="progress-fill" id="stat-week-bar" style="background:var(--gold);width:0%"></div></div></div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Tasks this week</div>
+    <div class="stat-card" style="--stat-color:var(--green)">
+      <div class="stat-label">Tasks This Week</div>
       <div class="stat-val" id="stat-week-tasks" style="color:var(--green)">0/0</div>
       <div class="stat-sub" id="stat-week-pct">0% done</div>
-      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-task-bar" style="background:var(--green);width:0%"></div></div>
+      <div class="stat-bar"><div class="progress-track"><div class="progress-fill" id="stat-week-task-bar" style="background:var(--green);width:0%"></div></div></div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">Tests done</div>
+    <div class="stat-card" style="--stat-color:var(--blue)">
+      <div class="stat-label">Tests Done</div>
       <div class="stat-val" id="stat-tests" style="color:var(--blue)">0/—</div>
       <div class="stat-sub">subject tests</div>
-      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-test-bar" style="background:var(--blue);width:0%"></div></div>
+      <div class="stat-bar"><div class="progress-track"><div class="progress-fill" id="stat-test-bar" style="background:var(--blue);width:0%"></div></div></div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" style="--stat-color:var(--rose)">
       <div class="stat-label">Mock Exams</div>
-      <div class="stat-val" id="stat-mocks" style="color:var(--accent3)">0/8</div>
+      <div class="stat-val" id="stat-mocks" style="color:var(--rose)">0/5</div>
       <div class="stat-sub">completed</div>
-      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-mock-bar" style="background:var(--accent3);width:0%"></div></div>
+      <div class="stat-bar"><div class="progress-track"><div class="progress-fill" id="stat-mock-bar" style="background:var(--rose);width:0%"></div></div></div>
     </div>
   </div>
 
   <div class="phases-row" id="phases-row"></div>
 
-  <div class="section-title">All weeks at a glance</div>
+  <div class="section-divider"><span class="section-divider-label">All Weeks at a Glance</span></div>
   <div class="week-timeline" id="week-timeline"></div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     CHECKLIST VIEW
-═══════════════════════════════════════ -->
+<!-- CHECKLIST -->
+
 <div class="view" id="view-checklist">
   <div class="checklist-header">
     <div>
-      <div class="dash-title" style="font-size:1.5rem">Daily Checklist</div>
-      <div class="dash-subtitle">Click tests or mocks to log your score</div>
+      <div class="eyebrow">Daily Checklist</div>
+      <div class="page-title" style="font-size:1.6rem">This Week's Tasks</div>
+      <div class="page-sub">Click tests or mocks to log your score</div>
     </div>
     <div class="week-selector">
       <select id="week-select" onchange="renderChecklist()"></select>
-      <button class="action-btn danger" onclick="resetWeek()">Reset week</button>
+      <button class="action-btn danger" onclick="resetWeek()">Reset Week</button>
     </div>
   </div>
   <div class="week-header-card" id="week-header-card"></div>
   <div class="checklist-area" id="checklist-area"></div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SCHEDULE VIEW
-═══════════════════════════════════════ -->
+<!-- SCHEDULE -->
+
 <div class="view" id="view-schedule">
-  <div style="margin-bottom:1.5rem">
-    <div class="dash-title" style="font-size:1.5rem">Full Schedule</div>
-    <div class="dash-subtitle" id="schedule-subtitle">27 weeks · November 20, 2026 exam</div>
+  <div style="margin-bottom:1.75rem">
+    <div class="eyebrow">Full Schedule</div>
+    <div class="page-title" style="font-size:1.6rem">27-Week Study Plan</div>
+    <div class="page-sub" id="schedule-subtitle">—</div>
   </div>
   <div class="schedule-grid" id="schedule-grid"></div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     ANALYTICS VIEW
-═══════════════════════════════════════ -->
+<!-- ANALYTICS -->
+
 <div class="view" id="view-analytics">
-  <div class="analytics-header">
-    <div class="dash-title" style="font-size:1.5rem">Analytics</div>
-    <div class="dash-subtitle">Scores, completion, and performance across every subject</div>
+  <div style="margin-bottom:1.5rem">
+    <div class="eyebrow">Analytics</div>
+    <div class="page-title" style="font-size:1.6rem">Scores & Performance</div>
+    <div class="page-sub">Completion, scores, and trends across every subject</div>
   </div>
 
   <div class="export-bar">
     <button class="export-btn" onclick="exportPDF()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Export Progress Report
     </button>
   </div>
@@ -992,6 +1304,7 @@ body {
   </div>
 
   <!-- SCORES PANEL -->
+
   <div class="a-panel active" id="panel-scores">
     <div class="insight-grid" id="score-insight-grid"></div>
     <div class="analytics-grid">
@@ -1004,17 +1317,18 @@ body {
         <div class="chart-wrap"><canvas id="chart-score-dist"></canvas></div>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Mock exam trend</div>
+        <div class="chart-title">Mock exam score trend</div>
         <div class="chart-wrap"><canvas id="chart-mock-trend"></canvas></div>
       </div>
     </div>
-    <div class="section-title">All recorded scores</div>
+    <div class="section-divider"><span class="section-divider-label">All Recorded Scores</span></div>
     <div class="chart-card" style="padding:0;overflow:hidden">
       <div id="scores-table-wrap"></div>
     </div>
   </div>
 
   <!-- COMPLETION PANEL -->
+
   <div class="a-panel" id="panel-completion">
     <div class="insight-grid" id="completion-insight-grid"></div>
     <div class="analytics-grid">
@@ -1031,7 +1345,7 @@ body {
         <div class="chart-wrap"><canvas id="chart-consistency"></canvas></div>
       </div>
       <div class="chart-card full">
-        <div class="chart-title">Mock exam progress (target trajectory)</div>
+        <div class="chart-title">Mock exam progress</div>
         <div class="chart-wrap"><canvas id="chart-mocks"></canvas></div>
       </div>
     </div>
@@ -1041,13 +1355,9 @@ body {
 <div id="export-report"></div>
 <div class="toast" id="toast"></div>
 
-<!-- ═══════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════ -->
 <script>
-/* ─────────────────────────────────────
-   SCHEDULE DATA
-───────────────────────────────────── */
+/* ─── SCHEDULE DATA ─── */
+// Phase 3 revised: 5 mocks + more targeted revision
 const SCHEDULE_TEMPLATE = [
   { w:1, phase:1, label:'Corp Issuers I', tasks:[
     { id:'w1t1', title:'Analysis of Dividends (Pt 1)', type:'reading', days:'Mon', subject:'Corporate Issuers' },
@@ -1193,58 +1503,59 @@ const SCHEDULE_TEMPLATE = [
     { id:'w21t1', title:'Ethics Test 3 — Capstone', type:'test', days:'Mon', subject:'Ethics' },
     { id:'w21t2', title:'Spaced Recall: PM Test 4', type:'spaced', days:'Tue', subject:'Portfolio Mgmt' },
     { id:'w21t3', title:'Spaced Recall: Ethics Test 4', type:'spaced', days:'Wed', subject:'Ethics' },
-    { id:'w21t4', title:'Deep Review of All Error Logs', type:'review', days:'Thu', subject:'All Subjects' },
+    { id:'w21t4', title:'Deep Review: All Error Logs', type:'review', days:'Thu', subject:'All Subjects' },
     { id:'w21t5', title:'Formula Dump Preparation', type:'review', days:'Fri', subject:'All Subjects' },
   ]},
-  { w:22, phase:3, label:'Sprint: Mock 1', tasks:[
+  /* ── PHASE 3: 5 Mocks + Heavy Revision ── */
+  { w:22, phase:3, label:'QBank Sweep & Mock 1', tasks:[
     { id:'w22t1', title:'QBank Sweep: Corp Issuers & Quant', type:'review', days:'Mon', subject:'All Subjects' },
     { id:'w22t2', title:'QBank Sweep: Equity & FSA', type:'review', days:'Tue', subject:'All Subjects' },
-    { id:'w22t3', title:'QBank Sweep: Fixed Income & Deriv', type:'review', days:'Wed', subject:'All Subjects' },
-    { id:'w22t4', title:'QBank Sweep: Alts & Econ', type:'review', days:'Thu', subject:'All Subjects' },
-    { id:'w22t5', title:'QBank Sweep: PM & Ethics', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w22t3', title:'QBank Sweep: FI, Derivatives & Alts', type:'review', days:'Wed', subject:'All Subjects' },
+    { id:'w22t4', title:'QBank Sweep: Econ, PM & Ethics', type:'review', days:'Thu', subject:'All Subjects' },
+    { id:'w22t5', title:'Pre-Mock: Formula Review', type:'review', days:'Fri', subject:'All Subjects' },
     { id:'w22t6', title:'Mock Exam 1', type:'mock', days:'Sat', subject:'All Subjects' },
     { id:'w22t7', title:'Grade & Deep Review Mock 1', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:23, phase:3, label:'Sprint: Mocks 2 & 3', tasks:[
-    { id:'w23t1', title:'Final Sprint: Corp Issuers Test 5', type:'test', days:'Mon', subject:'Corporate Issuers' },
-    { id:'w23t2', title:'Final Sprint: Quant Test 5', type:'test', days:'Tue', subject:'Quant Methods' },
-    { id:'w23t3', title:'Mock Exam 2', type:'mock', days:'Wed', subject:'All Subjects' },
+  { w:23, phase:3, label:'Error Analysis & Mock 2', tasks:[
+    { id:'w23t1', title:'Mock 1 Weakness: Subject Deep Dive', type:'review', days:'Mon', subject:'All Subjects' },
+    { id:'w23t2', title:'Final Sprint: Corp Issuers Test 5', type:'test', days:'Tue', subject:'Corporate Issuers' },
+    { id:'w23t3', title:'Final Sprint: Quant Test 5', type:'test', days:'Wed', subject:'Quant Methods' },
     { id:'w23t4', title:'Final Sprint: Equity Test 5', type:'test', days:'Thu', subject:'Equity Valuation' },
-    { id:'w23t5', title:'Final Sprint: FSA Test 5', type:'test', days:'Fri', subject:'FSA' },
-    { id:'w23t6', title:'Mock Exam 3', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w23t7', title:'Grade & Deep Review Mocks 2 & 3', type:'review', days:'Sun', subject:'All Subjects' },
+    { id:'w23t5', title:'Pre-Mock: Concept Summary Review', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w23t6', title:'Mock Exam 2', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w23t7', title:'Grade & Deep Review Mock 2', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:24, phase:3, label:'Sprint: Mocks 4 & 5', tasks:[
-    { id:'w24t1', title:'Final Sprint: FI Test 5', type:'test', days:'Mon', subject:'Fixed Income' },
-    { id:'w24t2', title:'Final Sprint: Derivatives Test 5', type:'test', days:'Tue', subject:'Derivatives' },
-    { id:'w24t3', title:'Mock Exam 4', type:'mock', days:'Wed', subject:'All Subjects' },
-    { id:'w24t4', title:'Final Sprint: Alts Test 5', type:'test', days:'Thu', subject:'Alt Investments' },
-    { id:'w24t5', title:'Final Sprint: Econ Test 5', type:'test', days:'Fri', subject:'Economics' },
-    { id:'w24t6', title:'Mock Exam 5', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w24t7', title:'Grade & Deep Review Mocks 4 & 5', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:24, phase:3, label:'Targeted Revision & Mock 3', tasks:[
+    { id:'w24t1', title:'Mock 2 Weakness: Targeted QBank', type:'review', days:'Mon', subject:'All Subjects' },
+    { id:'w24t2', title:'Final Sprint: FSA Test 5', type:'test', days:'Tue', subject:'FSA' },
+    { id:'w24t3', title:'Final Sprint: FI Test 5', type:'test', days:'Wed', subject:'Fixed Income' },
+    { id:'w24t4', title:'Final Sprint: Derivatives Test 5', type:'test', days:'Thu', subject:'Derivatives' },
+    { id:'w24t5', title:'Pre-Mock: Weak Areas Drill', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w24t6', title:'Mock Exam 3', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w24t7', title:'Grade & Deep Review Mock 3', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:25, phase:3, label:'Sprint: Mocks 6 & 7', tasks:[
-    { id:'w25t1', title:'Final Sprint: PM Test 5', type:'test', days:'Mon', subject:'Portfolio Mgmt' },
-    { id:'w25t2', title:'Final Sprint: Ethics Test 5', type:'test', days:'Tue', subject:'Ethics' },
-    { id:'w25t3', title:'Mock Exam 6', type:'mock', days:'Wed', subject:'All Subjects' },
-    { id:'w25t4', title:'Ethics Standards Re-Read', type:'reading', days:'Thu', subject:'Ethics' },
-    { id:'w25t5', title:'Formula Dump Mastery', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w25t6', title:'Mock Exam 7', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w25t7', title:'Grade & Deep Review Mocks 6 & 7', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:25, phase:3, label:'Error Consolidation & Mock 4', tasks:[
+    { id:'w25t1', title:'Mocks 1–3 Error Log Consolidation', type:'review', days:'Mon', subject:'All Subjects' },
+    { id:'w25t2', title:'Final Sprint: Alts Test 5', type:'test', days:'Tue', subject:'Alt Investments' },
+    { id:'w25t3', title:'Final Sprint: Econ Test 5', type:'test', days:'Wed', subject:'Economics' },
+    { id:'w25t4', title:'Final Sprint: PM Test 5', type:'test', days:'Thu', subject:'Portfolio Mgmt' },
+    { id:'w25t5', title:'Ethics Standards & Cases Re-Read', type:'reading', days:'Fri', subject:'Ethics' },
+    { id:'w25t6', title:'Mock Exam 4', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w25t7', title:'Grade & Deep Review Mock 4', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:26, phase:3, label:'Sprint: Mock 8', tasks:[
-    { id:'w26t1', title:'Targeted QBank: Weakest Subject', type:'review', days:'Mon', subject:'All Subjects' },
-    { id:'w26t2', title:'Targeted QBank: 2nd Weakest', type:'review', days:'Tue', subject:'All Subjects' },
-    { id:'w26t3', title:'Targeted QBank: 3rd Weakest', type:'review', days:'Wed', subject:'All Subjects' },
-    { id:'w26t4', title:'Ethics Case Studies Review', type:'reading', days:'Thu', subject:'Ethics' },
-    { id:'w26t5', title:'Light Review & Rest', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w26t6', title:'Mock Exam 8 — Final Gauge', type:'mock', days:'Sat', subject:'All Subjects' },
+  { w:26, phase:3, label:'Final Revision & Mock 5', tasks:[
+    { id:'w26t1', title:'Final Sprint: Ethics Test 5', type:'test', days:'Mon', subject:'Ethics' },
+    { id:'w26t2', title:'All Error Logs: Final Pass', type:'review', days:'Tue', subject:'All Subjects' },
+    { id:'w26t3', title:'Formula Mastery: Full Dump', type:'review', days:'Wed', subject:'All Subjects' },
+    { id:'w26t4', title:'Targeted QBank: Weakest 2 Subjects', type:'review', days:'Thu', subject:'All Subjects' },
+    { id:'w26t5', title:'Light Review & Mental Rest', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w26t6', title:'Mock Exam 5 — Final Gauge', type:'mock', days:'Sat', subject:'All Subjects' },
     { id:'w26t7', title:'Grade & Final Error Review', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
   { w:27, phase:3, label:'Exam Week', tasks:[
     { id:'w27t1', title:'Formula Memorization & Dump', type:'review', days:'Mon', subject:'All Subjects' },
-    { id:'w27t2', title:'Mental Rest & Light Ethics', type:'review', days:'Tue', subject:'Ethics' },
-    { id:'w27t3', title:'Exam Logistics Prep', type:'review', days:'Wed', subject:'All Subjects' },
+    { id:'w27t2', title:'Mental Rest & Light Ethics Review', type:'review', days:'Tue', subject:'Ethics' },
+    { id:'w27t3', title:'Exam Logistics Preparation', type:'review', days:'Wed', subject:'All Subjects' },
     { id:'w27t4', title:'Exam Eve — Visualization & Rest', type:'review', days:'Thu', subject:'All Subjects' },
     { id:'w27t5', title:'EXAM DAY — CFA Level 2', type:'test', days:'Fri', subject:'All Subjects' },
   ]},
@@ -1253,43 +1564,28 @@ const SCHEDULE_TEMPLATE = [
 const SUBJECTS = ['Corporate Issuers','Quant Methods','Equity Valuation','FSA','Fixed Income','Derivatives','Alt Investments','Economics','Portfolio Mgmt','Ethics'];
 const PHASE_NAMES = { 1:'Phase 1 — Base Building', 2:'Phase 2 — Acceleration', 3:'Phase 3 — Mock Sprint' };
 const PHASE_COLORS = { 1:'var(--phase1)', 2:'var(--phase2)', 3:'var(--phase3)' };
-const PHASE_HEX = { 1:'#8fc4b4', 2:'#c8a96e', 3:'#c47a7a' };
-const MOCK_TOTAL = 88;
-const AXIS_STYLE = {
-  grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
-  ticks: { color: '#7a7871', font: { family: 'DM Mono', size: 10 } }
+const PHASE_HEX   = { 1:'#5fb8a8', 2:'#c9a96e', 3:'#c47a7a' };
+const MOCK_TOTAL  = 88;
+const AXIS_STYLE  = {
+  grid:  { color:'rgba(255,255,255,0.04)', drawBorder:false },
+  ticks: { color:'#5a5650', font:{ family:'Space Mono', size:10 } }
 };
 
-/* ─────────────────────────────────────
-   STATE & STORAGE
-───────────────────────────────────── */
-let state = {};
-let scores = {};   // { taskId: { got, outof, pct, date } }
-let profile = null;
-let SCHEDULE = [];
-let charts = {};
-let activeScoreTask = null;
-
-const STORAGE_KEYS = {
-  profile: 'cfaTracker_profile_v1',
-  state:   'cfaTracker_state_v1',
-  scores:  'cfaTracker_scores_v1',
-};
+/* ─── STATE ─── */
+let state={}, scores={}, profile=null, SCHEDULE=[], charts={}, activeScoreTask=null;
+const SK = { profile:'cfaTrackerV2_profile', state:'cfaTrackerV2_state', scores:'cfaTrackerV2_scores' };
 
 function loadStorage() {
-  try { profile = JSON.parse(localStorage.getItem(STORAGE_KEYS.profile)); } catch(e) { profile = null; }
-  try { state   = JSON.parse(localStorage.getItem(STORAGE_KEYS.state)   || '{}'); } catch(e) { state = {}; }
-  try { scores  = JSON.parse(localStorage.getItem(STORAGE_KEYS.scores)  || '{}'); } catch(e) { scores = {}; }
+  try { profile = JSON.parse(localStorage.getItem(SK.profile)); } catch(e) { profile=null; }
+  try { state   = JSON.parse(localStorage.getItem(SK.state)  || '{}'); } catch(e) { state={}; }
+  try { scores  = JSON.parse(localStorage.getItem(SK.scores) || '{}'); } catch(e) { scores={}; }
 }
-function saveState()   { localStorage.setItem(STORAGE_KEYS.state,   JSON.stringify(state));   }
-function saveScores()  { localStorage.setItem(STORAGE_KEYS.scores,  JSON.stringify(scores));  }
-function saveProfile() { localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile)); }
+function saveState()   { localStorage.setItem(SK.state,  JSON.stringify(state));   }
+function saveScores()  { localStorage.setItem(SK.scores, JSON.stringify(scores));  }
+function saveProfile() { localStorage.setItem(SK.profile,JSON.stringify(profile)); }
 
-/* ─────────────────────────────────────
-   ONBOARDING
-───────────────────────────────────── */
+/* ─── ONBOARDING ─── */
 let selectedLevel = 'Intermediate';
-
 function selectLevel(btn) {
   document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -1303,16 +1599,16 @@ function submitOnboarding() {
   const hours = parseFloat(document.getElementById('f-hours').value) || 1.5;
   if (!name)  { showToast('Please enter your name', 'error'); return; }
   if (!exam || !start) { showToast('Please fill in both dates', 'error'); return; }
-  if (new Date(start) >= new Date(exam)) { showToast('Start date must be before exam date', 'error'); return; }
-  profile = { name, examDate: exam, startDate: start, level: selectedLevel, hours };
+  if (new Date(start) >= new Date(exam)) { showToast('Start must be before exam', 'error'); return; }
+  profile = { name, examDate:exam, startDate:start, level:selectedLevel, hours };
   saveProfile();
   initApp();
 }
 
 function editProfile() {
   if (!profile) return;
-  document.getElementById('f-name').value  = profile.name || '';
-  document.getElementById('f-exam').value  = profile.examDate || '';
+  document.getElementById('f-name').value  = profile.name  || '';
+  document.getElementById('f-exam').value  = profile.examDate  || '';
   document.getElementById('f-start').value = profile.startDate || '';
   document.getElementById('f-hours').value = profile.hours || 1.5;
   document.querySelectorAll('.level-btn').forEach(b => b.classList.toggle('active', b.dataset.level === profile.level));
@@ -1320,286 +1616,204 @@ function editProfile() {
   document.getElementById('onboarding').classList.remove('hidden');
 }
 
-/* ─────────────────────────────────────
-   SCHEDULE GENERATION
-───────────────────────────────────── */
+/* ─── SCHEDULE BUILD ─── */
 function buildSchedule() {
   const start = new Date(profile.startDate);
   SCHEDULE = SCHEDULE_TEMPLATE.map(week => {
     const ws = new Date(start);
     ws.setDate(ws.getDate() + (week.w - 1) * 7);
-    const we = new Date(ws);
-    we.setDate(we.getDate() + 6);
-    return { ...week, week: week.w, dates: formatDateRange(ws, we), weekStart: ws };
+    const we = new Date(ws); we.setDate(we.getDate() + 6);
+    return { ...week, week:week.w, dates:fmtRange(ws,we), weekStart:ws };
   });
 }
 
-function formatDateRange(s, e) {
-  const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtRange(s,e) {
+  const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return `${m[s.getMonth()]} ${s.getDate()}–${m[e.getMonth()]} ${e.getDate()}`;
 }
 
-/* ─────────────────────────────────────
-   HELPERS
-───────────────────────────────────── */
+/* ─── HELPERS ─── */
 function getCurrentWeekNum() {
   const start = new Date(profile.startDate);
   const diff  = Math.floor((new Date() - start) / 86400000);
   if (diff < 0) return 1;
-  return Math.min(Math.max(Math.floor(diff / 7) + 1, 1), SCHEDULE.length);
+  return Math.min(Math.max(Math.floor(diff/7)+1,1), SCHEDULE.length);
 }
-
 function isChecked(id)   { return !!state[id]; }
-function isScoreable(t)  { return t.type === 'test' || t.type === 'mock' || t.type === 'spaced'; }
+function isScoreable(t)  { return t.type==='test'||t.type==='mock'||t.type==='spaced'; }
+function getWeekPct(w)   { if(!w||!w.tasks.length)return 0; return Math.round(w.tasks.filter(t=>isChecked(t.id)).length/w.tasks.length*100); }
+function getPhasePct(p)  { const tasks=SCHEDULE.filter(w=>w.phase===p).flatMap(w=>w.tasks); if(!tasks.length)return 0; return Math.round(tasks.filter(t=>isChecked(t.id)).length/tasks.length*100); }
+function getOverall()    { const all=SCHEDULE.flatMap(w=>w.tasks); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length,pct:all.length?Math.round(done/all.length*100):0}; }
+function getSubjectStats(s) { const tasks=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.subject===s); const done=tasks.filter(t=>isChecked(t.id)).length; return {total:tasks.length,done,pct:tasks.length?Math.round(done/tasks.length*100):0}; }
+function getTestStats()  { const all=SCHEDULE.flatMap(w=>w.tasks).filter(t=>(t.type==='test'||t.type==='spaced')&&t.title!=='EXAM DAY — CFA Level 2'); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length}; }
+function getMockStats()  { const all=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock'); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length}; }
+function getWeeklyConsistency() { const cur=getCurrentWeekNum(); return SCHEDULE.filter(w=>w.week<=cur).map(w=>({week:w.week,pct:getWeekPct(w),label:w.label})); }
+function scoreCol(pct)  { return pct>=70?'var(--green)':pct>=50?'var(--gold)':'var(--rose)'; }
+function fmtDate(d)     { const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()}`; }
 
-function getWeekPct(week) {
-  if (!week || !week.tasks.length) return 0;
-  return Math.round(week.tasks.filter(t => isChecked(t.id)).length / week.tasks.length * 100);
-}
-function getPhasePct(p) {
-  const tasks = SCHEDULE.filter(w => w.phase === p).flatMap(w => w.tasks);
-  if (!tasks.length) return 0;
-  return Math.round(tasks.filter(t => isChecked(t.id)).length / tasks.length * 100);
-}
-function getOverall() {
-  const all  = SCHEDULE.flatMap(w => w.tasks);
-  const done = all.filter(t => isChecked(t.id)).length;
-  return { done, total: all.length, pct: all.length ? Math.round(done / all.length * 100) : 0 };
-}
-function getSubjectStats(subj) {
-  const tasks = SCHEDULE.flatMap(w => w.tasks).filter(t => t.subject === subj);
-  const done  = tasks.filter(t => isChecked(t.id)).length;
-  return { total: tasks.length, done, pct: tasks.length ? Math.round(done / tasks.length * 100) : 0 };
-}
-function getTestStats() {
-  const all  = SCHEDULE.flatMap(w => w.tasks).filter(t => (t.type==='test'||t.type==='spaced') && t.title !== 'EXAM DAY — CFA Level 2');
-  const done = all.filter(t => isChecked(t.id)).length;
-  return { done, total: all.length };
-}
-function getMockStats() {
-  const all  = SCHEDULE.flatMap(w => w.tasks).filter(t => t.type === 'mock');
-  const done = all.filter(t => isChecked(t.id)).length;
-  return { done, total: all.length };
-}
-function getWeeklyConsistency() {
-  const cur = getCurrentWeekNum();
-  return SCHEDULE.filter(w => w.week <= cur).map(w => ({ week: w.week, pct: getWeekPct(w), label: w.label }));
-}
-
-/* ─────────────────────────────────────
-   SCORE MODAL
-───────────────────────────────────── */
+/* ─── SCORE MODAL ─── */
 function openScoreModal(e, taskId) {
   e.stopPropagation();
-  const task = SCHEDULE.flatMap(w => w.tasks).find(t => t.id === taskId);
+  const task = SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===taskId);
   if (!task) return;
   activeScoreTask = task;
   const isMock = task.type === 'mock';
-  const week   = SCHEDULE.find(w => w.tasks.some(t => t.id === taskId));
-
-  document.getElementById('modal-type-tag').textContent    = isMock ? 'Mock Exam' : 'Subject Test';
-  document.getElementById('modal-task-title').textContent  = task.title;
-  document.getElementById('modal-task-meta').textContent   = `${task.subject} · Week ${week?.week || ''}`;
-
-  const gotEl   = document.getElementById('modal-score-got');
-  const outofEl = document.getElementById('modal-score-outof');
+  const week   = SCHEDULE.find(w=>w.tasks.some(t=>t.id===taskId));
+  document.getElementById('modal-type-tag').textContent   = isMock ? 'Mock Exam' : 'Subject Test';
+  document.getElementById('modal-task-title').textContent = task.title;
+  document.getElementById('modal-task-meta').textContent  = `${task.subject} · Week ${week?.week||''}`;
+  const gotEl=document.getElementById('modal-score-got'), outofEl=document.getElementById('modal-score-outof');
   const existing = scores[taskId];
-
   gotEl.value   = existing ? existing.got   : '';
   outofEl.value = existing ? existing.outof : (isMock ? MOCK_TOTAL : '');
-
-  if (isMock) { outofEl.readOnly = true; outofEl.style.opacity = '0.5'; }
-  else        { outofEl.readOnly = false; outofEl.style.opacity = '1'; }
-
+  outofEl.readOnly = isMock;
+  outofEl.style.opacity = isMock ? '0.4' : '1';
   document.getElementById('modal-btn-clear').style.display = existing ? 'block' : 'none';
   updateScorePreview();
   document.getElementById('score-modal-overlay').classList.remove('hidden');
   setTimeout(() => gotEl.focus(), 100);
 }
-
-function closeScoreModal() {
-  document.getElementById('score-modal-overlay').classList.add('hidden');
-  activeScoreTask = null;
-}
-
+function closeScoreModal() { document.getElementById('score-modal-overlay').classList.add('hidden'); activeScoreTask=null; }
 function updateScorePreview() {
-  const got   = parseFloat(document.getElementById('modal-score-got').value);
-  const outof = parseFloat(document.getElementById('modal-score-outof').value);
-  const pctEl  = document.getElementById('preview-pct');
-  const fillEl = document.getElementById('preview-bar-fill');
-  const gradeEl = document.getElementById('preview-grade');
-
-  if (!isNaN(got) && !isNaN(outof) && outof > 0 && got >= 0) {
-    const pct = Math.round(got / outof * 100);
-    const col = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--accent)' : 'var(--accent3)';
-    const grade = pct >= 70 ? 'On track ✓' : pct >= 50 ? 'Needs revision' : 'Needs more work';
-    pctEl.textContent = pct + '%';
-    pctEl.style.color = col;
-    fillEl.style.width = Math.min(pct, 100) + '%';
-    fillEl.style.background = col;
-    gradeEl.textContent = grade;
-    gradeEl.style.color = col;
+  const got=parseFloat(document.getElementById('modal-score-got').value);
+  const outof=parseFloat(document.getElementById('modal-score-outof').value);
+  const pctEl=document.getElementById('preview-pct'), fillEl=document.getElementById('preview-bar-fill'), gradeEl=document.getElementById('preview-grade');
+  if (!isNaN(got)&&!isNaN(outof)&&outof>0&&got>=0) {
+    const pct=Math.round(got/outof*100);
+    const col=scoreCol(pct);
+    const grade=pct>=70?'On track ✓':pct>=50?'Needs revision':'Needs more work';
+    pctEl.textContent=pct+'%'; pctEl.style.color=col;
+    fillEl.style.width=Math.min(pct,100)+'%'; fillEl.style.background=col;
+    gradeEl.textContent=grade; gradeEl.style.color=col;
   } else {
-    pctEl.textContent = '—';
-    pctEl.style.color = 'var(--muted)';
-    fillEl.style.width = '0%';
-    fillEl.style.background = 'var(--muted)';
-    gradeEl.textContent = '';
+    pctEl.textContent='—'; pctEl.style.color='var(--muted)';
+    fillEl.style.width='0%'; fillEl.style.background='var(--muted)';
+    gradeEl.textContent='';
   }
 }
-
 function saveScore() {
   if (!activeScoreTask) return;
-  const got   = parseFloat(document.getElementById('modal-score-got').value);
-  const outof = parseFloat(document.getElementById('modal-score-outof').value);
-  if (isNaN(got) || isNaN(outof) || outof <= 0) { showToast('Enter valid score values', 'error'); return; }
-  if (got < 0 || got > outof) { showToast('Score must be between 0 and total marks', 'error'); return; }
-  const pct = Math.round(got / outof * 100);
-  scores[activeScoreTask.id] = { got, outof, pct, date: new Date().toISOString() };
-  saveScores();
-  closeScoreModal();
-  renderChecklist();
+  const got=parseFloat(document.getElementById('modal-score-got').value);
+  const outof=parseFloat(document.getElementById('modal-score-outof').value);
+  if (isNaN(got)||isNaN(outof)||outof<=0) { showToast('Enter valid score values','error'); return; }
+  if (got<0||got>outof) { showToast('Score must be 0–total marks','error'); return; }
+  scores[activeScoreTask.id]={ got, outof, pct:Math.round(got/outof*100), date:new Date().toISOString() };
+  saveScores(); closeScoreModal(); renderChecklist();
   if (document.getElementById('view-analytics').classList.contains('active')) renderAnalytics();
-  showToast(`Score saved: ${got}/${outof} (${pct}%)`, 'success');
+  showToast(`Saved: ${got}/${outof} (${Math.round(got/outof*100)}%)`, 'success');
 }
-
 function clearScore() {
   if (!activeScoreTask) return;
-  delete scores[activeScoreTask.id];
-  saveScores();
-  closeScoreModal();
-  renderChecklist();
+  delete scores[activeScoreTask.id]; saveScores(); closeScoreModal(); renderChecklist();
   if (document.getElementById('view-analytics').classList.contains('active')) renderAnalytics();
-  showToast('Score cleared', 'success');
+  showToast('Score cleared','success');
 }
+document.getElementById('score-modal-overlay').addEventListener('click', function(e){ if(e.target===this) closeScoreModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeScoreModal(); });
+document.getElementById('modal-score-got').addEventListener('keydown', e=>{ if(e.key==='Enter') saveScore(); });
 
-document.getElementById('score-modal-overlay').addEventListener('click', function(e) { if (e.target === this) closeScoreModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeScoreModal(); });
-document.getElementById('modal-score-got').addEventListener('keydown', e => { if (e.key === 'Enter') saveScore(); });
-
-/* ─────────────────────────────────────
-   RENDER: DASHBOARD
-───────────────────────────────────── */
+/* ─── DASHBOARD ─── */
 function renderDashboard() {
-  const today = new Date();
-  const exam  = new Date(profile.examDate);
-  const daysLeft  = Math.max(0, Math.ceil((exam - today) / 86400000));
-  const weeksLeft = Math.ceil(daysLeft / 7);
-  const overall    = getOverall();
-  const curWeekNum = getCurrentWeekNum();
-  const curWeek    = SCHEDULE.find(w => w.week === curWeekNum) || SCHEDULE[0];
+  const today=new Date(), exam=new Date(profile.examDate);
+  const daysLeft=Math.max(0,Math.ceil((exam-today)/86400000));
+  const weeksLeft=Math.ceil(daysLeft/7);
+  const overall=getOverall(), curWeekNum=getCurrentWeekNum();
+  const curWeek=SCHEDULE.find(w=>w.week===curWeekNum)||SCHEDULE[0];
 
   document.getElementById('dash-greeting').textContent = `${profile.name}'s Progress`;
-  document.getElementById('dash-subtitle').textContent = `CFA Level 2 · ${formatDisplayDate(exam)} Exam · ${profile.level} · ${profile.hours}h/day target`;
-  document.getElementById('days-left').textContent    = daysLeft;
-  document.getElementById('weeks-left').textContent   = weeksLeft;
+  document.getElementById('dash-subtitle').textContent = `CFA Level 2 · ${fmtDate(exam)} Exam · ${profile.level} · ${profile.hours}h/day`;
+  document.getElementById('days-left').textContent  = daysLeft;
+  document.getElementById('weeks-left').textContent = weeksLeft;
   document.getElementById('hours-target').textContent = profile.hours;
-  document.getElementById('overall-pct-label').textContent  = overall.pct + '%';
-  document.getElementById('overall-bar').style.width        = overall.pct + '%';
+  document.getElementById('overall-pct-label').textContent  = overall.pct+'%';
+  document.getElementById('overall-bar').style.width        = overall.pct+'%';
   document.getElementById('overall-tasks-label').textContent = `${overall.done} / ${overall.total} tasks complete`;
 
-  document.getElementById('stat-week').textContent       = 'W' + curWeekNum;
+  document.getElementById('stat-week').textContent       = 'W'+curWeekNum;
   document.getElementById('stat-week-phase').textContent = PHASE_NAMES[curWeek.phase];
-  document.getElementById('stat-week-bar').style.width   = getWeekPct(curWeek) + '%';
-
-  const wDone = curWeek.tasks.filter(t => isChecked(t.id)).length;
-  const wTotal = curWeek.tasks.length;
-  const wPct   = getWeekPct(curWeek);
+  document.getElementById('stat-week-bar').style.width   = getWeekPct(curWeek)+'%';
+  const wDone=curWeek.tasks.filter(t=>isChecked(t.id)).length, wTotal=curWeek.tasks.length, wPct=getWeekPct(curWeek);
   document.getElementById('stat-week-tasks').textContent = `${wDone}/${wTotal}`;
-  document.getElementById('stat-week-pct').textContent   = wPct + '% done';
-  document.getElementById('stat-week-task-bar').style.width = wPct + '%';
+  document.getElementById('stat-week-pct').textContent   = wPct+'% done';
+  document.getElementById('stat-week-task-bar').style.width = wPct+'%';
+  const ts=getTestStats(), ms=getMockStats();
+  document.getElementById('stat-tests').textContent  = `${ts.done}/${ts.total}`;
+  document.getElementById('stat-test-bar').style.width = (ts.total?Math.round(ts.done/ts.total*100):0)+'%';
+  document.getElementById('stat-mocks').textContent  = `${ms.done}/${ms.total}`;
+  document.getElementById('stat-mock-bar').style.width = (ms.total?Math.round(ms.done/ms.total*100):0)+'%';
 
-  const ts = getTestStats(); const ms = getMockStats();
-  document.getElementById('stat-tests').textContent   = `${ts.done}/${ts.total}`;
-  document.getElementById('stat-test-bar').style.width = (ts.total ? Math.round(ts.done/ts.total*100) : 0) + '%';
-  document.getElementById('stat-mocks').textContent   = `${ms.done}/${ms.total}`;
-  document.getElementById('stat-mock-bar').style.width = (ms.total ? Math.round(ms.done/ms.total*100) : 0) + '%';
-
-  const pr = document.getElementById('phases-row');
-  pr.innerHTML = '';
-  [1,2,3].forEach(p => {
-    const pct = getPhasePct(p);
-    const phaseWeeks = SCHEDULE.filter(w => w.phase === p);
-    const startDate  = phaseWeeks[0]?.dates.split('–')[0] || '';
-    const endDate    = phaseWeeks[phaseWeeks.length-1]?.dates.split('–')[1] || '';
-    pr.innerHTML += `
-      <div class="phase-card" style="--phase-color:${PHASE_COLORS[p]}">
-        <div class="phase-name">Phase ${p}</div>
-        <div class="phase-title">${PHASE_NAMES[p].replace(`Phase ${p} — `, '')}</div>
-        <div class="phase-dates">${startDate} — ${endDate}</div>
-        <div class="phase-pct" style="color:${PHASE_COLORS[p]}">${pct}%</div>
-        <div class="progress-bar-wrap"><div class="progress-bar" style="background:${PHASE_COLORS[p]};width:${pct}%"></div></div>
-      </div>`;
+  const pr=document.getElementById('phases-row'); pr.innerHTML='';
+  [1,2,3].forEach(p=>{
+    const pct=getPhasePct(p);
+    const phaseWeeks=SCHEDULE.filter(w=>w.phase===p);
+    const s=phaseWeeks[0]?.dates.split('–')[0]||'', en=phaseWeeks[phaseWeeks.length-1]?.dates.split('–')[1]||'';
+    pr.innerHTML += `<div class="phase-card">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:${PHASE_COLORS[p]}"></div>
+      <div class="phase-num">Phase ${p}</div>
+      <div class="phase-card-title">${PHASE_NAMES[p].replace(`Phase ${p} — `, '')}</div>
+      <div class="phase-card-dates">${s} — ${en}</div>
+      <div class="phase-card-pct" style="color:${PHASE_COLORS[p]}">${pct}%</div>
+      <div class="progress-track"><div class="progress-fill" style="background:${PHASE_COLORS[p]};width:${pct}%"></div></div>
+    </div>`;
   });
 
-  const container = document.getElementById('week-timeline');
-  container.innerHTML = '';
-  SCHEDULE.forEach(w => {
-    const pct   = getWeekPct(w);
-    const isCur = w.week === curWeekNum;
-    const color = PHASE_HEX[w.phase];
-    const row = document.createElement('div');
-    row.className = `week-row${isCur ? ' current' : ''}${pct===100 ? ' done' : ''}`;
-    row.style.borderLeftColor = isCur ? color : 'transparent';
-    row.innerHTML = `
-      <div class="week-label">Wk ${w.week} · ${w.dates}</div>
-      <div class="week-tasks">${w.label}
-        <div class="progress-bar-wrap" style="margin-top:4px"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div>
-      </div>
+  const container=document.getElementById('week-timeline'); container.innerHTML='';
+  SCHEDULE.forEach(w=>{
+    const pct=getWeekPct(w), isCur=w.week===curWeekNum;
+    const color=PHASE_HEX[w.phase];
+    const row=document.createElement('div');
+    row.className=`week-row${isCur?' current':''}${pct===100?' done':''}`;
+    row.style.borderLeftColor=isCur?color:'transparent';
+    row.innerHTML=`
+      <div class="week-label"><strong>Wk ${w.week}</strong>${w.dates}</div>
+      <div><div class="week-tasks-label">${w.label}</div><div class="week-tasks-bar progress-track" style="margin-top:4px"><div class="progress-fill" style="background:${color};width:${pct}%"></div></div></div>
       <div class="week-pct-col" style="color:${color}">${pct}%</div>`;
-    row.onclick = () => { switchTab('checklist'); document.getElementById('week-select').value = w.week; renderChecklist(); };
+    row.onclick=()=>{ switchTab('checklist'); document.getElementById('week-select').value=w.week; renderChecklist(); };
     container.appendChild(row);
   });
 }
 
-/* ─────────────────────────────────────
-   RENDER: CHECKLIST
-───────────────────────────────────── */
+/* ─── CHECKLIST ─── */
 function renderChecklist() {
-  const sel     = document.getElementById('week-select');
-  const weekNum = parseInt(sel.value);
-  const week    = SCHEDULE.find(w => w.week === weekNum);
+  const sel=document.getElementById('week-select');
+  const weekNum=parseInt(sel.value);
+  const week=SCHEDULE.find(w=>w.week===weekNum);
   if (!week) return;
-  const pct   = getWeekPct(week);
-  const done  = week.tasks.filter(t => isChecked(t.id)).length;
-  const color = PHASE_HEX[week.phase];
+  const pct=getWeekPct(week), done=week.tasks.filter(t=>isChecked(t.id)).length;
+  const color=PHASE_HEX[week.phase];
 
-  document.getElementById('week-header-card').innerHTML = `
+  document.getElementById('week-header-card').innerHTML=`
     <div>
       <div class="week-info-phase">${PHASE_NAMES[week.phase]}</div>
       <div class="week-info-title">Week ${week.week} — ${week.label}</div>
-      <div class="week-of" style="margin-top:3px">${week.dates}</div>
+      <div class="week-info-dates">${week.dates}</div>
     </div>
     <div class="week-progress-mini">
-      <div>
-        <div style="font-size:0.65rem;color:var(--muted);text-align:right">${done}/${week.tasks.length} tasks</div>
+      <div style="text-align:right">
+        <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted)">${done}/${week.tasks.length} tasks</div>
         <div class="week-pct-big" style="color:${color}">${pct}%</div>
       </div>
-      <div style="width:80px"><div class="progress-bar-wrap" style="height:5px"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div></div>
+      <div style="width:72px"><div class="progress-track" style="height:4px"><div class="progress-fill" style="background:${color};width:${pct}%"></div></div></div>
     </div>`;
 
-  const area = document.getElementById('checklist-area');
-  area.innerHTML = '';
-  week.tasks.forEach(t => {
-    const checked = isChecked(t.id);
-    const labelMap = { reading:'Reading', test:'Subject Test', review:'Review', mock:'Mock Exam', spaced:'Spaced Recall' };
-    const label    = t.title === 'EXAM DAY — CFA Level 2' ? 'EXAM' : (labelMap[t.type] || t.type);
-    const scoreData = scores[t.id];
-    let chipHtml = '';
-    if (isScoreable(t) && t.title !== 'EXAM DAY — CFA Level 2') {
-      const isMock    = t.type === 'mock';
-      const hasScore  = scoreData && scoreData.got != null;
-      const chipClass = `score-chip${hasScore ? ' has-score' : ''}${isMock ? ' mock' : ''}`;
-      const chipText  = hasScore ? `${scoreData.got}/${scoreData.outof} · ${scoreData.pct}%` : '+ Log score';
-      chipHtml = `<span class="${chipClass}" onclick="openScoreModal(event,'${t.id}')"><span class="score-chip-dot"></span>${chipText}</span>`;
+  const area=document.getElementById('checklist-area'); area.innerHTML='';
+  week.tasks.forEach(t=>{
+    const checked=isChecked(t.id);
+    const lblMap={ reading:'Reading', test:'Test', review:'Review', mock:'Mock', spaced:'Spaced' };
+    const label=t.title==='EXAM DAY — CFA Level 2'?'EXAM':(lblMap[t.type]||t.type);
+    const scoreData=scores[t.id];
+    let chipHtml='';
+    if (isScoreable(t)&&t.title!=='EXAM DAY — CFA Level 2') {
+      const isMock=t.type==='mock', hasScore=scoreData&&scoreData.got!=null;
+      const chipCls=`score-chip${hasScore?' has-score':''}${isMock?' mock':''}`;
+      const chipTxt=hasScore?`${scoreData.got}/${scoreData.outof} · ${scoreData.pct}%`:'+ Log score';
+      chipHtml=`<span class="${chipCls}" onclick="openScoreModal(event,'${t.id}')"><span class="score-chip-dot"></span>${chipTxt}</span>`;
     }
-    const item = document.createElement('div');
-    item.className = `check-item${checked ? ' checked' : ''}`;
-    item.innerHTML = `
-      <div class="check-box" onclick="toggleTask('${t.id}', this.closest('.check-item'))">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-          <polyline points="1.5,5 4,7.5 8.5,2" stroke="#0d0f14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    const item=document.createElement('div');
+    item.className=`check-item${checked?' checked':''}`;
+    item.innerHTML=`
+      <div class="check-box" onclick="toggleTask('${t.id}',this.closest('.check-item'))">
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#080a0f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="check-content">
         <div class="check-title">${t.title}</div>
@@ -1613,31 +1827,27 @@ function renderChecklist() {
   });
 }
 
-/* ─────────────────────────────────────
-   RENDER: SCHEDULE
-───────────────────────────────────── */
+/* ─── SCHEDULE ─── */
 function renderSchedule() {
-  document.getElementById('schedule-subtitle').textContent = `${SCHEDULE.length} weeks · Exam ${formatDisplayDate(new Date(profile.examDate))}`;
-  const grid = document.getElementById('schedule-grid');
-  grid.innerHTML = '';
-  const curWeekNum = getCurrentWeekNum();
-  [1,2,3].forEach(phase => {
-    const weeks = SCHEDULE.filter(w => w.phase === phase);
-    const color = PHASE_HEX[phase];
-    const block = document.createElement('div');
-    block.className = 'phase-block';
-    block.innerHTML = `
+  document.getElementById('schedule-subtitle').textContent=`${SCHEDULE.length} weeks · Exam ${fmtDate(new Date(profile.examDate))}`;
+  const grid=document.getElementById('schedule-grid'); grid.innerHTML='';
+  const curWeekNum=getCurrentWeekNum();
+  [1,2,3].forEach(phase=>{
+    const weeks=SCHEDULE.filter(w=>w.phase===phase);
+    const color=PHASE_HEX[phase];
+    const block=document.createElement('div');
+    block.className='phase-block';
+    block.innerHTML=`
       <div class="phase-block-header">
         <div class="phase-dot" style="background:${color}"></div>
         <div>
           <div class="phase-block-title">${PHASE_NAMES[phase]}</div>
-          <div class="phase-block-sub">${getPhasePct(phase)}% complete</div>
+          <div class="phase-block-sub">${getPhasePct(phase)}% complete · ${weeks.length} weeks</div>
         </div>
       </div>
       <div class="weeks-grid">
-        ${weeks.map(w => {
-          const pct   = getWeekPct(w);
-          const isCur = w.week === curWeekNum;
+        ${weeks.map(w=>{
+          const pct=getWeekPct(w), isCur=w.week===curWeekNum;
           return `<div class="schedule-week${isCur?' current-week':''}" style="border-top-color:${color}">
             <div class="sw-header">
               <span class="sw-num">WEEK ${w.week}${isCur?' · NOW':''}</span>
@@ -1645,7 +1855,7 @@ function renderSchedule() {
             </div>
             <div class="sw-tasks">${w.tasks.map(t=>`<div class="sw-task"><span class="sw-task-bullet">▸</span><span>${t.title}</span></div>`).join('')}</div>
             <div class="sw-done-bar">
-              <div style="flex:1"><div class="progress-bar-wrap"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div></div>
+              <div style="flex:1"><div class="progress-track"><div class="progress-fill" style="background:${color};width:${pct}%"></div></div></div>
               <span class="sw-done-pct">${pct}%</span>
             </div>
           </div>`;
@@ -1655,209 +1865,171 @@ function renderSchedule() {
   });
 }
 
-/* ─────────────────────────────────────
-   RENDER: ANALYTICS
-───────────────────────────────────── */
-function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
-
+/* ─── ANALYTICS ─── */
+function destroyChart(id) { if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
 function renderAnalytics() {
-  const activePanel = document.querySelector('.a-panel.active');
-  if (activePanel && activePanel.id === 'panel-scores') renderScoresPanel();
+  const activePanel=document.querySelector('.a-panel.active');
+  if (activePanel&&activePanel.id==='panel-scores') renderScoresPanel();
   else renderCompletionPanel();
 }
-
 function switchATab(name, btn) {
-  document.querySelectorAll('.a-tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.a-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.a-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.a-panel').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('panel-' + name).classList.add('active');
-  if (name === 'scores')     renderScoresPanel();
-  if (name === 'completion') renderCompletionPanel();
+  document.getElementById('panel-'+name).classList.add('active');
+  if (name==='scores')     renderScoresPanel();
+  if (name==='completion') renderCompletionPanel();
 }
 
-/* ── SCORES PANEL ── */
-function renderScoresPanel() {
-  const allTaskScores = Object.entries(scores).map(([id, s]) => {
-    const task = SCHEDULE.flatMap(w => w.tasks).find(t => t.id === id);
-    const week = SCHEDULE.find(w => w.tasks.some(t => t.id === id));
-    return task ? { ...s, task, week } : null;
+function getScoreData() {
+  return Object.entries(scores).map(([id,s])=>{
+    const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id);
+    const week=SCHEDULE.find(w=>w.tasks.some(t=>t.id===id));
+    return task?{...s,task,week}:null;
   }).filter(Boolean);
+}
 
-  const testScores = allTaskScores.filter(s => s.task.type !== 'mock');
-  const mockScores = allTaskScores.filter(s => s.task.type === 'mock');
-  const avgTests   = testScores.length ? Math.round(testScores.reduce((a,b) => a+b.pct, 0) / testScores.length) : null;
-  const avgMocks   = mockScores.length ? Math.round(mockScores.reduce((a,b) => a+b.pct, 0) / mockScores.length) : null;
-  const best       = allTaskScores.length ? allTaskScores.reduce((a,b) => a.pct > b.pct ? a : b) : null;
+function renderScoresPanel() {
+  const all=getScoreData();
+  const testS=all.filter(s=>s.task.type!=='mock');
+  const mockS=all.filter(s=>s.task.type==='mock');
+  const avgTests=testS.length?Math.round(testS.reduce((a,b)=>a+b.pct,0)/testS.length):null;
+  const avgMocks=mockS.length?Math.round(mockS.reduce((a,b)=>a+b.pct,0)/mockS.length):null;
+  const best=all.length?all.reduce((a,b)=>a.pct>b.pct?a:b):null;
 
-  const scoreCol = pct => pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--accent)' : 'var(--accent3)';
-
-  document.getElementById('score-insight-grid').innerHTML = `
+  document.getElementById('score-insight-grid').innerHTML=`
     <div class="insight-card">
       <div class="insight-label">Avg test score</div>
-      <div class="insight-val" style="color:${avgTests != null ? scoreCol(avgTests) : 'var(--muted)'}">${avgTests != null ? avgTests+'%' : '—'}</div>
-      <div class="insight-sub">${testScores.length} test${testScores.length !== 1 ? 's' : ''} logged</div>
+      <div class="insight-val" style="color:${avgTests!=null?scoreCol(avgTests):'var(--muted)'}">${avgTests!=null?avgTests+'%':'—'}</div>
+      <div class="insight-sub">${testS.length} test${testS.length!==1?'s':''} logged</div>
     </div>
     <div class="insight-card">
       <div class="insight-label">Avg mock score</div>
-      <div class="insight-val" style="color:${avgMocks != null ? scoreCol(avgMocks) : 'var(--muted)'}">${avgMocks != null ? avgMocks+'%' : '—'}</div>
-      <div class="insight-sub">${mockScores.length} mock${mockScores.length !== 1 ? 's' : ''} logged · /88 each</div>
+      <div class="insight-val" style="color:${avgMocks!=null?scoreCol(avgMocks):'var(--muted)'}">${avgMocks!=null?avgMocks+'%':'—'}</div>
+      <div class="insight-sub">${mockS.length} mock${mockS.length!==1?'s':''} logged · /88 each</div>
     </div>
     <div class="insight-card">
       <div class="insight-label">Best score</div>
-      <div class="insight-val" style="color:var(--green)">${best ? best.pct+'%' : '—'}</div>
-      <div class="insight-sub">${best ? best.task.title.slice(0,30)+(best.task.title.length>30?'…':'') : ' '}</div>
+      <div class="insight-val" style="color:var(--green)">${best?best.pct+'%':'—'}</div>
+      <div class="insight-sub">${best?best.task.title.slice(0,30)+(best.task.title.length>30?'…':''):' '}</div>
     </div>`;
 
-  // Subject avg scores bar chart
   destroyChart('chart-subj-scores');
-  const subjAvgs = SUBJECTS.map(s => {
-    const ss = allTaskScores.filter(x => x.task.subject === s && x.task.type !== 'mock');
-    return ss.length ? Math.round(ss.reduce((a,b) => a+b.pct, 0) / ss.length) : null;
-  });
-  charts['chart-subj-scores'] = new Chart(document.getElementById('chart-subj-scores'), {
-    type: 'bar',
-    data: {
-      labels: SUBJECTS.map(s => s.length > 12 ? s.slice(0,11)+'…' : s),
-      datasets: [{ data: subjAvgs.map(v => v ?? 0), backgroundColor: subjAvgs.map(v => v == null ? 'rgba(120,120,120,0.1)' : v>=70 ? '#6bbd8b' : v>=50 ? '#c8a96e' : '#d96060'), borderRadius: 4, borderSkipped: false }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => subjAvgs[ctx.dataIndex] != null ? ctx.raw+'%' : 'No data yet' } } }, scales: { x: AXIS_STYLE, y: { ...AXIS_STYLE, min: 0, max: 100, ticks: { ...AXIS_STYLE.ticks, callback: v => v+'%' } } } }
+  const subjAvgs=SUBJECTS.map(s=>{ const ss=all.filter(x=>x.task.subject===s&&x.task.type!=='mock'); return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):null; });
+  charts['chart-subj-scores']=new Chart(document.getElementById('chart-subj-scores'),{
+    type:'bar',
+    data:{ labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s), datasets:[{ data:subjAvgs.map(v=>v??0), backgroundColor:subjAvgs.map(v=>v==null?'rgba(90,86,80,0.15)':v>=70?'#6abf8e':v>=50?'#c9a96e':'#d96060'), borderRadius:3, borderSkipped:false }] },
+    options:{ responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>subjAvgs[ctx.dataIndex]!=null?ctx.raw+'%':'No data yet'}}},scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,max:100,ticks:{...AXIS_STYLE.ticks,callback:v=>v+'%'}}}}
   });
 
-  // Score distribution
   destroyChart('chart-score-dist');
-  if (allTaskScores.length) {
-    const bins = [0,0,0,0,0];
-    allTaskScores.forEach(s => {
-      if (s.pct < 50) bins[0]++;
-      else if (s.pct < 60) bins[1]++;
-      else if (s.pct < 70) bins[2]++;
-      else if (s.pct < 80) bins[3]++;
-      else bins[4]++;
-    });
-    charts['chart-score-dist'] = new Chart(document.getElementById('chart-score-dist'), {
-      type: 'bar',
-      data: { labels: ['<50%','50–59%','60–69%','70–79%','80%+'], datasets: [{ data: bins, backgroundColor: ['#d96060','#c8a96e','#e8b84b','#8fc4b4','#6bbd8b'], borderRadius: 4, borderSkipped: false }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.raw} test${ctx.raw!==1?'s':''}` } } }, scales: { x: AXIS_STYLE, y: { ...AXIS_STYLE, min: 0, ticks: { ...AXIS_STYLE.ticks, stepSize: 1 } } } }
+  if (all.length) {
+    const bins=[0,0,0,0,0];
+    all.forEach(s=>{ if(s.pct<50)bins[0]++;else if(s.pct<60)bins[1]++;else if(s.pct<70)bins[2]++;else if(s.pct<80)bins[3]++;else bins[4]++; });
+    charts['chart-score-dist']=new Chart(document.getElementById('chart-score-dist'),{
+      type:'bar',
+      data:{ labels:['<50%','50–59%','60–69%','70–79%','80%+'], datasets:[{ data:bins, backgroundColor:['#c47a7a','#c9a96e','#e0a84b','#5fb8a8','#6abf8e'], borderRadius:3, borderSkipped:false }] },
+      options:{ responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} test${ctx.raw!==1?'s':''}`}}},scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,ticks:{...AXIS_STYLE.ticks,stepSize:1}}}}
     });
   }
 
-  // Mock trend
   destroyChart('chart-mock-trend');
-  if (mockScores.length) {
-    const sorted = [...mockScores].sort((a,b) => new Date(a.date) - new Date(b.date));
-    charts['chart-mock-trend'] = new Chart(document.getElementById('chart-mock-trend'), {
-      type: 'line',
-      data: {
-        labels: sorted.map((_,i) => `Mock ${i+1}`),
-        datasets: [
-          { label:'Score %', data: sorted.map(s => s.pct), borderColor:'#c47a7a', backgroundColor:'rgba(196,122,122,0.08)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c47a7a', pointRadius:5 },
-          { label:'70% target', data: sorted.map(() => 70), borderColor:'rgba(107,189,139,0.4)', borderDash:[5,4], borderWidth:1.5, tension:0, fill:false, pointRadius:0 }
-        ]
-      },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position:'bottom', labels:{ color:'#7a7871', font:{family:'DM Mono',size:10}, padding:12 } } }, scales: { x: AXIS_STYLE, y: { ...AXIS_STYLE, min: 0, max: 100, ticks: { ...AXIS_STYLE.ticks, callback: v => v+'%' } } } }
+  if (mockS.length) {
+    const sorted=[...mockS].sort((a,b)=>new Date(a.date)-new Date(b.date));
+    charts['chart-mock-trend']=new Chart(document.getElementById('chart-mock-trend'),{
+      type:'line',
+      data:{ labels:sorted.map((_,i)=>`Mock ${i+1}`), datasets:[
+        { label:'Score %',data:sorted.map(s=>s.pct), borderColor:'#c47a7a',backgroundColor:'rgba(196,122,122,0.06)',borderWidth:2,tension:0.35,fill:true,pointBackgroundColor:'#c47a7a',pointRadius:5 },
+        { label:'70% target',data:sorted.map(()=>70), borderColor:'rgba(107,191,142,0.35)',borderDash:[5,4],borderWidth:1.5,tension:0,fill:false,pointRadius:0 }
+      ]},
+      options:{ responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#5a5650',font:{family:'Space Mono',size:10},padding:12}}},scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,max:100,ticks:{...AXIS_STYLE.ticks,callback:v=>v+'%'}}}}
     });
   }
 
-  // Scores table
-  const wrap = document.getElementById('scores-table-wrap');
-  if (!allTaskScores.length) {
-    wrap.innerHTML = `<div class="no-scores-msg"><strong>No scores logged yet</strong>Click "+ Log score" on any test or mock in the Checklist tab.</div>`;
+  const wrap=document.getElementById('scores-table-wrap');
+  if (!all.length) {
+    wrap.innerHTML=`<div class="no-scores-msg"><strong>No scores logged yet</strong>Click "+ Log score" on any test or mock in the Checklist tab.</div>`;
     return;
   }
-  const sorted = [...allTaskScores].sort((a,b) => new Date(b.date) - new Date(a.date));
-  const rows = sorted.map(s => {
-    const pCls  = s.pct >= 70 ? 'high' : s.pct >= 50 ? 'mid' : 'low';
-    const barCol = s.pct >= 70 ? 'var(--green)' : s.pct >= 50 ? 'var(--accent)' : 'var(--accent3)';
-    const dateStr = new Date(s.date).toLocaleDateString('en-GB', { day:'numeric', month:'short' });
-    const badge = s.task.type === 'mock'
-      ? `<span class="check-badge badge-mock">Mock</span>`
-      : `<span class="check-badge badge-test">Test</span>`;
+  const sorted=[...all].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const rows=sorted.map(s=>{
+    const pCls=s.pct>=70?'high':s.pct>=50?'mid':'low';
+    const barCol=s.pct>=70?'var(--green)':s.pct>=50?'var(--gold)':'var(--rose)';
+    const dateStr=new Date(s.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+    const badge=s.task.type==='mock'?`<span class="check-badge badge-mock">Mock</span>`:`<span class="check-badge badge-test">Test</span>`;
     return `<tr>
       <td>${badge}</td>
-      <td style="max-width:220px">${s.task.title}</td>
-      <td style="color:var(--muted);font-size:0.72rem">${s.task.subject}</td>
-      <td style="font-family:var(--font-mono);font-size:0.78rem">${s.got}/${s.outof}</td>
+      <td style="max-width:200px;font-size:0.78rem">${s.task.title}</td>
+      <td style="color:var(--text2);font-size:0.7rem">${s.task.subject}</td>
+      <td style="font-family:var(--font-mono);font-size:0.75rem">${s.got}/${s.outof}</td>
       <td><span class="score-pct-pill ${pCls}">${s.pct}%</span></td>
       <td><div class="mini-bar-wrap"><div class="mini-bar-fill" style="width:${s.pct}%;background:${barCol}"></div></div></td>
-      <td style="color:var(--muted2);font-size:0.68rem;font-family:var(--font-mono)">${dateStr}</td>
+      <td style="color:var(--muted);font-size:0.65rem;font-family:var(--font-mono)">${dateStr}</td>
     </tr>`;
   }).join('');
-  wrap.innerHTML = `<div class="scores-table-wrap"><table class="scores-table"><thead><tr><th></th><th>Test</th><th>Subject</th><th>Score</th><th>%</th><th></th><th>Date</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  wrap.innerHTML=`<table class="scores-table"><thead><tr><th></th><th>Test</th><th>Subject</th><th>Score</th><th>%</th><th></th><th>Date</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-/* ── COMPLETION PANEL ── */
 function renderCompletionPanel() {
-  const overall = getOverall();
-  const ts = getTestStats();
-  const ms = getMockStats();
-
-  document.getElementById('completion-insight-grid').innerHTML = `
+  const overall=getOverall(), ts=getTestStats(), ms=getMockStats();
+  document.getElementById('completion-insight-grid').innerHTML=`
     <div class="insight-card">
       <div class="insight-label">Overall completion</div>
-      <div class="insight-val" style="color:var(--accent)">${overall.pct}%</div>
+      <div class="insight-val" style="color:var(--gold)">${overall.pct}%</div>
       <div class="insight-sub">${overall.done} of ${overall.total} tasks done</div>
     </div>
     <div class="insight-card">
       <div class="insight-label">Tests completed</div>
       <div class="insight-val" style="color:var(--blue)">${ts.done}/${ts.total}</div>
-      <div class="insight-sub">${ts.total ? Math.round(ts.done/ts.total*100) : 0}% of subject tests</div>
+      <div class="insight-sub">${ts.total?Math.round(ts.done/ts.total*100):0}% of subject tests</div>
     </div>
     <div class="insight-card">
       <div class="insight-label">Mocks done</div>
-      <div class="insight-val" style="color:var(--accent3)">${ms.done}/${ms.total}</div>
-      <div class="insight-sub">${ms.total ? Math.round(ms.done/ms.total*100) : 0}% of mock exams</div>
+      <div class="insight-val" style="color:var(--rose)">${ms.done}/${ms.total}</div>
+      <div class="insight-sub">${ms.total?Math.round(ms.done/ms.total*100):0}% of mock exams</div>
     </div>`;
 
-  // Subject completion
   destroyChart('chart-subjects');
-  const subjPcts = SUBJECTS.map(s => getSubjectStats(s).pct);
-  charts['chart-subjects'] = new Chart(document.getElementById('chart-subjects'), {
-    type: 'bar',
-    data: { labels: SUBJECTS.map(s => s.length > 12 ? s.slice(0,11)+'…' : s), datasets: [{ data: subjPcts, backgroundColor: subjPcts.map(p => p===100?'#6bbd8b':p>50?'#c8a96e':'#8fc4b4'), borderRadius: 4, borderSkipped: false }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.raw+'%'}} }, scales: { x: AXIS_STYLE, y: { ...AXIS_STYLE, min:0, max:100, ticks:{...AXIS_STYLE.ticks, callback:v=>v+'%'} } } }
+  const subjPcts=SUBJECTS.map(s=>getSubjectStats(s).pct);
+  charts['chart-subjects']=new Chart(document.getElementById('chart-subjects'),{
+    type:'bar',
+    data:{ labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s), datasets:[{ data:subjPcts, backgroundColor:subjPcts.map(p=>p===100?'#6abf8e':p>50?'#c9a96e':'#5fb8a8'), borderRadius:3, borderSkipped:false }] },
+    options:{ responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw+'%'}}},scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,max:100,ticks:{...AXIS_STYLE.ticks,callback:v=>v+'%'}}}}
   });
 
-  // Tests doughnut
   destroyChart('chart-tests');
-  charts['chart-tests'] = new Chart(document.getElementById('chart-tests'), {
-    type: 'doughnut',
-    data: { labels:['Done','Pending'], datasets:[{ data:[ts.done, ts.total-ts.done], backgroundColor:['#6bbd8b','#1a1e28'], borderColor:['#6bbd8b','rgba(255,255,255,0.07)'], borderWidth:1 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ legend:{display:true,position:'bottom',labels:{color:'#7a7871',font:{family:'DM Mono',size:10},padding:12}}, tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw}`}} }, animation:{duration:600} }
+  charts['chart-tests']=new Chart(document.getElementById('chart-tests'),{
+    type:'doughnut',
+    data:{ labels:['Done','Pending'], datasets:[{ data:[ts.done,ts.total-ts.done], backgroundColor:['#6abf8e','#141820'], borderColor:['#6abf8e','rgba(255,255,255,0.07)'], borderWidth:1 }] },
+    options:{ responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#5a5650',font:{family:'Space Mono',size:10},padding:12}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw}`}}},animation:{duration:600}}
   });
 
-  // Weekly consistency
   destroyChart('chart-consistency');
-  const consData = getWeeklyConsistency();
-  charts['chart-consistency'] = new Chart(document.getElementById('chart-consistency'), {
-    type: 'line',
-    data: { labels: consData.map(w=>`W${w.week}`), datasets:[{ data:consData.map(w=>w.pct), borderColor:'#c8a96e', backgroundColor:'rgba(200,169,110,0.08)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c8a96e', pointRadius:3 }] },
-    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw+'%'}}}, scales:{ x:AXIS_STYLE, y:{...AXIS_STYLE,min:0,max:100,ticks:{...AXIS_STYLE.ticks,callback:v=>v+'%'}} } }
+  const cons=getWeeklyConsistency();
+  charts['chart-consistency']=new Chart(document.getElementById('chart-consistency'),{
+    type:'line',
+    data:{ labels:cons.map(w=>`W${w.week}`), datasets:[{ data:cons.map(w=>w.pct), borderColor:'#c9a96e',backgroundColor:'rgba(201,169,110,0.06)',borderWidth:2,tension:0.35,fill:true,pointBackgroundColor:'#c9a96e',pointRadius:3 }] },
+    options:{ responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw+'%'}}},scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,max:100,ticks:{...AXIS_STYLE.ticks,callback:v=>v+'%'}}}}
   });
 
-  // Mock progress
   destroyChart('chart-mocks');
-  const mockWeeks   = SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock');
-  const mockLabels  = mockWeeks.map((_,i)=>`Mock ${i+1}`);
-  const mockDone    = mockWeeks.map(t=>isChecked(t.id)?1:0).reduce((acc,v,i)=>{ acc.push((acc[i-1]||0)+v); return acc; },[]);
-  const mockTarget  = mockWeeks.map((_,i)=>Math.round((i+1)/mockWeeks.length*ms.total));
-  charts['chart-mocks'] = new Chart(document.getElementById('chart-mocks'), {
-    type: 'line',
-    data: { labels: mockLabels, datasets:[
-      { label:'Completed', data:mockDone, borderColor:'#c47a7a', backgroundColor:'rgba(196,122,122,0.08)', borderWidth:2, tension:0.3, fill:true, pointBackgroundColor:'#c47a7a', pointRadius:4 },
-      { label:'Target',    data:mockTarget, borderColor:'rgba(255,255,255,0.15)', borderDash:[4,4], borderWidth:1.5, tension:0, fill:false, pointRadius:0 }
+  const mockWeeks=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock');
+  const mockDone=mockWeeks.map(t=>isChecked(t.id)?1:0).reduce((acc,v,i)=>{ acc.push((acc[i-1]||0)+v); return acc; },[]);
+  charts['chart-mocks']=new Chart(document.getElementById('chart-mocks'),{
+    type:'line',
+    data:{ labels:mockWeeks.map((_,i)=>`Mock ${i+1}`), datasets:[
+      { label:'Completed', data:mockDone, borderColor:'#c47a7a',backgroundColor:'rgba(196,122,122,0.06)',borderWidth:2,tension:0.3,fill:true,pointBackgroundColor:'#c47a7a',pointRadius:4 },
+      { label:'Target',    data:mockWeeks.map((_,i)=>i+1), borderColor:'rgba(255,255,255,0.12)',borderDash:[4,4],borderWidth:1.5,tension:0,fill:false,pointRadius:0 }
     ]},
-    options: { responsive:true, maintainAspectRatio:false, scales:{ x:AXIS_STYLE, y:{...AXIS_STYLE,max:ms.total,min:0} }, plugins:{ legend:{display:true,position:'bottom',labels:{color:'#7a7871',font:{family:'DM Mono',size:10},padding:12}} } }
+    options:{ responsive:true,maintainAspectRatio:false,scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,max:ms.total,min:0}},plugins:{legend:{display:true,position:'bottom',labels:{color:'#5a5650',font:{family:'Space Mono',size:10},padding:12}}}}
   });
 }
 
-/* ─────────────────────────────────────
-   TASK TOGGLE
-───────────────────────────────────── */
+/* ─── TASK TOGGLE ─── */
 function toggleTask(taskId, itemEl) {
-  state[taskId] = !state[taskId];
-  saveState();
+  state[taskId] = !state[taskId]; saveState();
   itemEl.classList.toggle('checked', !!state[taskId]);
-  const cb = itemEl.querySelector('.check-box');
+  const cb=itemEl.querySelector('.check-box');
   if (state[taskId]) { cb.style.background='var(--green)'; cb.style.borderColor='var(--green)'; cb.querySelector('svg').style.display='block'; }
   else { cb.style.background=''; cb.style.borderColor=''; cb.querySelector('svg').style.display='none'; }
   renderChecklist();
@@ -1866,241 +2038,274 @@ function toggleTask(taskId, itemEl) {
 }
 
 function resetWeek() {
-  const weekNum = parseInt(document.getElementById('week-select').value);
-  const week    = SCHEDULE.find(w => w.week === weekNum);
+  const weekNum=parseInt(document.getElementById('week-select').value);
+  const week=SCHEDULE.find(w=>w.week===weekNum);
   if (!week) return;
-  week.tasks.forEach(t => { state[t.id] = false; });
-  saveState();
-  renderChecklist();
-  showToast('Week reset', 'success');
+  week.tasks.forEach(t=>{ state[t.id]=false; });
+  saveState(); renderChecklist(); showToast('Week reset','success');
 }
 
-/* ─────────────────────────────────────
-   EXPORT PDF
-───────────────────────────────────── */
-function renderChartToDataURL(config, width, height) {
-  return new Promise(resolve => {
-    const canvas = document.createElement('canvas');
-    canvas.width  = width * 2;
-    canvas.height = height * 2;
-    canvas.style.cssText = 'position:absolute;top:-9999px;left:-9999px';
+/* ─── EXPORT PDF (includes scores table + charts) ─── */
+function renderChartToDataURL(config, w, h) {
+  return new Promise(resolve=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=w*2; canvas.height=h*2;
+    canvas.style.cssText='position:absolute;top:-9999px;left:-9999px';
     document.body.appendChild(canvas);
-    const chart = new Chart(canvas, config);
-    chart.options.animation = { duration: 0, onComplete: () => {
-      const url = canvas.toDataURL('image/png');
-      chart.destroy();
-      document.body.removeChild(canvas);
-      resolve(url);
+    const chart=new Chart(canvas, config);
+    chart.options.animation={ duration:0, onComplete:()=>{
+      const url=canvas.toDataURL('image/png');
+      chart.destroy(); document.body.removeChild(canvas); resolve(url);
     }};
     chart.update();
   });
 }
 
-async function buildExportChartImages() {
-  const overall   = getOverall();
-  const ts = getTestStats(); const ms = getMockStats();
-  const consData  = getWeeklyConsistency();
-  const ax = { grid:{color:'rgba(255,255,255,0.06)',drawBorder:false}, ticks:{color:'#7a7871',font:{family:'monospace',size:11}} };
-  const plug = { legend:{display:false} };
+async function buildExportCharts() {
+  const ax={ grid:{color:'rgba(255,255,255,0.06)',drawBorder:false}, ticks:{color:'#5a5650',font:{family:'monospace',size:11}} };
+  const all=getScoreData();
+  const testS=all.filter(s=>s.task.type!=='mock');
+  const mockS=all.filter(s=>s.task.type==='mock');
 
-  const subjPcts  = SUBJECTS.map(s => getSubjectStats(s).pct);
-  const chartA = await renderChartToDataURL({ type:'bar', data:{ labels:SUBJECTS.map(s=>s.length>14?s.slice(0,13)+'…':s), datasets:[{data:subjPcts, backgroundColor:subjPcts.map(p=>p===100?'#6bbd8b':p>50?'#c8a96e':'#8fc4b4'), borderRadius:4, borderSkipped:false}] }, options:{responsive:false,plugins:{...plug,tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}} }, 820, 240);
+  const subjPcts=SUBJECTS.map(s=>getSubjectStats(s).pct);
+  const chartCompl=await renderChartToDataURL({
+    type:'bar', data:{ labels:SUBJECTS.map(s=>s.length>14?s.slice(0,13)+'…':s), datasets:[{ data:subjPcts, backgroundColor:subjPcts.map(p=>p===100?'#6abf8e':p>50?'#c9a96e':'#5fb8a8'), borderRadius:3, borderSkipped:false }] },
+    options:{ responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}}
+  }, 840, 240);
 
-  const allTaskScores = Object.entries(scores).map(([id,s])=>{ const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id); return task?{...s,task}:null; }).filter(Boolean);
-  const testS = allTaskScores.filter(s=>s.task.type!=='mock');
-  const mockS = allTaskScores.filter(s=>s.task.type==='mock');
+  const subjAvgs=SUBJECTS.map(s=>{ const ss=testS.filter(x=>x.task.subject===s); return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):0; });
+  const chartScores=await renderChartToDataURL({
+    type:'bar', data:{ labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s), datasets:[{ data:subjAvgs, backgroundColor:subjAvgs.map(v=>v>=70?'#6abf8e':v>=50?'#c9a96e':'#d96060'), borderRadius:3, borderSkipped:false }] },
+    options:{ responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}}
+  }, 840, 220);
 
-  const subjAvgs = SUBJECTS.map(s=>{ const ss=testS.filter(x=>x.task.subject===s); return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):0; });
-  const chartB = await renderChartToDataURL({ type:'bar', data:{ labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s), datasets:[{data:subjAvgs, backgroundColor:subjAvgs.map(v=>v>=70?'#6bbd8b':v>=50?'#c8a96e':'#d96060'), borderRadius:4, borderSkipped:false}] }, options:{responsive:false,plugins:{...plug,tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}} }, 820, 220);
+  const cons=getWeeklyConsistency();
+  const chartCons=await renderChartToDataURL({
+    type:'line', data:{ labels:cons.map(w=>`W${w.week}`), datasets:[{ data:cons.map(w=>w.pct), borderColor:'#c9a96e',backgroundColor:'rgba(201,169,110,0.1)',borderWidth:2,tension:0.35,fill:true,pointBackgroundColor:'#c9a96e',pointRadius:3 }] },
+    options:{ responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}}
+  }, 840, 200);
 
-  const chartC = await renderChartToDataURL({ type:'line', data:{ labels:consData.map(w=>`W${w.week}`), datasets:[{data:consData.map(w=>w.pct), borderColor:'#c8a96e', backgroundColor:'rgba(200,169,110,0.1)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c8a96e', pointRadius:3}] }, options:{responsive:false,plugins:{...plug,tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}} }, 820, 200);
-
-  let chartD = null;
+  let chartMock=null;
   if (mockS.length) {
-    const sorted = [...mockS].sort((a,b)=>new Date(a.date)-new Date(b.date));
-    chartD = await renderChartToDataURL({ type:'line', data:{ labels:sorted.map((_,i)=>`Mock ${i+1}`), datasets:[{label:'Score %',data:sorted.map(s=>s.pct),borderColor:'#c47a7a',backgroundColor:'rgba(196,122,122,0.1)',borderWidth:2,tension:0.35,fill:true,pointBackgroundColor:'#c47a7a',pointRadius:4},{label:'70% target',data:sorted.map(()=>70),borderColor:'rgba(107,189,139,0.4)',borderDash:[5,4],borderWidth:1.5,tension:0,fill:false,pointRadius:0}] }, options:{responsive:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a7871',font:{family:'monospace',size:11},padding:14}},tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}} }, 820, 200);
+    const sorted=[...mockS].sort((a,b)=>new Date(a.date)-new Date(b.date));
+    chartMock=await renderChartToDataURL({
+      type:'line', data:{ labels:sorted.map((_,i)=>`Mock ${i+1}`), datasets:[
+        { label:'Score %', data:sorted.map(s=>s.pct), borderColor:'#c47a7a',backgroundColor:'rgba(196,122,122,0.1)',borderWidth:2,tension:0.35,fill:true,pointBackgroundColor:'#c47a7a',pointRadius:4 },
+        { label:'70% target', data:sorted.map(()=>70), borderColor:'rgba(107,191,142,0.4)',borderDash:[5,4],borderWidth:1.5,tension:0,fill:false,pointRadius:0 }
+      ]},
+      options:{ responsive:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#5a5650',font:{family:'monospace',size:11},padding:14}},tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}}
+    }, 840, 200);
   }
 
-  return { chartA, chartB, chartC, chartD };
+  // Score distribution
+  let chartDist=null;
+  if (all.length) {
+    const bins=[0,0,0,0,0];
+    all.forEach(s=>{ if(s.pct<50)bins[0]++;else if(s.pct<60)bins[1]++;else if(s.pct<70)bins[2]++;else if(s.pct<80)bins[3]++;else bins[4]++; });
+    chartDist=await renderChartToDataURL({
+      type:'bar', data:{ labels:['<50%','50–59%','60–69%','70–79%','80%+'], datasets:[{ data:bins, backgroundColor:['#c47a7a','#c9a96e','#e0a84b','#5fb8a8','#6abf8e'], borderRadius:3, borderSkipped:false }] },
+      options:{ responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,ticks:{...ax.ticks,stepSize:1}}}}
+    }, 400, 200);
+  }
+
+  return { chartCompl, chartScores, chartCons, chartMock, chartDist };
 }
 
 async function exportPDF() {
-  showToast('Building report…', 'success');
-  const overall = getOverall(); const ts = getTestStats(); const ms = getMockStats();
-  const exam    = new Date(profile.examDate);
-  const today   = new Date();
-  const daysLeft = Math.max(0, Math.ceil((exam - today) / 86400000));
-  const allTaskScores = Object.entries(scores).map(([id,s])=>{ const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id); return task?{...s,task}:null; }).filter(Boolean);
-  const testS = allTaskScores.filter(s=>s.task.type!=='mock');
-  const mockS = allTaskScores.filter(s=>s.task.type==='mock');
-  const avgTests = testS.length ? Math.round(testS.reduce((a,b)=>a+b.pct,0)/testS.length) : null;
-  const avgMocks = mockS.length ? Math.round(mockS.reduce((a,b)=>a+b.pct,0)/mockS.length) : null;
+  showToast('Building report…','success');
+  const overall=getOverall(), ts=getTestStats(), ms=getMockStats();
+  const exam=new Date(profile.examDate), today=new Date();
+  const daysLeft=Math.max(0,Math.ceil((exam-today)/86400000));
+  const all=getScoreData();
+  const testS=all.filter(s=>s.task.type!=='mock');
+  const mockS=all.filter(s=>s.task.type==='mock');
+  const avgTests=testS.length?Math.round(testS.reduce((a,b)=>a+b.pct,0)/testS.length):null;
+  const avgMocks=mockS.length?Math.round(mockS.reduce((a,b)=>a+b.pct,0)/mockS.length):null;
 
-  let chartImgs;
-  try { chartImgs = await buildExportChartImages(); }
-  catch(err) { showToast('Chart render failed', 'error'); return; }
+  let charts;
+  try { charts=await buildExportCharts(); } catch(err) { showToast('Chart render failed','error'); return; }
 
-  const subjRows = SUBJECTS.map(s => {
-    const st = getSubjectStats(s);
-    const ss = testS.filter(x=>x.task.subject===s);
-    const avg = ss.length ? Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length) : null;
-    const col = st.pct===100?'#6bbd8b':st.pct>50?'#c8a96e':'#8fc4b4';
-    return `<div style="margin-bottom:9px">
+  // Subject detail rows
+  const subjDetail=SUBJECTS.map(s=>{
+    const st=getSubjectStats(s);
+    const ss=testS.filter(x=>x.task.subject===s);
+    const avg=ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):null;
+    const col=st.pct===100?'#6abf8e':st.pct>50?'#c9a96e':'#5fb8a8';
+    return `<div style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-        <span style="font-size:11px;color:#e8e6df">${s}</span>
-        <span style="font-size:11px;font-family:monospace;color:${col}">${st.pct}% done${avg!=null?' · avg score '+avg+'%':''}</span>
+        <span style="font-size:11px;color:#ddd9d0;font-family:Outfit,sans-serif">${s}</span>
+        <span style="font-size:11px;font-family:monospace;color:${col}">${st.pct}% done${avg!=null?' · avg '+avg+'%':''}</span>
       </div>
-      <div style="height:4px;background:#1a1e28;border-radius:2px;overflow:hidden">
+      <div style="height:4px;background:#1a1f2d;border-radius:2px;overflow:hidden">
         <div style="height:100%;width:${st.pct}%;background:${col};border-radius:2px"></div>
       </div>
     </div>`;
   }).join('');
 
-  const report = document.getElementById('export-report');
-  report.style.display = 'block';
-  report.innerHTML = `<div style="font-family:Georgia,serif;background:#0d0f14;padding:48px;width:900px;color:#e8e6df">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:24px;margin-bottom:32px;border-bottom:1px solid rgba(255,255,255,0.1)">
+  // Full scores table for export
+  const scoresTableHtml = all.length ? `
+    <table style="width:100%;border-collapse:collapse;font-size:11px;font-family:monospace">
+      <thead>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.1)">
+          <th style="padding:6px 8px;text-align:left;color:#5a5650;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Type</th>
+          <th style="padding:6px 8px;text-align:left;color:#5a5650;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Test</th>
+          <th style="padding:6px 8px;text-align:left;color:#5a5650;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Subject</th>
+          <th style="padding:6px 8px;text-align:left;color:#5a5650;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Score</th>
+          <th style="padding:6px 8px;text-align:left;color:#5a5650;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">%</th>
+          <th style="padding:6px 8px;text-align:left;color:#5a5650;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${[...all].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(s=>{
+          const col=s.pct>=70?'#6abf8e':s.pct>=50?'#c9a96e':'#c47a7a';
+          const dateStr=new Date(s.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'});
+          return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+            <td style="padding:5px 8px;color:#5a5650;font-size:9px;text-transform:uppercase">${s.task.type==='mock'?'MOCK':'TEST'}</td>
+            <td style="padding:5px 8px;color:#ddd9d0;max-width:180px;overflow:hidden">${s.task.title}</td>
+            <td style="padding:5px 8px;color:#a09890">${s.task.subject}</td>
+            <td style="padding:5px 8px;color:#ddd9d0">${s.got}/${s.outof}</td>
+            <td style="padding:5px 8px;color:${col};font-weight:700">${s.pct}%</td>
+            <td style="padding:5px 8px;color:#5a5650">${dateStr}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>` : `<div style="text-align:center;padding:20px;color:#5a5650;font-size:11px">No scores logged yet.</div>`;
+
+  const report=document.getElementById('export-report');
+  report.style.display='block';
+  report.innerHTML=`<div style="font-family:Outfit,sans-serif;background:#080a0f;padding:48px;width:900px;color:#ddd9d0">
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:24px;margin-bottom:32px;border-bottom:1px solid rgba(255,255,255,0.08)">
       <div>
-        <div style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#7a7871;margin-bottom:8px">CFA Level 2 · Precision Study Tracker</div>
-        <div style="font-size:30px;color:#c8a96e;line-height:1.1">Progress Report</div>
-        <div style="font-size:13px;color:#7a7871;margin-top:6px">${profile.name} &nbsp;·&nbsp; Generated ${formatDisplayDate(today)}</div>
+        <div style="font-family:monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#5a5650;margin-bottom:10px">CFA Level 2 · Precision Study Tracker</div>
+        <div style="font-family:Georgia,serif;font-size:30px;color:#c9a96e;line-height:1.1;font-style:italic">Progress Report</div>
+        <div style="font-family:monospace;font-size:12px;color:#5a5650;margin-top:6px">${profile.name} · Generated ${fmtDate(today)}</div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:10px;color:#7a7871;margin-bottom:3px;letter-spacing:0.08em;text-transform:uppercase">Exam Date</div>
-        <div style="font-size:22px;color:#e8e6df">${formatDisplayDate(exam)}</div>
-        <div style="font-size:11px;color:#c8a96e;margin-top:3px">${daysLeft} days remaining</div>
+        <div style="font-family:monospace;font-size:9px;color:#5a5650;margin-bottom:3px;letter-spacing:0.1em;text-transform:uppercase">Exam Date</div>
+        <div style="font-family:Georgia,serif;font-size:22px;color:#ddd9d0;font-style:italic">${fmtDate(exam)}</div>
+        <div style="font-family:monospace;font-size:11px;color:#c9a96e;margin-top:3px">${daysLeft} days remaining</div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px">
+    <!-- KPIs -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
       ${[
-        {label:'Overall',      val:overall.pct+'%',                    sub:`${overall.done}/${overall.total} tasks`, col:'#c8a96e'},
-        {label:'Avg test score',val:avgTests!=null?avgTests+'%':'—',  sub:`${testS.length} tests logged`,           col:avgTests!=null?(avgTests>=70?'#6bbd8b':avgTests>=50?'#c8a96e':'#d96060'):'#7a7871'},
-        {label:'Avg mock score',val:avgMocks!=null?avgMocks+'%':'—',  sub:`${mockS.length} mocks logged`,           col:avgMocks!=null?(avgMocks>=70?'#6bbd8b':avgMocks>=50?'#c8a96e':'#d96060'):'#7a7871'},
-        {label:'Study level',  val:profile.level,                      sub:`${profile.hours}h/day target`,           col:'#8fc4b4'},
-      ].map(c=>`<div style="background:#13161d;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px 16px">
-        <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7a7871;margin-bottom:7px">${c.label}</div>
-        <div style="font-family:monospace;font-size:24px;font-weight:500;color:${c.col};line-height:1">${c.val}</div>
-        <div style="font-size:10px;color:#7a7871;margin-top:5px">${c.sub}</div>
+        {label:'Overall',val:overall.pct+'%',sub:`${overall.done}/${overall.total} tasks`,col:'#c9a96e'},
+        {label:'Avg Test Score',val:avgTests!=null?avgTests+'%':'—',sub:`${testS.length} tests logged`,col:avgTests!=null?(avgTests>=70?'#6abf8e':avgTests>=50?'#c9a96e':'#d96060'):'#5a5650'},
+        {label:'Avg Mock Score',val:avgMocks!=null?avgMocks+'%':'—',sub:`${mockS.length}/5 mocks logged`,col:avgMocks!=null?(avgMocks>=70?'#6abf8e':avgMocks>=50?'#c9a96e':'#d96060'):'#5a5650'},
+        {label:'Study Level',val:profile.level,sub:`${profile.hours}h/day target`,col:'#5fb8a8'},
+      ].map(c=>`<div style="background:#0f1219;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px 16px">
+        <div style="font-family:monospace;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:#5a5650;margin-bottom:8px">${c.label}</div>
+        <div style="font-family:monospace;font-size:24px;font-weight:700;color:${c.col};line-height:1">${c.val}</div>
+        <div style="font-size:10px;color:#5a5650;margin-top:5px">${c.sub}</div>
       </div>`).join('')}
     </div>
-    <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
-      <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Completion by subject</div>
-      <img src="${chartImgs.chartA}" style="width:100%;display:block;border-radius:4px">
+    <!-- Completion chart -->
+    <div style="background:#0f1219;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:16px">
+      <div style="font-family:monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:#5a5650;margin-bottom:14px">Completion by Subject</div>
+      <img src="${charts.chartCompl}" style="width:100%;display:block;border-radius:4px">
     </div>
-    <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
-      <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Average score % by subject (tests)</div>
-      <img src="${chartImgs.chartB}" style="width:100%;display:block;border-radius:4px">
+    <!-- Score chart -->
+    <div style="background:#0f1219;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:16px">
+      <div style="font-family:monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:#5a5650;margin-bottom:14px">Average Score % by Subject (Tests)</div>
+      <img src="${charts.chartScores}" style="width:100%;display:block;border-radius:4px">
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
-        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Weekly consistency</div>
-        <img src="${chartImgs.chartC}" style="width:100%;display:block;border-radius:4px">
+    <!-- Consistency + Mock side by side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+      <div style="background:#0f1219;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
+        <div style="font-family:monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:#5a5650;margin-bottom:14px">Weekly Consistency</div>
+        <img src="${charts.chartCons}" style="width:100%;display:block;border-radius:4px">
       </div>
-      ${chartImgs.chartD ? `<div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
-        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Mock exam score trend</div>
-        <img src="${chartImgs.chartD}" style="width:100%;display:block;border-radius:4px">
-      </div>` : ''}
+      ${charts.chartDist?`<div style="background:#0f1219;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
+        <div style="font-family:monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:#5a5650;margin-bottom:14px">Score Distribution</div>
+        <img src="${charts.chartDist}" style="width:100%;display:block;border-radius:4px">
+      </div>`:''}
     </div>
-    <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
-      <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:16px">Subject detail</div>
-      ${subjRows}
+    ${charts.chartMock?`<div style="background:#0f1219;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:16px">
+      <div style="font-family:monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:#5a5650;margin-bottom:14px">Mock Exam Score Trend</div>
+      <img src="${charts.chartMock}" style="width:100%;display:block;border-radius:4px">
+    </div>`:''}
+    <!-- Subject detail -->
+    <div style="background:#0f1219;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:16px">
+      <div style="font-family:monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:#5a5650;margin-bottom:16px">Subject Detail</div>
+      ${subjDetail}
     </div>
-    <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;font-size:10px;color:#555048;text-align:center">
-      CFA Level 2 Precision Study Tracker &nbsp;·&nbsp; ${new Date().toLocaleString()} &nbsp;·&nbsp; Confidential
+    <!-- Full scores table -->
+    <div style="background:#0f1219;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:16px;overflow:hidden">
+      <div style="font-family:monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:#5a5650;margin-bottom:16px">All Recorded Scores</div>
+      ${scoresTableHtml}
+    </div>
+    <!-- Footer -->
+    <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;font-family:monospace;font-size:9px;color:#3d3a35;text-align:center;letter-spacing:0.08em">
+      CFA Level 2 Precision Study Tracker · ${new Date().toLocaleString()} · Confidential
     </div>
   </div>`;
 
   try {
-    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 200)));
-    const canvas = await html2canvas(report.firstElementChild, { backgroundColor:'#0d0f14', scale:1.5, useCORS:true, logging:false, width:900, windowWidth:900 });
-    const { jsPDF } = window.jspdf;
-    const pdfW = 900; const pdfH = Math.round(canvas.height / 1.5);
-    const pdf = new jsPDF({ orientation:'portrait', unit:'px', format:[pdfW, pdfH] });
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfW, pdfH);
+    await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,220)));
+    const canvas=await html2canvas(report.firstElementChild,{ backgroundColor:'#080a0f', scale:1.5, useCORS:true, logging:false, width:900, windowWidth:900 });
+    const { jsPDF }=window.jspdf;
+    const pdfW=900, pdfH=Math.round(canvas.height/1.5);
+    const pdf=new jsPDF({ orientation:'portrait', unit:'px', format:[pdfW,pdfH] });
+    pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,pdfW,pdfH);
     pdf.save(`CFA-L2-Report-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`);
-    showToast('Report exported! ✓', 'success');
+    showToast('Report exported ✓','success');
   } catch(err) {
-    console.error(err);
-    showToast('Export failed — check console', 'error');
+    console.error(err); showToast('Export failed — check console','error');
   } finally {
-    report.style.display = 'none';
-    report.innerHTML = '';
+    report.style.display='none'; report.innerHTML='';
   }
 }
 
-/* ─────────────────────────────────────
-   TAB SWITCHING
-───────────────────────────────────── */
+/* ─── TAB SWITCH ─── */
 function switchTab(name) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('view-' + name).classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b => {
-    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${name}'`)) b.classList.add('active');
-  });
-  if (name === 'dashboard') renderDashboard();
-  if (name === 'checklist') renderChecklist();
-  if (name === 'schedule')  renderSchedule();
-  if (name === 'analytics') renderAnalytics();
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>{ if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${name}'`)) b.classList.add('active'); });
+  if (name==='dashboard') renderDashboard();
+  if (name==='checklist') renderChecklist();
+  if (name==='schedule')  renderSchedule();
+  if (name==='analytics') renderAnalytics();
 }
 
-/* ─────────────────────────────────────
-   UTILITIES
-───────────────────────────────────── */
-function formatDisplayDate(d) {
-  const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()}`;
+/* ─── UTILITIES ─── */
+function showToast(msg, type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast${type?' '+type:''}`;
+  t.classList.add('show'); clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),3200);
 }
-
-function showToast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast${type ? ' ' + type : ''}`;
-  t.classList.add('show');
-  clearTimeout(t._timeout);
-  t._timeout = setTimeout(() => t.classList.remove('show'), 3200);
-}
-
 function populateWeekSelect() {
-  const sel = document.getElementById('week-select');
-  sel.innerHTML = '';
-  const cur = getCurrentWeekNum();
-  SCHEDULE.forEach(w => {
-    const opt = document.createElement('option');
-    opt.value = w.week;
-    opt.textContent = `Week ${w.week} — ${w.label} (${w.dates})`;
-    if (w.week === cur) opt.selected = true;
+  const sel=document.getElementById('week-select'); sel.innerHTML='';
+  const cur=getCurrentWeekNum();
+  SCHEDULE.forEach(w=>{
+    const opt=document.createElement('option');
+    opt.value=w.week; opt.textContent=`Week ${w.week} — ${w.label} (${w.dates})`;
+    if (w.week===cur) opt.selected=true;
     sel.appendChild(opt);
   });
 }
 
-/* ─────────────────────────────────────
-   APP INIT
-───────────────────────────────────── */
+/* ─── INIT ─── */
 function initApp() {
   document.getElementById('onboarding').classList.add('hidden');
-  document.getElementById('main-nav').style.display = 'flex';
-  document.querySelectorAll('.view').forEach(v => v.style.display = '');
-  document.getElementById('nav-name').textContent = profile.name;
-  document.getElementById('nav-exam').textContent = 'Exam: ' + formatDisplayDate(new Date(profile.examDate));
-  buildSchedule();
-  populateWeekSelect();
-  renderDashboard();
-  renderChecklist();
-  renderSchedule();
-  renderAnalytics();
+  document.getElementById('main-nav').style.display='flex';
+  document.getElementById('nav-name').textContent=profile.name;
+  document.getElementById('nav-exam').textContent='Exam: '+fmtDate(new Date(profile.examDate));
+  buildSchedule(); populateWeekSelect();
+  renderDashboard(); renderChecklist(); renderSchedule(); renderAnalytics();
 }
 
-/* ─────────────────────────────────────
-   BOOT
-───────────────────────────────────── */
+/* ─── BOOT ─── */
 loadStorage();
-if (profile && profile.name && profile.examDate && profile.startDate) {
+if (profile&&profile.name&&profile.examDate&&profile.startDate) {
   initApp();
 } else {
-  document.getElementById('main-nav').style.display = 'none';
-  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  document.getElementById('main-nav').style.display='none';
+  document.querySelectorAll('.view').forEach(v=>v.style.display='none');
 }
 </script>
+
 </body>
 </html>
