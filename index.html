@@ -12,7 +12,7 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #0d0f14; --surface: #13161d; --surface2: #1a1e28; --surface3: #20253200;
+  --bg: #0d0f14; --surface: #13161d; --surface2: #1a1e28;
   --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13); --border3: rgba(255,255,255,0.2);
   --text: #e8e6df; --muted: #7a7871; --muted2: #555048;
   --accent: #c8a96e; --accent2: #8fc4b4; --accent3: #c47a7a;
@@ -235,7 +235,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 .export-btn.primary:hover { background: #d4b87a; transform: translateY(-1px); }
 .export-btn.secondary { background: none; border: 1px solid var(--border2); color: var(--accent); }
 .export-btn.secondary:hover { border-color: var(--accent); background: rgba(200,169,110,0.07); transform: translateY(-1px); }
-#export-report { position: fixed; top: -9999px; left: -9999px; width: 900px; background: #0d0f14; color: #e8e6df; font-family: 'Syne', sans-serif; padding: 48px; }
+#export-report { position: fixed; top: -9999px; left: -9999px; width: 900px; background: #0d0f14; }
 
 /* TOAST */
 .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; padding: 0.75rem 1.25rem; font-size: 0.82rem; color: var(--text); z-index: 999; transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); pointer-events: none; }
@@ -416,7 +416,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Export Scores CSV
     </button>
-    <button class="export-btn primary" onclick="exportPDF()">
+    <button class="export-btn primary" onclick="exportFullReport()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Export Full PDF Report
     </button>
@@ -729,7 +729,7 @@ function getTestStats() { const all=SCHEDULE.flatMap(w=>w.tasks).filter(t=>(t.ty
 function getMockStats() { const all=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock'); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length}; }
 function getWeeklyConsistency() { const cur=getCurrentWeekNum(); return SCHEDULE.filter(w=>w.week<=cur).map(w=>({week:w.week,pct:getWeekPct(w),label:w.label})); }
 
-/* SCORE MODAL */
+/* ── SCORE MODAL ── */
 function openScoreModal(e, taskId) {
   e.stopPropagation();
   const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===taskId); if(!task) return;
@@ -792,7 +792,7 @@ document.getElementById('score-modal-overlay').addEventListener('click',function
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeScoreModal(); });
 document.getElementById('modal-score-got').addEventListener('keydown',e=>{ if(e.key==='Enter') saveScore(); });
 
-/* DASHBOARD */
+/* ── DASHBOARD ── */
 function renderDashboard() {
   const today=new Date(); const exam=new Date(profile.examDate);
   const daysLeft=Math.max(0,Math.ceil((exam-today)/86400000));
@@ -847,7 +847,7 @@ function renderDashboard() {
   });
 }
 
-/* CHECKLIST */
+/* ── CHECKLIST ── */
 function renderChecklist() {
   const sel=document.getElementById('week-select');
   const weekNum=parseInt(sel.value);
@@ -897,7 +897,7 @@ function renderChecklist() {
   });
 }
 
-/* SCHEDULE */
+/* ── SCHEDULE ── */
 function renderSchedule() {
   document.getElementById('schedule-subtitle').textContent=`${SCHEDULE.length} weeks · 5 mocks · Exam ${formatDisplayDate(new Date(profile.examDate))}`;
   const grid=document.getElementById('schedule-grid'); grid.innerHTML='';
@@ -921,7 +921,7 @@ function renderSchedule() {
   });
 }
 
-/* ANALYTICS */
+/* ── ANALYTICS ── */
 function destroyChart(id) { if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
 function renderAnalytics() {
   const activePanel=document.querySelector('.a-panel.active');
@@ -1027,7 +1027,7 @@ function renderCompletionPanel() {
   });
 }
 
-/* TASK TOGGLE */
+/* ── TASK TOGGLE ── */
 function toggleTask(taskId, itemEl) {
   state[taskId]=!state[taskId]; saveState();
   itemEl.classList.toggle('checked',!!state[taskId]);
@@ -1045,7 +1045,7 @@ function resetWeek() {
   showToast('Week reset','success');
 }
 
-/* CSV EXPORT */
+/* ── CSV EXPORT ── */
 function exportScoresCSV() {
   const allTaskScores=Object.entries(scores).map(([id,s])=>{
     const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id);
@@ -1072,103 +1072,130 @@ function exportScoresCSV() {
   showToast(`Exported ${sorted.length} scores as CSV ✓`,'success');
 }
 
-/* PDF EXPORT — full report with all charts + scores table */
-function renderOffscreenChart(config, width, height) {
-  return new Promise(resolve=>{
-    const canvas=document.createElement('canvas');
-    canvas.width=width*2; canvas.height=height*2;
-    canvas.style.cssText='position:fixed;top:-9999px;left:-9999px;pointer-events:none';
+/* ════════════════════════════════════════════════════════
+   CHART RENDERER FOR EXPORT
+   Draws a Chart.js config onto an isolated off-screen
+   canvas with animation disabled, then resolves with the
+   PNG data URL once the frame has painted.
+   This avoids the race condition in both previous versions
+   (setting onComplete after construction, or calling
+   update() while animation was still pending).
+════════════════════════════════════════════════════════ */
+function renderChartOffscreen(config, w, h) {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    canvas.width  = w * 2;   // @2x for sharpness
+    canvas.height = h * 2;
+    // Keep it invisible but in-DOM so the canvas context works
+    canvas.style.cssText = 'position:fixed;top:-9999px;left:-9999px;pointer-events:none;opacity:0';
     document.body.appendChild(canvas);
-    const tmpChart=new Chart(canvas,{
-      ...config,
-      options:{
-        ...config.options,
-        responsive:false,
-        animation:{
-          duration:0,
-          onComplete:()=>{
-            const url=canvas.toDataURL('image/png');
-            tmpChart.destroy();
-            document.body.removeChild(canvas);
-            resolve(url);
-          }
+
+    // Deep-merge animation:0 so nothing else can re-enable it
+    const cfg = JSON.parse(JSON.stringify(config));
+    cfg.options = cfg.options || {};
+    cfg.options.animation = { duration: 0 };
+    cfg.options.responsive = false;
+    cfg.options.maintainAspectRatio = false;
+
+    let chart;
+    try { chart = new Chart(canvas, cfg); }
+    catch(err) { document.body.removeChild(canvas); reject(err); return; }
+
+    // requestAnimationFrame gives the browser one paint cycle
+    // to flush the synchronous (duration:0) draw before we read pixels
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        try {
+          const url = canvas.toDataURL('image/png');
+          chart.destroy();
+          document.body.removeChild(canvas);
+          resolve(url);
+        } catch(err) {
+          chart.destroy();
+          document.body.removeChild(canvas);
+          reject(err);
         }
-      }
+      });
     });
   });
 }
 
-async function buildAllChartImages() {
-  const ax={ grid:{color:'rgba(255,255,255,0.06)',drawBorder:false}, ticks:{color:'#9a9890',font:{family:'monospace',size:11}} };
-  const noLegend={ legend:{display:false}, tooltip:{enabled:false} };
+/* ── BUILD ALL 6 CHART IMAGES FOR PDF ── */
+async function buildExportChartImages() {
+  const ax = {
+    grid:  { color: 'rgba(255,255,255,0.06)', drawBorder: false },
+    ticks: { color: '#9a9890', font: { family: 'monospace', size: 11 } }
+  };
+  const noLegend = { legend:{ display:false }, tooltip:{ enabled:false } };
 
-  const allTaskScores=Object.entries(scores).map(([id,s])=>{
-    const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id);
-    const week=SCHEDULE.find(w=>w.tasks.some(t=>t.id===id));
-    return task?{...s,task,week}:null;
+  const allTaskScores = Object.entries(scores).map(([id,s])=>{
+    const task = SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id);
+    const week = SCHEDULE.find(w=>w.tasks.some(t=>t.id===id));
+    return task ? {...s, task, week} : null;
   }).filter(Boolean);
-  const testScores=allTaskScores.filter(s=>s.task.type!=='mock');
-  const mockScores=allTaskScores.filter(s=>s.task.type==='mock');
+  const testScores = allTaskScores.filter(s=>s.task.type!=='mock');
+  const mockScores = allTaskScores.filter(s=>s.task.type==='mock');
 
   /* 1 — Completion by subject */
-  const subjPcts=SUBJECTS.map(s=>getSubjectStats(s).pct);
-  const img_completion=await renderOffscreenChart({
+  const subjPcts = SUBJECTS.map(s=>getSubjectStats(s).pct);
+  const img_completion = await renderChartOffscreen({
     type:'bar',
-    data:{ labels:SUBJECTS, datasets:[{data:subjPcts, backgroundColor:subjPcts.map(p=>p===100?'#6bbd8b':p>50?'#c8a96e':'#8fc4b4'), borderRadius:4, borderSkipped:false}] },
-    options:{ plugins:{...noLegend}, scales:{x:ax,y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}}} }
+    data:{ labels:SUBJECTS, datasets:[{ data:subjPcts, backgroundColor:subjPcts.map(p=>p===100?'#6bbd8b':p>50?'#c8a96e':'#8fc4b4'), borderRadius:4, borderSkipped:false }] },
+    options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
   }, 820, 220);
 
   /* 2 — Avg test score by subject */
-  const subjAvgs=SUBJECTS.map(s=>{ const ss=testScores.filter(x=>x.task.subject===s); return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):0; });
-  const img_subjscores=await renderOffscreenChart({
+  const subjAvgs = SUBJECTS.map(s=>{ const ss=testScores.filter(x=>x.task.subject===s); return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):0; });
+  const img_subjscores = await renderChartOffscreen({
     type:'bar',
-    data:{ labels:SUBJECTS, datasets:[{data:subjAvgs, backgroundColor:subjAvgs.map(v=>v>=70?'#6bbd8b':v>=50?'#c8a96e':'#d96060'), borderRadius:4, borderSkipped:false}] },
-    options:{ plugins:{...noLegend}, scales:{x:ax,y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}}} }
+    data:{ labels:SUBJECTS, datasets:[{ data:subjAvgs, backgroundColor:subjAvgs.map(v=>v>=70?'#6bbd8b':v>=50?'#c8a96e':'#d96060'), borderRadius:4, borderSkipped:false }] },
+    options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
   }, 820, 220);
 
   /* 3 — Score distribution */
   const bins=[0,0,0,0,0];
   allTaskScores.forEach(s=>{ if(s.pct<50)bins[0]++; else if(s.pct<60)bins[1]++; else if(s.pct<70)bins[2]++; else if(s.pct<80)bins[3]++; else bins[4]++; });
-  const img_dist=await renderOffscreenChart({
+  const img_dist = await renderChartOffscreen({
     type:'bar',
-    data:{ labels:['<50%','50–59%','60–69%','70–79%','80%+'], datasets:[{data:bins, backgroundColor:['#d96060','#c8a96e','#e8b84b','#8fc4b4','#6bbd8b'], borderRadius:4, borderSkipped:false}] },
-    options:{ plugins:{...noLegend}, scales:{x:ax,y:{...ax,min:0,ticks:{...ax.ticks,stepSize:1}}} }
+    data:{ labels:['<50%','50–59%','60–69%','70–79%','80%+'], datasets:[{ data:bins, backgroundColor:['#d96060','#c8a96e','#e8b84b','#8fc4b4','#6bbd8b'], borderRadius:4, borderSkipped:false }] },
+    options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,ticks:{...ax.ticks,stepSize:1}} } }
   }, 400, 200);
 
   /* 4 — Weekly consistency */
-  const consData=getWeeklyConsistency();
-  const img_consistency=await renderOffscreenChart({
+  const consData = getWeeklyConsistency();
+  const img_consistency = await renderChartOffscreen({
     type:'line',
-    data:{ labels:consData.map(w=>`W${w.week}`), datasets:[{data:consData.map(w=>w.pct), borderColor:'#c8a96e', backgroundColor:'rgba(200,169,110,0.1)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c8a96e', pointRadius:3}] },
-    options:{ plugins:{...noLegend}, scales:{x:ax,y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}}} }
+    data:{ labels:consData.map(w=>`W${w.week}`), datasets:[{ data:consData.map(w=>w.pct), borderColor:'#c8a96e', backgroundColor:'rgba(200,169,110,0.1)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c8a96e', pointRadius:3 }] },
+    options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
   }, 400, 200);
 
-  /* 5 — Mock trend (conditional) */
-  let img_mocktrend=null;
+  /* 5 — Mock score trend (conditional) */
+  let img_mocktrend = null;
   if(mockScores.length) {
     const sorted=[...mockScores].sort((a,b)=>new Date(a.date)-new Date(b.date));
-    img_mocktrend=await renderOffscreenChart({
+    img_mocktrend = await renderChartOffscreen({
       type:'line',
       data:{ labels:sorted.map((_,i)=>`Mock ${i+1}`), datasets:[
-        {label:'Score %',data:sorted.map(s=>s.pct),borderColor:'#c47a7a',backgroundColor:'rgba(196,122,122,0.1)',borderWidth:2,tension:0.35,fill:true,pointBackgroundColor:'#c47a7a',pointRadius:5},
-        {label:'70% target',data:sorted.map(()=>70),borderColor:'rgba(107,189,139,0.5)',borderDash:[5,4],borderWidth:1.5,tension:0,fill:false,pointRadius:0}
+        { label:'Score %', data:sorted.map(s=>s.pct), borderColor:'#c47a7a', backgroundColor:'rgba(196,122,122,0.1)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c47a7a', pointRadius:5 },
+        { label:'70% target', data:sorted.map(()=>70), borderColor:'rgba(107,189,139,0.5)', borderDash:[5,4], borderWidth:1.5, tension:0, fill:false, pointRadius:0 }
       ]},
-      options:{ plugins:{legend:{display:true,position:'bottom',labels:{color:'#9a9890',font:{family:'monospace',size:11},padding:14}},tooltip:{enabled:false}}, scales:{x:ax,y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}}} }
+      options:{ plugins:{ legend:{ display:true, position:'bottom', labels:{ color:'#9a9890', font:{family:'monospace',size:11}, padding:14 } }, tooltip:{enabled:false} }, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
     }, 820, 200);
   }
 
-  /* 6 — Tests done vs pending doughnut */
-  const ts=getTestStats();
-  const img_doughnut=await renderOffscreenChart({
+  /* 6 — Tests done doughnut */
+  const ts = getTestStats();
+  const img_doughnut = await renderChartOffscreen({
     type:'doughnut',
-    data:{ labels:['Done','Pending'], datasets:[{data:[ts.done,ts.total-ts.done], backgroundColor:['#6bbd8b','#1a1e28'], borderColor:['#6bbd8b','rgba(255,255,255,0.1)'], borderWidth:1}] },
-    options:{ cutout:'68%', plugins:{legend:{display:true,position:'bottom',labels:{color:'#9a9890',font:{family:'monospace',size:11},padding:12}},tooltip:{enabled:false}}, animation:{duration:0} }
+    data:{ labels:['Done','Pending'], datasets:[{ data:[ts.done, ts.total-ts.done], backgroundColor:['#6bbd8b','#1a1e28'], borderColor:['#6bbd8b','rgba(255,255,255,0.1)'], borderWidth:1 }] },
+    options:{ cutout:'68%', plugins:{ legend:{ display:true, position:'bottom', labels:{ color:'#9a9890', font:{family:'monospace',size:11}, padding:12 } }, tooltip:{enabled:false} } }
   }, 400, 200);
 
   return { img_completion, img_subjscores, img_dist, img_consistency, img_mocktrend, img_doughnut };
 }
 
-async function exportPDF() {
+/* ── FULL PDF EXPORT ── */
+async function exportFullReport() {
   showToast('Building PDF report…','success');
   const overall=getOverall(); const ts=getTestStats(); const ms=getMockStats();
   const exam=new Date(profile.examDate); const today=new Date();
@@ -1186,32 +1213,31 @@ async function exportPDF() {
   const best=allTaskScores.length?allTaskScores.reduce((a,b)=>a.pct>b.pct?a:b):null;
 
   let chartImgs;
-  try { chartImgs=await buildAllChartImages(); }
-  catch(err){ console.error(err); showToast('Chart build failed','error'); return; }
+  try { chartImgs=await buildExportChartImages(); }
+  catch(err){ console.error(err); showToast('Chart render failed','error'); return; }
 
-  /* Scores table HTML for PDF */
-  const scoreRowsHTML=allTaskScores.length
+  /* Scores table rows */
+  const scoreRowsHTML = allTaskScores.length
     ? [...allTaskScores].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(s=>{
         const col=s.pct>=70?'#6bbd8b':s.pct>=50?'#c8a96e':'#d96060';
         const typeLbl=s.task.type==='mock'?'Mock':s.task.type==='spaced'?'Spaced':'Test';
         const typeBg=s.task.type==='mock'?'rgba(196,122,122,0.18)':s.task.type==='spaced'?'rgba(198,120,221,0.15)':'rgba(200,169,110,0.15)';
         const typeCol=s.task.type==='mock'?'#c47a7a':s.task.type==='spaced'?'#c678dd':'#c8a96e';
         const dateStr=new Date(s.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-        const barW=Math.min(s.pct,100);
         return `<tr style="border-bottom:1px solid rgba(255,255,255,0.05)">
           <td style="padding:7px 10px;white-space:nowrap"><span style="background:${typeBg};color:${typeCol};font-size:9px;font-family:monospace;padding:2px 7px;border-radius:3px;text-transform:uppercase">${typeLbl}</span></td>
           <td style="padding:7px 10px;font-size:11px;max-width:220px;word-break:break-word">${s.task.title}</td>
           <td style="padding:7px 10px;font-size:10px;color:#9a9890">${s.task.subject}</td>
           <td style="padding:7px 10px;font-family:monospace;font-size:11px">${s.got}/${s.outof}</td>
           <td style="padding:7px 10px"><span style="background:${col}22;color:${col};font-family:monospace;font-size:10px;padding:2px 8px;border-radius:20px">${s.pct}%</span></td>
-          <td style="padding:7px 10px"><div style="width:70px;height:4px;background:#1a1e28;border-radius:2px;overflow:hidden"><div style="width:${barW}%;height:100%;background:${col};border-radius:2px"></div></div></td>
+          <td style="padding:7px 10px"><div style="width:70px;height:4px;background:#1a1e28;border-radius:2px;overflow:hidden"><div style="width:${Math.min(s.pct,100)}%;height:100%;background:${col};border-radius:2px"></div></div></td>
           <td style="padding:7px 10px;font-family:monospace;font-size:10px;color:#666">${dateStr}</td>
         </tr>`;
       }).join('')
     : `<tr><td colspan="7" style="padding:24px;text-align:center;color:#555;font-size:12px">No scores logged yet</td></tr>`;
 
   /* Subject detail rows */
-  const subjDetailHTML=SUBJECTS.map(s=>{
+  const subjDetailHTML = SUBJECTS.map(s=>{
     const st=getSubjectStats(s);
     const ss=testScores.filter(x=>x.task.subject===s);
     const avg=ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):null;
@@ -1305,12 +1331,15 @@ async function exportPDF() {
         <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Tests completed vs pending</div>
         <img src="${chartImgs.img_doughnut}" style="width:100%;display:block;border-radius:4px">
       </div>
-      ${chartImgs.img_mocktrend?`<div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
-        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Mock exam score trend</div>
-        <img src="${chartImgs.img_mocktrend}" style="width:100%;display:block;border-radius:4px">
-      </div>`:`<div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;display:flex;align-items:center;justify-content:center">
-        <div style="text-align:center;color:#555;font-size:12px;font-family:monospace">Mock trend available<br>after first mock exam</div>
-      </div>`}
+      ${chartImgs.img_mocktrend
+        ? `<div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
+             <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Mock exam score trend</div>
+             <img src="${chartImgs.img_mocktrend}" style="width:100%;display:block;border-radius:4px">
+           </div>`
+        : `<div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;display:flex;align-items:center;justify-content:center">
+             <div style="text-align:center;color:#555;font-size:12px;font-family:monospace">Mock trend available<br>after first mock exam</div>
+           </div>`
+      }
     </div>
 
     <!-- SUBJECT DETAIL -->
@@ -1363,7 +1392,7 @@ async function exportPDF() {
   }
 }
 
-/* TAB SWITCHING */
+/* ── TAB SWITCHING ── */
 function switchTab(name) {
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -1375,7 +1404,7 @@ function switchTab(name) {
   if(name==='analytics') renderAnalytics();
 }
 
-/* UTILITIES */
+/* ── UTILITIES ── */
 function formatDisplayDate(d) {
   const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return `${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()}`;
@@ -1397,7 +1426,7 @@ function populateWeekSelect() {
   });
 }
 
-/* INIT */
+/* ── INIT ── */
 function initApp() {
   document.getElementById('onboarding').classList.add('hidden');
   document.getElementById('main-nav').style.display='flex';
