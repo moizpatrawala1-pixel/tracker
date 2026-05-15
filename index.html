@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CFA Level 2 — Study Tracker</title>
+<title>CFA Level 1 — Study Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -17,7 +17,7 @@
   --text: #e8e6df; --muted: #7a7871; --muted2: #555048;
   --accent: #c8a96e; --accent2: #8fc4b4; --accent3: #c47a7a;
   --green: #6bbd8b; --amber: #e8b84b; --red: #d96060; --blue: #6ea8d8; --purple: #c678dd;
-  --phase1: #8fc4b4; --phase2: #c8a96e; --phase3: #c47a7a;
+  --phase1: #8fc4b4; --phase2: #c8a96e; --phase3: #c47a7a; --phase4: #6ea8d8;
   --font-serif: 'DM Serif Display', Georgia, serif;
   --font-sans: 'Syne', sans-serif; --font-mono: 'DM Mono', monospace;
   --transition: 0.22s cubic-bezier(0.4,0,0.2,1); --radius: 10px;
@@ -122,7 +122,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 .stat-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
 .progress-bar-wrap { background: var(--surface2); border-radius: 3px; height: 4px; overflow: hidden; margin-top: 0.65rem; }
 .progress-bar { height: 100%; border-radius: 3px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
-.phases-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+.phases-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
 .phase-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.15rem; border-top: 2px solid var(--phase-color, var(--accent)); transition: transform var(--transition), border-color var(--transition); }
 .phase-card:hover { transform: translateY(-2px); }
 .phase-name { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
@@ -248,7 +248,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 
 @media (max-width: 768px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .phases-row { grid-template-columns: 1fr; }
+  .phases-row { grid-template-columns: repeat(2, 1fr); }
   .analytics-grid { grid-template-columns: 1fr; }
   .insight-grid { grid-template-columns: repeat(2, 1fr); }
   .weeks-grid { grid-template-columns: 1fr; }
@@ -261,6 +261,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 }
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: 1fr 1fr; }
+  .phases-row { grid-template-columns: 1fr; }
   .insight-grid { grid-template-columns: 1fr; }
   .week-row { grid-template-columns: 100px 1fr 44px; }
 }
@@ -268,10 +269,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 </head>
 <body>
 
-<!-- ONBOARDING -->
 <div class="onboarding-overlay" id="onboarding">
   <div class="onboarding-modal">
-    <div class="onboarding-logo">CFA Level 2 (2026)</div>
+    <div class="onboarding-logo">CFA Level 1 (2026)</div>
     <div class="onboarding-tagline">Precision Study Tracker</div>
     <h2>Let's set you up</h2>
     <p>This takes 30 seconds. Your schedule, timeline, and analytics will be built around your actual dates.</p>
@@ -282,7 +282,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
       </div>
       <div class="form-group">
         <label class="form-label">Exam date</label>
-        <input class="form-input" type="date" id="f-exam" value="2026-11-20">
+        <input class="form-input" type="date" id="f-exam" value="2026-11-15">
       </div>
       <div class="form-group">
         <label class="form-label">Start date</label>
@@ -305,7 +305,6 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
   </div>
 </div>
 
-<!-- SCORE MODAL -->
 <div class="score-modal-overlay hidden" id="score-modal-overlay">
   <div class="score-modal">
     <div class="modal-type-tag" id="modal-type-tag">Subject Test</div>
@@ -338,9 +337,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
   </div>
 </div>
 
-<!-- NAV -->
 <nav class="nav" id="main-nav" style="display:none">
-  <div class="nav-logo">CFA Level 2 (2026)<span>Precision Study Tracker</span></div>
+  <div class="nav-logo">CFA Level 1 (2026)<span>Precision Study Tracker</span></div>
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
     <button class="tab-btn" onclick="switchTab('checklist')">Checklist</button>
@@ -353,11 +351,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
   </div>
 </nav>
 
-<!-- DASHBOARD -->
 <div class="view active" id="view-dashboard">
   <div class="dash-header">
     <div class="dash-title" id="dash-greeting">Your Progress</div>
-    <div class="dash-subtitle" id="dash-subtitle">CFA Level 2 · November 20, 2026 Exam</div>
+    <div class="dash-subtitle" id="dash-subtitle">CFA Level 1 · November 15, 2026 Exam</div>
   </div>
   <div class="countdown-bar">
     <div class="countdown-block"><div class="countdown-label">Days to exam</div><div class="countdown-num" id="days-left">—</div><div class="countdown-unit">days</div></div>
@@ -376,14 +373,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
     <div class="stat-card"><div class="stat-label">Current Week</div><div class="stat-val" id="stat-week" style="color:var(--accent)">W1</div><div class="stat-sub" id="stat-week-phase">Phase 1</div><div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-bar" style="background:var(--accent);width:0%"></div></div></div>
     <div class="stat-card"><div class="stat-label">Tasks this week</div><div class="stat-val" id="stat-week-tasks" style="color:var(--green)">0/0</div><div class="stat-sub" id="stat-week-pct">0% done</div><div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-task-bar" style="background:var(--green);width:0%"></div></div></div>
     <div class="stat-card"><div class="stat-label">Tests done</div><div class="stat-val" id="stat-tests" style="color:var(--blue)">0/—</div><div class="stat-sub">subject tests</div><div class="progress-bar-wrap"><div class="progress-bar" id="stat-test-bar" style="background:var(--blue);width:0%"></div></div></div>
-    <div class="stat-card"><div class="stat-label">Mock Exams</div><div class="stat-val" id="stat-mocks" style="color:var(--accent3)">0/5</div><div class="stat-sub">completed</div><div class="progress-bar-wrap"><div class="progress-bar" id="stat-mock-bar" style="background:var(--accent3);width:0%"></div></div></div>
+    <div class="stat-card"><div class="stat-label">Mock Exams</div><div class="stat-val" id="stat-mocks" style="color:var(--accent3)">0/8</div><div class="stat-sub">completed</div><div class="progress-bar-wrap"><div class="progress-bar" id="stat-mock-bar" style="background:var(--accent3);width:0%"></div></div></div>
   </div>
   <div class="phases-row" id="phases-row"></div>
   <div class="section-title">All weeks at a glance</div>
   <div class="week-timeline" id="week-timeline"></div>
 </div>
 
-<!-- CHECKLIST -->
 <div class="view" id="view-checklist">
   <div class="checklist-header">
     <div><div class="dash-title" style="font-size:1.5rem">Daily Checklist</div><div class="dash-subtitle">Click tests or mocks to log your score</div></div>
@@ -396,16 +392,14 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
   <div class="checklist-area" id="checklist-area"></div>
 </div>
 
-<!-- SCHEDULE -->
 <div class="view" id="view-schedule">
   <div style="margin-bottom:1.5rem">
     <div class="dash-title" style="font-size:1.5rem">Full Schedule</div>
-    <div class="dash-subtitle" id="schedule-subtitle">27 weeks · November 20, 2026 exam</div>
+    <div class="dash-subtitle" id="schedule-subtitle">26 weeks · November 15, 2026 exam</div>
   </div>
   <div class="schedule-grid" id="schedule-grid"></div>
 </div>
 
-<!-- ANALYTICS -->
 <div class="view" id="view-analytics">
   <div class="analytics-header">
     <div class="dash-title" style="font-size:1.5rem">Analytics</div>
@@ -451,219 +445,216 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 
 <script>
 const SCHEDULE_TEMPLATE = [
-  { w:1, phase:1, label:'Corp Issuers I', tasks:[
-    { id:'w1t1', title:'Analysis of Dividends (Pt 1)', type:'reading', days:'Mon', subject:'Corporate Issuers' },
-    { id:'w1t2', title:'Analysis of Dividends (Pt 2)', type:'reading', days:'Tue', subject:'Corporate Issuers' },
-    { id:'w1t3', title:'ESG Considerations (Pt 1)', type:'reading', days:'Wed', subject:'Corporate Issuers' },
-    { id:'w1t4', title:'ESG Considerations (Pt 2)', type:'reading', days:'Thu', subject:'Corporate Issuers' },
-    { id:'w1t5', title:'Cost of Capital: Advanced Topics', type:'reading', days:'Fri', subject:'Corporate Issuers' },
+  { w:1, phase:1, label:'Corporate Issuers I', tasks:[
+    { id:'w1t1', title:'LM 20: Organizational Forms & Ownership', type:'reading', days:'Mon', subject:'Corporate Issuers' },
+    { id:'w1t2', title:'LM 21: Investors and Other Stakeholders', type:'reading', days:'Tue', subject:'Corporate Issuers' },
+    { id:'w1t3', title:'LM 22: Corporate Governance: Conflicts & Risks', type:'reading', days:'Wed', subject:'Corporate Issuers' },
+    { id:'w1t4', title:'LM 23: Working Capital & Liquidity', type:'reading', days:'Thu', subject:'Corporate Issuers' },
+    { id:'w1t5', title:'LM 24: Capital Investments & Allocation', type:'reading', days:'Fri', subject:'Corporate Issuers' },
   ]},
-  { w:2, phase:1, label:'Corp Issuers II', tasks:[
-    { id:'w2t1', title:'Corporate Restructuring (Pt 1)', type:'reading', days:'Mon', subject:'Corporate Issuers' },
-    { id:'w2t2', title:'Corporate Restructuring (Pt 2)', type:'reading', days:'Tue', subject:'Corporate Issuers' },
+  { w:2, phase:1, label:'Corp II & Equity I', tasks:[
+    { id:'w2t1', title:'LM 25: Capital Structure', type:'reading', days:'Mon', subject:'Corporate Issuers' },
+    { id:'w2t2', title:'LM 26: Business Models', type:'reading', days:'Tue', subject:'Corporate Issuers' },
     { id:'w2t3', title:'Corp Issuers Test 1', type:'test', days:'Wed', subject:'Corporate Issuers' },
     { id:'w2t4', title:'Corp Issuers Test 2', type:'test', days:'Thu', subject:'Corporate Issuers' },
     { id:'w2t5', title:'Corp Issuers Test 3 — Capstone', type:'test', days:'Fri', subject:'Corporate Issuers' },
   ]},
-  { w:3, phase:1, label:'Quant Methods I', tasks:[
-    { id:'w3t1', title:'Basics of Multiple Regression (Pt 1)', type:'reading', days:'Mon', subject:'Quant Methods' },
-    { id:'w3t2', title:'Basics of Multiple Regression (Pt 2)', type:'reading', days:'Tue', subject:'Quant Methods' },
-    { id:'w3t3', title:'Evaluating Regression Model Fit (Pt 1)', type:'reading', days:'Wed', subject:'Quant Methods' },
-    { id:'w3t4', title:'Evaluating Regression Model Fit (Pt 2)', type:'reading', days:'Thu', subject:'Quant Methods' },
-    { id:'w3t5', title:'Model Misspecification (Pt 1)', type:'reading', days:'Fri', subject:'Quant Methods' },
+  { w:3, phase:1, label:'Equity II', tasks:[
+    { id:'w3t1', title:'LM 39: Market Organization & Structure', type:'reading', days:'Mon', subject:'Equity Valuation' },
+    { id:'w3t2', title:'LM 40: Security Market Indexes', type:'reading', days:'Tue', subject:'Equity Valuation' },
+    { id:'w3t3', title:'LM 41: Market Efficiency', type:'reading', days:'Wed', subject:'Equity Valuation' },
+    { id:'w3t4', title:'LM 42: Overview of Equity Securities', type:'reading', days:'Thu', subject:'Equity Valuation' },
+    { id:'w3t5', title:'LM 43: Company Analysis: Past and Present', type:'reading', days:'Fri', subject:'Equity Valuation' },
   ]},
-  { w:4, phase:1, label:'Quant Methods II', tasks:[
-    { id:'w4t1', title:'Model Misspecification (Pt 2)', type:'reading', days:'Mon', subject:'Quant Methods' },
-    { id:'w4t2', title:'Extensions of Multiple Regression (Pt 1)', type:'reading', days:'Tue', subject:'Quant Methods' },
-    { id:'w4t3', title:'Extensions of Multiple Regression (Pt 2)', type:'reading', days:'Wed', subject:'Quant Methods' },
-    { id:'w4t4', title:'Time-Series Analysis (Pt 1)', type:'reading', days:'Thu', subject:'Quant Methods' },
-    { id:'w4t5', title:'Time-Series Analysis (Pt 2)', type:'reading', days:'Fri', subject:'Quant Methods' },
+  { w:4, phase:1, label:'Equity III', tasks:[
+    { id:'w4t1', title:'LM 44: Industry and Competitive Analysis', type:'reading', days:'Mon', subject:'Equity Valuation' },
+    { id:'w4t2', title:'LM 45: Company Analysis: Forecasting', type:'reading', days:'Tue', subject:'Equity Valuation' },
+    { id:'w4t3', title:'LM 46: Equity Valuation: Concepts & Tools', type:'reading', days:'Wed', subject:'Equity Valuation' },
+    { id:'w4t4', title:'Equity Test 1', type:'test', days:'Thu', subject:'Equity Valuation' },
+    { id:'w4t5', title:'Equity Test 2', type:'test', days:'Fri', subject:'Equity Valuation' },
   ]},
-  { w:5, phase:1, label:'Quant Methods III', tasks:[
-    { id:'w5t1', title:'Time-Series Analysis (Pt 3)', type:'reading', days:'Mon', subject:'Quant Methods' },
-    { id:'w5t2', title:'Machine Learning (Pt 1)', type:'reading', days:'Tue', subject:'Quant Methods' },
-    { id:'w5t3', title:'Machine Learning (Pt 2)', type:'reading', days:'Wed', subject:'Quant Methods' },
-    { id:'w5t4', title:'Big Data Projects', type:'reading', days:'Thu', subject:'Quant Methods' },
-    { id:'w5t5', title:'Quant Test 1', type:'test', days:'Fri', subject:'Quant Methods' },
+  { w:5, phase:1, label:'Econ I & Spaced Recall', tasks:[
+    { id:'w5t1', title:'Equity Test 3 — Capstone', type:'test', days:'Mon', subject:'Equity Valuation' },
+    { id:'w5t2', title:'Spaced Recall: Corp Issuers Test 4', type:'spaced', days:'Tue', subject:'Corporate Issuers' },
+    { id:'w5t3', title:'LM 12: The Firm and Market Structures', type:'reading', days:'Wed', subject:'Economics' },
+    { id:'w5t4', title:'LM 13: Understanding Business Cycles', type:'reading', days:'Thu', subject:'Economics' },
+    { id:'w5t5', title:'LM 14: Fiscal Policy', type:'reading', days:'Fri', subject:'Economics' },
   ]},
-  { w:6, phase:1, label:'Quant IV & Equity I', tasks:[
-    { id:'w6t1', title:'Quant Test 2', type:'test', days:'Mon', subject:'Quant Methods' },
-    { id:'w6t2', title:'Quant Test 3 — Capstone', type:'test', days:'Tue', subject:'Quant Methods' },
-    { id:'w6t3', title:'Equity Valuation: Apps & Processes', type:'reading', days:'Wed', subject:'Equity Valuation' },
-    { id:'w6t4', title:'Discounted Dividend Valuation (Pt 1)', type:'reading', days:'Thu', subject:'Equity Valuation' },
-    { id:'w6t5', title:'Discounted Dividend Valuation (Pt 2)', type:'reading', days:'Fri', subject:'Equity Valuation' },
+  { w:6, phase:1, label:'Econ II', tasks:[
+    { id:'w6t1', title:'LM 15: Monetary Policy', type:'reading', days:'Mon', subject:'Economics' },
+    { id:'w6t2', title:'LM 16: Introduction to Geopolitics', type:'reading', days:'Tue', subject:'Economics' },
+    { id:'w6t3', title:'LM 17: International Trade', type:'reading', days:'Wed', subject:'Economics' },
+    { id:'w6t4', title:'LM 18: Capital Flows and the FX Market', type:'reading', days:'Thu', subject:'Economics' },
+    { id:'w6t5', title:'LM 19: Exchange Rate Calculations', type:'reading', days:'Fri', subject:'Economics' },
   ]},
-  { w:7, phase:1, label:'Equity II', tasks:[
-    { id:'w7t1', title:'Free Cash Flow Valuation (Pt 1)', type:'reading', days:'Mon', subject:'Equity Valuation' },
-    { id:'w7t2', title:'Free Cash Flow Valuation (Pt 2)', type:'reading', days:'Tue', subject:'Equity Valuation' },
-    { id:'w7t3', title:'Market-Based Valuation (Pt 1)', type:'reading', days:'Wed', subject:'Equity Valuation' },
-    { id:'w7t4', title:'Market-Based Valuation (Pt 2)', type:'reading', days:'Thu', subject:'Equity Valuation' },
-    { id:'w7t5', title:'Residual Income Valuation (Pt 1)', type:'reading', days:'Fri', subject:'Equity Valuation' },
+  { w:7, phase:1, label:'Econ III & PM I', tasks:[
+    { id:'w7t1', title:'Econ Test 1', type:'test', days:'Mon', subject:'Economics' },
+    { id:'w7t2', title:'Econ Test 2', type:'test', days:'Tue', subject:'Economics' },
+    { id:'w7t3', title:'Econ Test 3 — Capstone', type:'test', days:'Wed', subject:'Economics' },
+    { id:'w7t4', title:'Spaced Recall: Equity Test 4', type:'spaced', days:'Thu', subject:'Equity Valuation' },
+    { id:'w7t5', title:'LM 83: Portfolio Risk and Return (Pt 1)', type:'reading', days:'Fri', subject:'Portfolio Mgmt' },
   ]},
-  { w:8, phase:1, label:'Equity III', tasks:[
-    { id:'w8t1', title:'Residual Income Valuation (Pt 2)', type:'reading', days:'Mon', subject:'Equity Valuation' },
-    { id:'w8t2', title:'Private Company Valuation (Pt 1)', type:'reading', days:'Tue', subject:'Equity Valuation' },
-    { id:'w8t3', title:'Private Company Valuation (Pt 2)', type:'reading', days:'Wed', subject:'Equity Valuation' },
-    { id:'w8t4', title:'Equity Test 1', type:'test', days:'Thu', subject:'Equity Valuation' },
-    { id:'w8t5', title:'Equity Test 2', type:'test', days:'Fri', subject:'Equity Valuation' },
+  { w:8, phase:1, label:'PM II', tasks:[
+    { id:'w8t1', title:'LM 84: Portfolio Risk and Return (Pt 2)', type:'reading', days:'Mon', subject:'Portfolio Mgmt' },
+    { id:'w8t2', title:'LM 85: Portfolio Management: Overview', type:'reading', days:'Tue', subject:'Portfolio Mgmt' },
+    { id:'w8t3', title:'LM 86: Basics of Portfolio Construction', type:'reading', days:'Wed', subject:'Portfolio Mgmt' },
+    { id:'w8t4', title:'LM 87: Behavioral Biases of Individuals', type:'reading', days:'Thu', subject:'Portfolio Mgmt' },
+    { id:'w8t5', title:'LM 88: Introduction to Risk Management', type:'reading', days:'Fri', subject:'Portfolio Mgmt' },
   ]},
-  { w:9, phase:1, label:'Equity IV & FSA Bridge', tasks:[
-    { id:'w9t1', title:'Equity Test 3 — Capstone', type:'test', days:'Mon', subject:'Equity Valuation' },
-    { id:'w9t2', title:'Spaced Recall: Corp Issuers Test 4', type:'spaced', days:'Tue', subject:'Corporate Issuers' },
-    { id:'w9t3', title:'Spaced Recall: Quant Test 4 (Early)', type:'spaced', days:'Wed', subject:'Quant Methods' },
-    { id:'w9t4', title:'Intercorporate Investments (Pt 1)', type:'reading', days:'Thu', subject:'FSA' },
-    { id:'w9t5', title:'Intercorporate Investments (Pt 2)', type:'reading', days:'Fri', subject:'FSA' },
+  { w:9, phase:1, label:'PM III & Alts I', tasks:[
+    { id:'w9t1', title:'PM Test 1', type:'test', days:'Mon', subject:'Portfolio Mgmt' },
+    { id:'w9t2', title:'PM Test 2', type:'test', days:'Tue', subject:'Portfolio Mgmt' },
+    { id:'w9t3', title:'PM Test 3 — Capstone', type:'test', days:'Wed', subject:'Portfolio Mgmt' },
+    { id:'w9t4', title:'Spaced Recall: Econ Test 4', type:'spaced', days:'Thu', subject:'Economics' },
+    { id:'w9t5', title:'LM 76: Alt Investment Features & Structures', type:'reading', days:'Fri', subject:'Alt Investments' },
   ]},
-  { w:10, phase:2, label:'FSA II', tasks:[
-    { id:'w10t1', title:'Intercorporate Investments (Pt 3)', type:'reading', days:'Mon', subject:'FSA' },
-    { id:'w10t2', title:'Employee Compensation: Post & Share-Based', type:'reading', days:'Tue', subject:'FSA' },
-    { id:'w10t3', title:'Multinational Operations', type:'reading', days:'Wed', subject:'FSA' },
-    { id:'w10t4', title:'Analysis of Financial Institutions', type:'reading', days:'Thu', subject:'FSA' },
-    { id:'w10t5', title:'Integration of FSA Techniques', type:'reading', days:'Fri', subject:'FSA' },
+  { w:10, phase:1, label:'Alts II', tasks:[
+    { id:'w10t1', title:'LM 77: Alt Investment Performance & Returns', type:'reading', days:'Mon', subject:'Alt Investments' },
+    { id:'w10t2', title:'LM 78: Investments in Private Capital', type:'reading', days:'Tue', subject:'Alt Investments' },
+    { id:'w10t3', title:'LM 79: Real Estate and Infrastructure', type:'reading', days:'Wed', subject:'Alt Investments' },
+    { id:'w10t4', title:'LM 80: Natural Resources', type:'reading', days:'Thu', subject:'Alt Investments' },
+    { id:'w10t5', title:'LM 81: Hedge Funds', type:'reading', days:'Fri', subject:'Alt Investments' },
   ]},
-  { w:11, phase:2, label:'FSA III & FI Bridge', tasks:[
-    { id:'w11t1', title:'Evaluating Quality of Financial Reports', type:'reading', days:'Mon', subject:'FSA' },
-    { id:'w11t2', title:'FSA Test 1', type:'test', days:'Tue', subject:'FSA' },
-    { id:'w11t3', title:'FSA Test 2', type:'test', days:'Wed', subject:'FSA' },
-    { id:'w11t4', title:'FSA Test 3 — Capstone', type:'test', days:'Thu', subject:'FSA' },
-    { id:'w11t5', title:'Term Structure & Interest Rate Dynamics', type:'reading', days:'Fri', subject:'Fixed Income' },
+  { w:11, phase:2, label:'Alts III & Quant I', tasks:[
+    { id:'w11t1', title:'LM 82: Introduction to Digital Assets', type:'reading', days:'Mon', subject:'Alt Investments' },
+    { id:'w11t2', title:'Alts Test 1', type:'test', days:'Tue', subject:'Alt Investments' },
+    { id:'w11t3', title:'Alts Test 2', type:'test', days:'Wed', subject:'Alt Investments' },
+    { id:'w11t4', title:'Alts Test 3 — Capstone', type:'test', days:'Thu', subject:'Alt Investments' },
+    { id:'w11t5', title:'LM 1: Rates and Returns', type:'reading', days:'Fri', subject:'Quant Methods' },
   ]},
-  { w:12, phase:2, label:'Fixed Income II', tasks:[
-    { id:'w12t1', title:'Arbitrage-Free Valuation Framework', type:'reading', days:'Mon', subject:'Fixed Income' },
-    { id:'w12t2', title:'Valuation of Bonds with Embedded Options', type:'reading', days:'Tue', subject:'Fixed Income' },
-    { id:'w12t3', title:'Credit Analysis Models', type:'reading', days:'Wed', subject:'Fixed Income' },
-    { id:'w12t4', title:'Credit Default Swaps', type:'reading', days:'Thu', subject:'Fixed Income' },
-    { id:'w12t5', title:'FI Test 1', type:'test', days:'Fri', subject:'Fixed Income' },
+  { w:12, phase:2, label:'Quant II', tasks:[
+    { id:'w12t1', title:'Spaced Recall: PM Test 4', type:'spaced', days:'Mon', subject:'Portfolio Mgmt' },
+    { id:'w12t2', title:'LM 2: Time Value of Money', type:'reading', days:'Tue', subject:'Quant Methods' },
+    { id:'w12t3', title:'LM 3: Statistical Measures', type:'reading', days:'Wed', subject:'Quant Methods' },
+    { id:'w12t4', title:'LM 4: Probability Trees', type:'reading', days:'Thu', subject:'Quant Methods' },
+    { id:'w12t5', title:'LM 5: Portfolio Mathematics', type:'reading', days:'Fri', subject:'Quant Methods' },
   ]},
-  { w:13, phase:2, label:'FI III & Derivatives Bridge', tasks:[
-    { id:'w13t1', title:'FI Test 2', type:'test', days:'Mon', subject:'Fixed Income' },
-    { id:'w13t2', title:'FI Test 3 — Capstone', type:'test', days:'Tue', subject:'Fixed Income' },
-    { id:'w13t3', title:'Spaced Recall: Equity Test 4', type:'spaced', days:'Wed', subject:'Equity Valuation' },
-    { id:'w13t4', title:'Spaced Recall: FSA Test 4', type:'spaced', days:'Thu', subject:'FSA' },
-    { id:'w13t5', title:'Pricing & Valuation of Forward Commitments', type:'reading', days:'Fri', subject:'Derivatives' },
+  { w:13, phase:2, label:'Quant III', tasks:[
+    { id:'w13t1', title:'LM 6: Simulation Methods', type:'reading', days:'Mon', subject:'Quant Methods' },
+    { id:'w13t2', title:'LM 7: Estimation and Inference', type:'reading', days:'Tue', subject:'Quant Methods' },
+    { id:'w13t3', title:'LM 8: Hypothesis Testing', type:'reading', days:'Wed', subject:'Quant Methods' },
+    { id:'w13t4', title:'LM 9: Parametric & Non-Parametric Tests', type:'reading', days:'Thu', subject:'Quant Methods' },
+    { id:'w13t5', title:'LM 10: Simple Linear Regression', type:'reading', days:'Fri', subject:'Quant Methods' },
   ]},
-  { w:14, phase:2, label:'Derivatives II & Alts Bridge', tasks:[
-    { id:'w14t1', title:'Valuation of Contingent Claims', type:'reading', days:'Mon', subject:'Derivatives' },
-    { id:'w14t2', title:'Derivatives Test 1', type:'test', days:'Tue', subject:'Derivatives' },
-    { id:'w14t3', title:'Derivatives Test 2', type:'test', days:'Wed', subject:'Derivatives' },
-    { id:'w14t4', title:'Derivatives Test 3 — Capstone', type:'test', days:'Thu', subject:'Derivatives' },
-    { id:'w14t5', title:'Intro to Commodities & Derivatives', type:'reading', days:'Fri', subject:'Alt Investments' },
+  { w:14, phase:2, label:'Quant IV & FSA I', tasks:[
+    { id:'w14t1', title:'LM 11: Intro to Big Data Techniques', type:'reading', days:'Mon', subject:'Quant Methods' },
+    { id:'w14t2', title:'Quant Test 1', type:'test', days:'Tue', subject:'Quant Methods' },
+    { id:'w14t3', title:'Quant Test 2', type:'test', days:'Wed', subject:'Quant Methods' },
+    { id:'w14t4', title:'Quant Test 3 — Capstone', type:'test', days:'Thu', subject:'Quant Methods' },
+    { id:'w14t5', title:'LM 27: Intro to FSA', type:'reading', days:'Fri', subject:'FSA' },
   ]},
-  { w:15, phase:2, label:'Alternatives II', tasks:[
-    { id:'w15t1', title:'Overview of Real Estate Investment', type:'reading', days:'Mon', subject:'Alt Investments' },
-    { id:'w15t2', title:'Real Estate Through Public Securities', type:'reading', days:'Tue', subject:'Alt Investments' },
-    { id:'w15t3', title:'Hedge Fund Strategies', type:'reading', days:'Wed', subject:'Alt Investments' },
-    { id:'w15t4', title:'Alts Test 1', type:'test', days:'Thu', subject:'Alt Investments' },
-    { id:'w15t5', title:'Alts Test 2', type:'test', days:'Fri', subject:'Alt Investments' },
+  { w:15, phase:2, label:'FSA II (Heavy)', tasks:[
+    { id:'w15t1', title:'Spaced Recall: Alts Test 4', type:'spaced', days:'Mon', subject:'Alt Investments' },
+    { id:'w15t2', title:'LM 28: Analyzing Income Statements', type:'reading', days:'Tue', subject:'FSA' },
+    { id:'w15t3', title:'LM 29: Analyzing Balance Sheets', type:'reading', days:'Wed', subject:'FSA' },
+    { id:'w15t4', title:'LM 30: Analyzing Statements of CF I', type:'reading', days:'Thu', subject:'FSA' },
+    { id:'w15t5', title:'LM 31: Analyzing Statements of CF II', type:'reading', days:'Fri', subject:'FSA' },
   ]},
-  { w:16, phase:2, label:'Alts III & Economics', tasks:[
-    { id:'w16t1', title:'Alts Test 3 — Capstone', type:'test', days:'Mon', subject:'Alt Investments' },
-    { id:'w16t2', title:'Spaced Recall: FI Test 4', type:'spaced', days:'Tue', subject:'Fixed Income' },
-    { id:'w16t3', title:'Spaced Recall: Derivatives Test 4', type:'spaced', days:'Wed', subject:'Derivatives' },
-    { id:'w16t4', title:'Currency Exchange Rates', type:'reading', days:'Thu', subject:'Economics' },
-    { id:'w16t5', title:'Economic Growth', type:'reading', days:'Fri', subject:'Economics' },
+  { w:16, phase:2, label:'FSA III (Heavy)', tasks:[
+    { id:'w16t1', title:'LM 32: Analysis of Inventories', type:'reading', days:'Mon', subject:'FSA' },
+    { id:'w16t2', title:'LM 33: Analysis of Long-Term Assets', type:'reading', days:'Tue', subject:'FSA' },
+    { id:'w16t3', title:'LM 34: Topics in Long-Term Liabilities', type:'reading', days:'Wed', subject:'FSA' },
+    { id:'w16t4', title:'LM 35: Analysis of Income Taxes', type:'reading', days:'Thu', subject:'FSA' },
+    { id:'w16t5', title:'LM 36: Financial Reporting Quality', type:'reading', days:'Fri', subject:'FSA' },
   ]},
-  { w:17, phase:2, label:'Econ II & Portfolio Mgmt I', tasks:[
-    { id:'w17t1', title:'Econ Test 1', type:'test', days:'Mon', subject:'Economics' },
-    { id:'w17t2', title:'Econ Test 2', type:'test', days:'Tue', subject:'Economics' },
-    { id:'w17t3', title:'Econ Test 3 — Capstone', type:'test', days:'Wed', subject:'Economics' },
-    { id:'w17t4', title:'Economics and Investment Markets', type:'reading', days:'Thu', subject:'Portfolio Mgmt' },
-    { id:'w17t5', title:'Analysis of Active Portfolio Mgmt', type:'reading', days:'Fri', subject:'Portfolio Mgmt' },
+  { w:17, phase:3, label:'FSA IV & FI I', tasks:[
+    { id:'w17t1', title:'LM 37: Financial Analysis Techniques', type:'reading', days:'Mon', subject:'FSA' },
+    { id:'w17t2', title:'LM 38: Intro to FS Modeling', type:'reading', days:'Tue', subject:'FSA' },
+    { id:'w17t3', title:'FSA Test 1', type:'test', days:'Wed', subject:'FSA' },
+    { id:'w17t4', title:'FSA Test 2', type:'test', days:'Thu', subject:'FSA' },
+    { id:'w17t5', title:'FSA Test 3 — Capstone', type:'test', days:'Fri', subject:'FSA' },
   ]},
-  { w:18, phase:2, label:'Portfolio Mgmt II', tasks:[
-    { id:'w18t1', title:'ETFs: Mechanics & Applications', type:'reading', days:'Mon', subject:'Portfolio Mgmt' },
-    { id:'w18t2', title:'Using Multifactor Models', type:'reading', days:'Tue', subject:'Portfolio Mgmt' },
-    { id:'w18t3', title:'Measuring & Managing Market Risk', type:'reading', days:'Wed', subject:'Portfolio Mgmt' },
-    { id:'w18t4', title:'Backtesting and Simulation', type:'reading', days:'Thu', subject:'Portfolio Mgmt' },
-    { id:'w18t5', title:'PM Test 1', type:'test', days:'Fri', subject:'Portfolio Mgmt' },
+  { w:18, phase:3, label:'Fixed Income II', tasks:[
+    { id:'w18t1', title:'Spaced Recall: Quant Test 4', type:'spaced', days:'Mon', subject:'Quant Methods' },
+    { id:'w18t2', title:'LM 47: FI Instrument Features', type:'reading', days:'Tue', subject:'Fixed Income' },
+    { id:'w18t3', title:'LM 48: Cash Flows and Types', type:'reading', days:'Wed', subject:'Fixed Income' },
+    { id:'w18t4', title:'LM 49: Issuance and Trading', type:'reading', days:'Thu', subject:'Fixed Income' },
+    { id:'w18t5', title:'LM 50: Corp Issuers Markets', type:'reading', days:'Fri', subject:'Fixed Income' },
   ]},
-  { w:19, phase:2, label:'Portfolio Mgmt III & Ethics Bridge', tasks:[
-    { id:'w19t1', title:'PM Test 2', type:'test', days:'Mon', subject:'Portfolio Mgmt' },
-    { id:'w19t2', title:'PM Test 3 — Capstone', type:'test', days:'Tue', subject:'Portfolio Mgmt' },
-    { id:'w19t3', title:'Spaced Recall: Alts Test 4', type:'spaced', days:'Wed', subject:'Alt Investments' },
-    { id:'w19t4', title:'Spaced Recall: Econ Test 4', type:'spaced', days:'Thu', subject:'Economics' },
-    { id:'w19t5', title:'Code of Ethics and Standards', type:'reading', days:'Fri', subject:'Ethics' },
+  { w:19, phase:3, label:'Fixed Income III', tasks:[
+    { id:'w19t1', title:'LM 51: Gov Issuers Markets', type:'reading', days:'Mon', subject:'Fixed Income' },
+    { id:'w19t2', title:'LM 52: Bond Valuation Prices', type:'reading', days:'Tue', subject:'Fixed Income' },
+    { id:'w19t3', title:'LM 53: Yield and Spread (Fixed)', type:'reading', days:'Wed', subject:'Fixed Income' },
+    { id:'w19t4', title:'LM 54: Yield and Spread (Floating)', type:'reading', days:'Thu', subject:'Fixed Income' },
+    { id:'w19t5', title:'LM 55: Term Structure', type:'reading', days:'Fri', subject:'Fixed Income' },
   ]},
-  { w:20, phase:2, label:'Ethics II', tasks:[
-    { id:'w20t1', title:'Guidance for Standards I-VII (Pt 1)', type:'reading', days:'Mon', subject:'Ethics' },
-    { id:'w20t2', title:'Guidance for Standards I-VII (Pt 2)', type:'reading', days:'Tue', subject:'Ethics' },
-    { id:'w20t3', title:'Application of Code and Standards', type:'reading', days:'Wed', subject:'Ethics' },
-    { id:'w20t4', title:'Ethics Test 1', type:'test', days:'Thu', subject:'Ethics' },
-    { id:'w20t5', title:'Ethics Test 2', type:'test', days:'Fri', subject:'Ethics' },
+  { w:20, phase:3, label:'Fixed Income IV', tasks:[
+    { id:'w20t1', title:'LM 56: Interest Rate Risk & Return', type:'reading', days:'Mon', subject:'Fixed Income' },
+    { id:'w20t2', title:'LM 57: Yield-Based Duration', type:'reading', days:'Tue', subject:'Fixed Income' },
+    { id:'w20t3', title:'LM 58: Yield-Based Convexity', type:'reading', days:'Wed', subject:'Fixed Income' },
+    { id:'w20t4', title:'LM 59: Curve-Based Risk Measures', type:'reading', days:'Thu', subject:'Fixed Income' },
+    { id:'w20t5', title:'LM 60: Credit Risk', type:'reading', days:'Fri', subject:'Fixed Income' },
   ]},
-  { w:21, phase:2, label:'Ethics III & Pre-Sprint Integration', tasks:[
-    { id:'w21t1', title:'Ethics Test 3 — Capstone', type:'test', days:'Mon', subject:'Ethics' },
-    { id:'w21t2', title:'Spaced Recall: PM Test 4', type:'spaced', days:'Tue', subject:'Portfolio Mgmt' },
-    { id:'w21t3', title:'Spaced Recall: Ethics Test 4', type:'spaced', days:'Wed', subject:'Ethics' },
-    { id:'w21t4', title:'Full Error Log Review & Weak Area Map', type:'review', days:'Thu', subject:'All Subjects' },
-    { id:'w21t5', title:'Formula Sheet Build & Memorisation', type:'review', days:'Fri', subject:'All Subjects' },
+  { w:21, phase:3, label:'FI V & Deriv I', tasks:[
+    { id:'w21t1', title:'LM 61: Gov Credit Analysis', type:'reading', days:'Mon', subject:'Fixed Income' },
+    { id:'w21t2', title:'LM 62: Corp Credit Analysis', type:'reading', days:'Tue', subject:'Fixed Income' },
+    { id:'w21t3', title:'LM 63: Securitization', type:'reading', days:'Wed', subject:'Fixed Income' },
+    { id:'w21t4', title:'LM 64 & 65: ABS and MBS', type:'reading', days:'Thu', subject:'Fixed Income' },
+    { id:'w21t5', title:'FI Test 1', type:'test', days:'Fri', subject:'Fixed Income' },
   ]},
-  { w:22, phase:3, label:'Sprint — Mock 1', tasks:[
-    { id:'w22t1', title:'Targeted QBank: Corp Issuers (all weak LOs)', type:'review', days:'Mon', subject:'Corporate Issuers' },
-    { id:'w22t2', title:'Targeted QBank: Quant Methods (all weak LOs)', type:'review', days:'Tue', subject:'Quant Methods' },
-    { id:'w22t3', title:'Targeted QBank: Equity Valuation (all weak LOs)', type:'review', days:'Wed', subject:'Equity Valuation' },
-    { id:'w22t4', title:'Targeted QBank: FSA (all weak LOs)', type:'review', days:'Thu', subject:'FSA' },
-    { id:'w22t5', title:'Light Review & Rest Before Mock', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w22t6', title:'Mock Exam 1 — Full Exam Conditions', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w22t7', title:'Grade Mock 1 · Deep Error Review · Update Weak Area Map', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:22, phase:3, label:'Derivatives II', tasks:[
+    { id:'w22t1', title:'FI Test 2', type:'test', days:'Mon', subject:'Fixed Income' },
+    { id:'w22t2', title:'FI Test 3 — Capstone', type:'test', days:'Tue', subject:'Fixed Income' },
+    { id:'w22t3', title:'Spaced Recall: FSA Test 4', type:'spaced', days:'Wed', subject:'FSA' },
+    { id:'w22t4', title:'LM 66: Derivative Features', type:'reading', days:'Thu', subject:'Derivatives' },
+    { id:'w22t5', title:'LM 67: Forward Commitments', type:'reading', days:'Fri', subject:'Derivatives' },
   ]},
-  { w:23, phase:3, label:'Sprint — Mock 2', tasks:[
-    { id:'w23t1', title:'Drill Weakest Subject from Mock 1 (QBank)', type:'review', days:'Mon', subject:'All Subjects' },
-    { id:'w23t2', title:'Targeted QBank: Fixed Income (all weak LOs)', type:'review', days:'Tue', subject:'Fixed Income' },
-    { id:'w23t3', title:'Targeted QBank: Derivatives (all weak LOs)', type:'review', days:'Wed', subject:'Derivatives' },
-    { id:'w23t4', title:'Targeted QBank: Alt Investments (all weak LOs)', type:'review', days:'Thu', subject:'Alt Investments' },
-    { id:'w23t5', title:'Light Review & Rest Before Mock', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w23t6', title:'Mock Exam 2 — Full Exam Conditions', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w23t7', title:'Grade Mock 2 · Deep Error Review · Update Weak Area Map', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:23, phase:4, label:'Deriv III & Sprint Mock 1', tasks:[
+    { id:'w23t1', title:'LM 68: Derivative Benefits/Risks', type:'reading', days:'Mon', subject:'Derivatives' },
+    { id:'w23t2', title:'LM 69: Arbitrage & Cost of Carry', type:'reading', days:'Tue', subject:'Derivatives' },
+    { id:'w23t3', title:'LM 70 & 71: Pricing Forwards & Futures', type:'reading', days:'Wed', subject:'Derivatives' },
+    { id:'w23t4', title:'LM 72 & 73: Pricing Swaps & Options', type:'reading', days:'Thu', subject:'Derivatives' },
+    { id:'w23t5', title:'LM 74 & 75: Put-Call & Binomial', type:'reading', days:'Fri', subject:'Derivatives' },
+    { id:'w23t6', title:'Derivatives Test 1 & 2', type:'test', days:'Sat', subject:'Derivatives' },
+    { id:'w23t7', title:'Mock Exam 1 — Baseline', type:'mock', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:24, phase:3, label:'Sprint — Mock 3', tasks:[
-    { id:'w24t1', title:'Drill Top-2 Weak Subjects from Mock 2 (QBank)', type:'review', days:'Mon', subject:'All Subjects' },
-    { id:'w24t2', title:'Targeted QBank: Economics (all weak LOs)', type:'review', days:'Tue', subject:'Economics' },
-    { id:'w24t3', title:'Targeted QBank: Portfolio Mgmt (all weak LOs)', type:'review', days:'Wed', subject:'Portfolio Mgmt' },
-    { id:'w24t4', title:'Targeted QBank: Ethics — Cases & Standards', type:'review', days:'Thu', subject:'Ethics' },
-    { id:'w24t5', title:'Light Review & Rest Before Mock', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w24t6', title:'Mock Exam 3 — Full Exam Conditions', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w24t7', title:'Grade Mock 3 · Deep Error Review · Update Weak Area Map', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:24, phase:4, label:'Ethics & Sprint Mocks 2+3', tasks:[
+    { id:'w24t1', title:'Derivatives Test 3 — Capstone', type:'test', days:'Mon', subject:'Derivatives' },
+    { id:'w24t2', title:'LM 89 & 90: Ethics & Code', type:'reading', days:'Tue', subject:'Ethics' },
+    { id:'w24t3', title:'LM 91: Guidance for Standards I-VII', type:'reading', days:'Wed', subject:'Ethics' },
+    { id:'w24t4', title:'LM 92 & 93: GIPS & App', type:'reading', days:'Thu', subject:'Ethics' },
+    { id:'w24t5', title:'Ethics Test 1 & 2', type:'test', days:'Fri', subject:'Ethics' },
+    { id:'w24t6', title:'Mock Exam 2', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w24t7', title:'Mock Exam 3', type:'mock', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:25, phase:3, label:'Sprint — Mock 4', tasks:[
-    { id:'w25t1', title:'Final Sprint Test: Corp Issuers Test 5', type:'test', days:'Mon', subject:'Corporate Issuers' },
-    { id:'w25t2', title:'Final Sprint Test: Equity Test 5', type:'test', days:'Tue', subject:'Equity Valuation' },
-    { id:'w25t3', title:'Final Sprint Test: FSA Test 5', type:'test', days:'Wed', subject:'FSA' },
-    { id:'w25t4', title:'Ethics Standards Re-Read & Case Studies', type:'reading', days:'Thu', subject:'Ethics' },
-    { id:'w25t5', title:'Formula Dump Mastery & Light Review', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w25t6', title:'Mock Exam 4 — Full Exam Conditions', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w25t7', title:'Grade Mock 4 · Deep Error Review · Final Weak Area Map', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:25, phase:4, label:'Spaced Tests & Sprint Mocks 4-6', tasks:[
+    { id:'w25t1', title:'Ethics Test 3 & Spaced FI 4', type:'test', days:'Mon', subject:'Ethics' }, // Combined but tracking as Ethics Test 3 here.
+    { id:'w25t2', title:'Sprint FI 4 (Spaced)', type:'spaced', days:'Tue', subject:'Fixed Income' },
+    { id:'w25t3', title:'Sprint Deriv 4 (Spaced)', type:'spaced', days:'Wed', subject:'Derivatives' },
+    { id:'w25t4', title:'Sprint Ethics 4 (Spaced)', type:'spaced', days:'Thu', subject:'Ethics' },
+    { id:'w25t5', title:'Mock Exam 4', type:'mock', days:'Fri', subject:'All Subjects' },
+    { id:'w25t6', title:'Mock Exam 5', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w25t7', title:'Mock Exam 6', type:'mock', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:26, phase:3, label:'Sprint — Mock 5 (Final)', tasks:[
-    { id:'w26t1', title:'Final Sprint Test: FI Test 5', type:'test', days:'Mon', subject:'Fixed Income' },
-    { id:'w26t2', title:'Final Sprint Test: Derivatives Test 5', type:'test', days:'Tue', subject:'Derivatives' },
-    { id:'w26t3', title:'Final Sprint Test: Quant Test 5', type:'test', days:'Wed', subject:'Quant Methods' },
-    { id:'w26t4', title:'Targeted Drilling: Confirmed Weakest 2 Subjects', type:'review', days:'Thu', subject:'All Subjects' },
-    { id:'w26t5', title:'Light Review & Mental Rest Before Final Mock', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w26t6', title:'Mock Exam 5 — Final Gauge (Strict Conditions)', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w26t7', title:'Grade Mock 5 · Identify Final Priority Areas · Stop heavy study', type:'review', days:'Sun', subject:'All Subjects' },
-  ]},
-  { w:27, phase:3, label:'Exam Week', tasks:[
-    { id:'w27t1', title:'Formula Sheet Read-Through — Passive Revision Only', type:'review', days:'Mon', subject:'All Subjects' },
-    { id:'w27t2', title:'Light Ethics Review — Cases & Ethical Reasoning', type:'review', days:'Tue', subject:'Ethics' },
-    { id:'w27t3', title:'Exam Logistics: Location, ID, Kit Prep', type:'review', days:'Wed', subject:'All Subjects' },
-    { id:'w27t4', title:'Exam Eve — No new material. Visualise. Rest.', type:'review', days:'Thu', subject:'All Subjects' },
-    { id:'w27t5', title:'EXAM DAY — CFA Level 2 ✦', type:'test', days:'Fri', subject:'All Subjects' },
-  ]},
+  { w:26, phase:4, label:'Final Sprint Tests & Exam Week', tasks:[
+    { id:'w26t1', title:'Sprint Test: Corp 5 & Equity 5', type:'test', days:'Mon', subject:'Corporate Issuers' },
+    { id:'w26t1_b', title:'Sprint Test: Equity 5', type:'test', days:'Mon', subject:'Equity Valuation' },
+    { id:'w26t2', title:'Sprint Test: Econ 5 & PM 5', type:'test', days:'Tue', subject:'Economics' },
+    { id:'w26t2_b', title:'Sprint Test: PM 5', type:'test', days:'Tue', subject:'Portfolio Mgmt' },
+    { id:'w26t3', title:'Sprint Test: Alts 5 & Quant 5', type:'test', days:'Wed', subject:'Alt Investments' },
+    { id:'w26t3_b', title:'Sprint Test: Quant 5', type:'test', days:'Wed', subject:'Quant Methods' },
+    { id:'w26t4', title:'Sprint Test: FSA 5 & FI 5', type:'test', days:'Thu', subject:'FSA' },
+    { id:'w26t4_b', title:'Sprint Test: FI 5', type:'test', days:'Thu', subject:'Fixed Income' },
+    { id:'w26t5', title:'Sprint Test: Deriv 5 & Ethics 5', type:'test', days:'Fri', subject:'Derivatives' },
+    { id:'w26t5_b', title:'Sprint Test: Ethics 5', type:'test', days:'Fri', subject:'Ethics' },
+    { id:'w26t6', title:'Mock Exam 7', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w26t7', title:'Mock Exam 8 (Final)', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w26t8', title:'EXAM DAY — CFA Level 1 ✦', type:'test', days:'Sun', subject:'All Subjects' }
+  ]}
 ];
 
-const SUBJECTS = ['Corporate Issuers','Quant Methods','Equity Valuation','FSA','Fixed Income','Derivatives','Alt Investments','Economics','Portfolio Mgmt','Ethics'];
-const PHASE_NAMES = { 1:'Phase 1 — Base Building', 2:'Phase 2 — Acceleration', 3:'Phase 3 — Mock Sprint' };
-const PHASE_COLORS = { 1:'var(--phase1)', 2:'var(--phase2)', 3:'var(--phase3)' };
-const PHASE_HEX = { 1:'#8fc4b4', 2:'#c8a96e', 3:'#c47a7a' };
-const MOCK_TOTAL = 88;
+const SUBJECTS = ['Corporate Issuers', 'Equity Valuation', 'Economics', 'Portfolio Mgmt', 'Alt Investments', 'Quant Methods', 'FSA', 'Fixed Income', 'Derivatives', 'Ethics'];
+const PHASE_NAMES = { 1:'Phase 1 — Building Knowledge', 2:'Phase 2 — Heavy Lifters', 3:'Phase 3 — Wrapping Up', 4:'Phase 4 — Final Sprint' };
+const PHASE_COLORS = { 1:'var(--phase1)', 2:'var(--phase2)', 3:'var(--phase3)', 4:'var(--phase4)' };
+const PHASE_HEX = { 1:'#8fc4b4', 2:'#c8a96e', 3:'#c47a7a', 4:'#6ea8d8' };
+const MOCK_TOTAL = 180;
 const AXIS_STYLE = {
   grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
   ticks: { color: '#7a7871', font: { family: 'DM Mono', size: 10 } }
 };
 
 let state = {}, scores = {}, profile = null, SCHEDULE = [], charts = {}, activeScoreTask = null;
-const STORAGE_KEYS = { profile:'cfaTracker_profile_v1', state:'cfaTracker_state_v1', scores:'cfaTracker_scores_v1' };
+const STORAGE_KEYS = { profile:'cfaTracker_L1_profile_v2', state:'cfaTracker_L1_state_v2', scores:'cfaTracker_L1_scores_v2' };
 
 function loadStorage() {
   try { profile = JSON.parse(localStorage.getItem(STORAGE_KEYS.profile)); } catch(e) { profile = null; }
@@ -725,7 +716,7 @@ function getWeekPct(week) { if(!week||!week.tasks.length) return 0; return Math.
 function getPhasePct(p) { const tasks=SCHEDULE.filter(w=>w.phase===p).flatMap(w=>w.tasks); if(!tasks.length) return 0; return Math.round(tasks.filter(t=>isChecked(t.id)).length/tasks.length*100); }
 function getOverall() { const all=SCHEDULE.flatMap(w=>w.tasks); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length,pct:all.length?Math.round(done/all.length*100):0}; }
 function getSubjectStats(subj) { const tasks=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.subject===subj); const done=tasks.filter(t=>isChecked(t.id)).length; return {total:tasks.length,done,pct:tasks.length?Math.round(done/tasks.length*100):0}; }
-function getTestStats() { const all=SCHEDULE.flatMap(w=>w.tasks).filter(t=>(t.type==='test'||t.type==='spaced')&&t.title!=='EXAM DAY — CFA Level 2 ✦'); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length}; }
+function getTestStats() { const all=SCHEDULE.flatMap(w=>w.tasks).filter(t=>(t.type==='test'||t.type==='spaced')&&t.title!=='EXAM DAY — CFA Level 1 ✦'); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length}; }
 function getMockStats() { const all=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock'); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length}; }
 function getWeeklyConsistency() { const cur=getCurrentWeekNum(); return SCHEDULE.filter(w=>w.week<=cur).map(w=>({week:w.week,pct:getWeekPct(w),label:w.label})); }
 
@@ -800,7 +791,7 @@ function renderDashboard() {
   const overall=getOverall(); const curWeekNum=getCurrentWeekNum();
   const curWeek=SCHEDULE.find(w=>w.week===curWeekNum)||SCHEDULE[0];
   document.getElementById('dash-greeting').textContent=`${profile.name}'s Progress`;
-  document.getElementById('dash-subtitle').textContent=`CFA Level 2 · ${formatDisplayDate(exam)} Exam · ${profile.level} · ${profile.hours}h/day target`;
+  document.getElementById('dash-subtitle').textContent=`CFA Level 1 · ${formatDisplayDate(exam)} Exam · ${profile.level} · ${profile.hours}h/day target`;
   document.getElementById('days-left').textContent=daysLeft;
   document.getElementById('weeks-left').textContent=weeksLeft;
   document.getElementById('hours-target').textContent=profile.hours;
@@ -821,7 +812,7 @@ function renderDashboard() {
   document.getElementById('stat-mocks').textContent=`${ms.done}/${ms.total}`;
   document.getElementById('stat-mock-bar').style.width=(ms.total?Math.round(ms.done/ms.total*100):0)+'%';
   const pr=document.getElementById('phases-row'); pr.innerHTML='';
-  [1,2,3].forEach(p=>{
+  [1,2,3,4].forEach(p=>{
     const pct=getPhasePct(p); const phaseWeeks=SCHEDULE.filter(w=>w.phase===p);
     const startDate=phaseWeeks[0]?.dates.split('–')[0]||'';
     const endDate=phaseWeeks[phaseWeeks.length-1]?.dates.split('–')[1]||'';
@@ -899,10 +890,11 @@ function renderChecklist() {
 
 /* ── SCHEDULE ── */
 function renderSchedule() {
-  document.getElementById('schedule-subtitle').textContent=`${SCHEDULE.length} weeks · 5 mocks · Exam ${formatDisplayDate(new Date(profile.examDate))}`;
+  const ms=getMockStats();
+  document.getElementById('schedule-subtitle').textContent=`${SCHEDULE.length} weeks · ${ms.total} mocks · Exam ${formatDisplayDate(new Date(profile.examDate))}`;
   const grid=document.getElementById('schedule-grid'); grid.innerHTML='';
   const curWeekNum=getCurrentWeekNum();
-  [1,2,3].forEach(phase=>{
+  [1,2,3,4].forEach(phase=>{
     const weeks=SCHEDULE.filter(w=>w.phase===phase); const color=PHASE_HEX[phase];
     const block=document.createElement('div'); block.className='phase-block';
     block.innerHTML=`<div class="phase-block-header">
@@ -948,9 +940,10 @@ function renderScoresPanel() {
   const avgMocks=mockScores.length?Math.round(mockScores.reduce((a,b)=>a+b.pct,0)/mockScores.length):null;
   const best=allTaskScores.length?allTaskScores.reduce((a,b)=>a.pct>b.pct?a:b):null;
   const scoreCol=pct=>pct>=70?'var(--green)':pct>=50?'var(--accent)':'var(--accent3)';
+  const ms = getMockStats();
   document.getElementById('score-insight-grid').innerHTML=`
     <div class="insight-card"><div class="insight-label">Avg test score</div><div class="insight-val" style="color:${avgTests!=null?scoreCol(avgTests):'var(--muted)'}">${avgTests!=null?avgTests+'%':'—'}</div><div class="insight-sub">${testScores.length} test${testScores.length!==1?'s':''} logged</div></div>
-    <div class="insight-card"><div class="insight-label">Avg mock score</div><div class="insight-val" style="color:${avgMocks!=null?scoreCol(avgMocks):'var(--muted)'}">${avgMocks!=null?avgMocks+'%':'—'}</div><div class="insight-sub">${mockScores.length} of 5 mocks logged · /88 each</div></div>
+    <div class="insight-card"><div class="insight-label">Avg mock score</div><div class="insight-val" style="color:${avgMocks!=null?scoreCol(avgMocks):'var(--muted)'}">${avgMocks!=null?avgMocks+'%':'—'}</div><div class="insight-sub">${mockScores.length} of ${ms.total} mocks logged</div></div>
     <div class="insight-card"><div class="insight-label">Best score</div><div class="insight-val" style="color:var(--green)">${best?best.pct+'%':'—'}</div><div class="insight-sub">${best?best.task.title.slice(0,30)+(best.task.title.length>30?'…':''):' '}</div></div>`;
   destroyChart('chart-subj-scores');
   const subjAvgs=SUBJECTS.map(s=>{ const ss=allTaskScores.filter(x=>x.task.subject===s&&x.task.type!=='mock'); return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):null; });
@@ -995,7 +988,7 @@ function renderCompletionPanel() {
   document.getElementById('completion-insight-grid').innerHTML=`
     <div class="insight-card"><div class="insight-label">Overall completion</div><div class="insight-val" style="color:var(--accent)">${overall.pct}%</div><div class="insight-sub">${overall.done} of ${overall.total} tasks done</div></div>
     <div class="insight-card"><div class="insight-label">Tests completed</div><div class="insight-val" style="color:var(--blue)">${ts.done}/${ts.total}</div><div class="insight-sub">${ts.total?Math.round(ts.done/ts.total*100):0}% of subject tests</div></div>
-    <div class="insight-card"><div class="insight-label">Mocks done</div><div class="insight-val" style="color:var(--accent3)">${ms.done}/5</div><div class="insight-sub">${ms.total?Math.round(ms.done/ms.total*100):0}% of 5 mock exams</div></div>`;
+    <div class="insight-card"><div class="insight-label">Mocks done</div><div class="insight-val" style="color:var(--accent3)">${ms.done}/${ms.total}</div><div class="insight-sub">${ms.total?Math.round(ms.done/ms.total*100):0}% of ${ms.total} mock exams</div></div>`;
   destroyChart('chart-subjects');
   const subjPcts=SUBJECTS.map(s=>getSubjectStats(s).pct);
   charts['chart-subjects']=new Chart(document.getElementById('chart-subjects'),{
@@ -1023,7 +1016,7 @@ function renderCompletionPanel() {
       {label:'Completed',data:mockDone,borderColor:'#c47a7a',backgroundColor:'rgba(196,122,122,0.08)',borderWidth:2,tension:0.3,fill:true,pointBackgroundColor:'#c47a7a',pointRadius:4},
       {label:'Target',data:mockTarget,borderColor:'rgba(255,255,255,0.15)',borderDash:[4,4],borderWidth:1.5,tension:0,fill:false,pointRadius:0}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,max:5,min:0,ticks:{...AXIS_STYLE.ticks,stepSize:1}}},plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a7871',font:{family:'DM Mono',size:10},padding:12}}}}
+    options:{responsive:true,maintainAspectRatio:false,scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,max:ms.total,min:0,ticks:{...AXIS_STYLE.ticks,stepSize:1}}},plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a7871',font:{family:'DM Mono',size:10},padding:12}}}}
   });
 }
 
@@ -1067,30 +1060,22 @@ function exportScoresCSV() {
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a'); a.href=url;
-  a.download=`CFA-L2-Scores-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.csv`;
+  a.download=`CFA-L1-Scores-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.csv`;
   a.click(); URL.revokeObjectURL(url);
   showToast(`Exported ${sorted.length} scores as CSV ✓`,'success');
 }
 
 /* ════════════════════════════════════════════════════════
    CHART RENDERER FOR EXPORT
-   Draws a Chart.js config onto an isolated off-screen
-   canvas with animation disabled, then resolves with the
-   PNG data URL once the frame has painted.
-   This avoids the race condition in both previous versions
-   (setting onComplete after construction, or calling
-   update() while animation was still pending).
 ════════════════════════════════════════════════════════ */
 function renderChartOffscreen(config, w, h) {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
-    canvas.width  = w * 2;   // @2x for sharpness
+    canvas.width  = w * 2;
     canvas.height = h * 2;
-    // Keep it invisible but in-DOM so the canvas context works
     canvas.style.cssText = 'position:fixed;top:-9999px;left:-9999px;pointer-events:none;opacity:0';
     document.body.appendChild(canvas);
 
-    // Deep-merge animation:0 so nothing else can re-enable it
     const cfg = JSON.parse(JSON.stringify(config));
     cfg.options = cfg.options || {};
     cfg.options.animation = { duration: 0 };
@@ -1101,8 +1086,6 @@ function renderChartOffscreen(config, w, h) {
     try { chart = new Chart(canvas, cfg); }
     catch(err) { document.body.removeChild(canvas); reject(err); return; }
 
-    // requestAnimationFrame gives the browser one paint cycle
-    // to flush the synchronous (duration:0) draw before we read pixels
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         try {
@@ -1122,10 +1105,7 @@ function renderChartOffscreen(config, w, h) {
 
 /* ── BUILD ALL 6 CHART IMAGES FOR PDF ── */
 async function buildExportChartImages() {
-  const ax = {
-    grid:  { color: 'rgba(255,255,255,0.06)', drawBorder: false },
-    ticks: { color: '#9a9890', font: { family: 'monospace', size: 11 } }
-  };
+  const ax = { grid:  { color: 'rgba(255,255,255,0.06)', drawBorder: false }, ticks: { color: '#9a9890', font: { family: 'monospace', size: 11 } } };
   const noLegend = { legend:{ display:false }, tooltip:{ enabled:false } };
 
   const allTaskScores = Object.entries(scores).map(([id,s])=>{
@@ -1136,58 +1116,45 @@ async function buildExportChartImages() {
   const testScores = allTaskScores.filter(s=>s.task.type!=='mock');
   const mockScores = allTaskScores.filter(s=>s.task.type==='mock');
 
-  /* 1 — Completion by subject */
   const subjPcts = SUBJECTS.map(s=>getSubjectStats(s).pct);
   const img_completion = await renderChartOffscreen({
-    type:'bar',
-    data:{ labels:SUBJECTS, datasets:[{ data:subjPcts, backgroundColor:subjPcts.map(p=>p===100?'#6bbd8b':p>50?'#c8a96e':'#8fc4b4'), borderRadius:4, borderSkipped:false }] },
+    type:'bar', data:{ labels:SUBJECTS, datasets:[{ data:subjPcts, backgroundColor:subjPcts.map(p=>p===100?'#6bbd8b':p>50?'#c8a96e':'#8fc4b4'), borderRadius:4, borderSkipped:false }] },
     options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
   }, 820, 220);
 
-  /* 2 — Avg test score by subject */
   const subjAvgs = SUBJECTS.map(s=>{ const ss=testScores.filter(x=>x.task.subject===s); return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):0; });
   const img_subjscores = await renderChartOffscreen({
-    type:'bar',
-    data:{ labels:SUBJECTS, datasets:[{ data:subjAvgs, backgroundColor:subjAvgs.map(v=>v>=70?'#6bbd8b':v>=50?'#c8a96e':'#d96060'), borderRadius:4, borderSkipped:false }] },
+    type:'bar', data:{ labels:SUBJECTS, datasets:[{ data:subjAvgs, backgroundColor:subjAvgs.map(v=>v>=70?'#6bbd8b':v>=50?'#c8a96e':'#d96060'), borderRadius:4, borderSkipped:false }] },
     options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
   }, 820, 220);
 
-  /* 3 — Score distribution */
   const bins=[0,0,0,0,0];
   allTaskScores.forEach(s=>{ if(s.pct<50)bins[0]++; else if(s.pct<60)bins[1]++; else if(s.pct<70)bins[2]++; else if(s.pct<80)bins[3]++; else bins[4]++; });
   const img_dist = await renderChartOffscreen({
-    type:'bar',
-    data:{ labels:['<50%','50–59%','60–69%','70–79%','80%+'], datasets:[{ data:bins, backgroundColor:['#d96060','#c8a96e','#e8b84b','#8fc4b4','#6bbd8b'], borderRadius:4, borderSkipped:false }] },
+    type:'bar', data:{ labels:['<50%','50–59%','60–69%','70–79%','80%+'], datasets:[{ data:bins, backgroundColor:['#d96060','#c8a96e','#e8b84b','#8fc4b4','#6bbd8b'], borderRadius:4, borderSkipped:false }] },
     options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,ticks:{...ax.ticks,stepSize:1}} } }
   }, 400, 200);
 
-  /* 4 — Weekly consistency */
   const consData = getWeeklyConsistency();
   const img_consistency = await renderChartOffscreen({
-    type:'line',
-    data:{ labels:consData.map(w=>`W${w.week}`), datasets:[{ data:consData.map(w=>w.pct), borderColor:'#c8a96e', backgroundColor:'rgba(200,169,110,0.1)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c8a96e', pointRadius:3 }] },
+    type:'line', data:{ labels:consData.map(w=>`W${w.week}`), datasets:[{ data:consData.map(w=>w.pct), borderColor:'#c8a96e', backgroundColor:'rgba(200,169,110,0.1)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c8a96e', pointRadius:3 }] },
     options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
   }, 400, 200);
 
-  /* 5 — Mock score trend (conditional) */
   let img_mocktrend = null;
   if(mockScores.length) {
     const sorted=[...mockScores].sort((a,b)=>new Date(a.date)-new Date(b.date));
     img_mocktrend = await renderChartOffscreen({
-      type:'line',
-      data:{ labels:sorted.map((_,i)=>`Mock ${i+1}`), datasets:[
+      type:'line', data:{ labels:sorted.map((_,i)=>`Mock ${i+1}`), datasets:[
         { label:'Score %', data:sorted.map(s=>s.pct), borderColor:'#c47a7a', backgroundColor:'rgba(196,122,122,0.1)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c47a7a', pointRadius:5 },
         { label:'70% target', data:sorted.map(()=>70), borderColor:'rgba(107,189,139,0.5)', borderDash:[5,4], borderWidth:1.5, tension:0, fill:false, pointRadius:0 }
-      ]},
-      options:{ plugins:{ legend:{ display:true, position:'bottom', labels:{ color:'#9a9890', font:{family:'monospace',size:11}, padding:14 } }, tooltip:{enabled:false} }, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
+      ]}, options:{ plugins:{ legend:{ display:true, position:'bottom', labels:{ color:'#9a9890', font:{family:'monospace',size:11}, padding:14 } }, tooltip:{enabled:false} }, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
     }, 820, 200);
   }
 
-  /* 6 — Tests done doughnut */
   const ts = getTestStats();
   const img_doughnut = await renderChartOffscreen({
-    type:'doughnut',
-    data:{ labels:['Done','Pending'], datasets:[{ data:[ts.done, ts.total-ts.done], backgroundColor:['#6bbd8b','#1a1e28'], borderColor:['#6bbd8b','rgba(255,255,255,0.1)'], borderWidth:1 }] },
+    type:'doughnut', data:{ labels:['Done','Pending'], datasets:[{ data:[ts.done, ts.total-ts.done], backgroundColor:['#6bbd8b','#1a1e28'], borderColor:['#6bbd8b','rgba(255,255,255,0.1)'], borderWidth:1 }] },
     options:{ cutout:'68%', plugins:{ legend:{ display:true, position:'bottom', labels:{ color:'#9a9890', font:{family:'monospace',size:11}, padding:12 } }, tooltip:{enabled:false} } }
   }, 400, 200);
 
@@ -1216,7 +1183,6 @@ async function exportFullReport() {
   try { chartImgs=await buildExportChartImages(); }
   catch(err){ console.error(err); showToast('Chart render failed','error'); return; }
 
-  /* Scores table rows */
   const scoreRowsHTML = allTaskScores.length
     ? [...allTaskScores].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(s=>{
         const col=s.pct>=70?'#6bbd8b':s.pct>=50?'#c8a96e':'#d96060';
@@ -1236,7 +1202,6 @@ async function exportFullReport() {
       }).join('')
     : `<tr><td colspan="7" style="padding:24px;text-align:center;color:#555;font-size:12px">No scores logged yet</td></tr>`;
 
-  /* Subject detail rows */
   const subjDetailHTML = SUBJECTS.map(s=>{
     const st=getSubjectStats(s);
     const ss=testScores.filter(x=>x.task.subject===s);
@@ -1259,11 +1224,9 @@ async function exportFullReport() {
   report.style.cssText='display:block;position:fixed;top:-9999px;left:-9999px;width:900px;background:#0d0f14;padding:48px;font-family:Georgia,serif;color:#e8e6df';
 
   report.innerHTML=`<div style="background:#0d0f14;width:900px;padding:0">
-
-    <!-- HEADER -->
     <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid rgba(255,255,255,0.1)">
       <div>
-        <div style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#7a7871;margin-bottom:8px;font-family:monospace">CFA Level 2 · Precision Study Tracker</div>
+        <div style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#7a7871;margin-bottom:8px;font-family:monospace">CFA Level 1 · Precision Study Tracker</div>
         <div style="font-size:30px;color:#c8a96e;line-height:1.1;font-family:Georgia,serif">Progress Report</div>
         <div style="font-size:13px;color:#7a7871;margin-top:6px;font-family:monospace">${profile.name} &nbsp;·&nbsp; Generated ${formatDisplayDate(today)}</div>
       </div>
@@ -1274,12 +1237,11 @@ async function exportFullReport() {
       </div>
     </div>
 
-    <!-- SUMMARY STATS -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
       ${[
         {label:'Overall completion', val:overall.pct+'%', sub:`${overall.done}/${overall.total} tasks`, col:'#c8a96e'},
         {label:'Avg test score', val:avgTests!=null?avgTests+'%':'—', sub:`${testScores.length} tests logged`, col:avgTests!=null?scoreCol(avgTests):'#7a7871'},
-        {label:'Avg mock score', val:avgMocks!=null?avgMocks+'%':'—', sub:`${mockScores.length} of 5 mocks logged`, col:avgMocks!=null?scoreCol(avgMocks):'#7a7871'},
+        {label:'Avg mock score', val:avgMocks!=null?avgMocks+'%':'—', sub:`${mockScores.length} of ${ms.total} mocks logged`, col:avgMocks!=null?scoreCol(avgMocks):'#7a7871'},
         {label:'Best score', val:best?best.pct+'%':'—', sub:best?best.task.subject:'none yet', col:'#6bbd8b'},
       ].map(c=>`<div style="background:#13161d;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px 16px">
         <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7a7871;margin-bottom:7px;font-family:monospace">${c.label}</div>
@@ -1288,9 +1250,8 @@ async function exportFullReport() {
       </div>`).join('')}
     </div>
 
-    <!-- PHASE PROGRESS -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px">
-      ${[1,2,3].map(p=>{
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
+      ${[1,2,3,4].map(p=>{
         const pct=getPhasePct(p); const col=PHASE_HEX[p];
         return `<div style="background:#13161d;border:1px solid rgba(255,255,255,0.08);border-top:2px solid ${col};border-radius:8px;padding:14px 16px">
           <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7a7871;margin-bottom:4px;font-family:monospace">Phase ${p}</div>
@@ -1301,19 +1262,16 @@ async function exportFullReport() {
       }).join('')}
     </div>
 
-    <!-- CHART: Completion by subject -->
     <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
       <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Completion by subject</div>
       <img src="${chartImgs.img_completion}" style="width:100%;display:block;border-radius:4px">
     </div>
 
-    <!-- CHART: Avg test score by subject -->
     <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
       <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Average score % by subject (tests only)</div>
       <img src="${chartImgs.img_subjscores}" style="width:100%;display:block;border-radius:4px">
     </div>
 
-    <!-- CHARTS ROW: Distribution + Consistency -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
       <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
         <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Score distribution</div>
@@ -1325,7 +1283,6 @@ async function exportFullReport() {
       </div>
     </div>
 
-    <!-- CHARTS ROW: Tests doughnut + Mock trend -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
       <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
         <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Tests completed vs pending</div>
@@ -1342,13 +1299,11 @@ async function exportFullReport() {
       }
     </div>
 
-    <!-- SUBJECT DETAIL -->
     <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
       <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:16px;font-family:monospace">Subject detail — completion & avg score</div>
       ${subjDetailHTML}
     </div>
 
-    <!-- ALL SCORES TABLE -->
     <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px;overflow:hidden">
       <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:16px;font-family:monospace">All recorded test scores (${allTaskScores.length} total)</div>
       <table style="width:100%;border-collapse:collapse;font-size:11px;font-family:monospace">
@@ -1367,9 +1322,8 @@ async function exportFullReport() {
       </table>
     </div>
 
-    <!-- FOOTER -->
     <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;font-size:10px;color:#555048;text-align:center;font-family:monospace">
-      CFA Level 2 Precision Study Tracker &nbsp;·&nbsp; ${new Date().toLocaleString()} &nbsp;·&nbsp; ${profile.name} &nbsp;·&nbsp; Confidential
+      CFA Level 1 Precision Study Tracker &nbsp;·&nbsp; ${new Date().toLocaleString()} &nbsp;·&nbsp; ${profile.name} &nbsp;·&nbsp; Confidential
     </div>
 
   </div>`;
@@ -1383,7 +1337,7 @@ async function exportFullReport() {
     const pdfW=900; const pdfH=Math.round(canvas.height/1.5);
     const pdf=new jsPDF({orientation:'portrait',unit:'px',format:[pdfW,pdfH]});
     pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,pdfW,pdfH);
-    pdf.save(`CFA-L2-Report-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`);
+    pdf.save(`CFA-L1-Report-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`);
     showToast('PDF exported successfully ✓','success');
   } catch(err) {
     console.error(err); showToast('PDF export failed — check console','error');
