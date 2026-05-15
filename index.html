@@ -10,103 +10,251 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
+/* ═══════════════════════════════════════
+   RESET & VARIABLES
+═══════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #0d0f14; --surface: #13161d; --surface2: #1a1e28;
-  --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13); --border3: rgba(255,255,255,0.2);
-  --text: #e8e6df; --muted: #7a7871; --muted2: #555048;
-  --accent: #c8a96e; --accent2: #8fc4b4; --accent3: #c47a7a;
-  --green: #6bbd8b; --amber: #e8b84b; --red: #d96060; --blue: #6ea8d8; --purple: #c678dd;
-  --phase1: #8fc4b4; --phase2: #c8a96e; --phase3: #c47a7a;
-  --font-serif: 'DM Serif Display', Georgia, serif;
-  --font-sans: 'Syne', sans-serif; --font-mono: 'DM Mono', monospace;
-  --transition: 0.22s cubic-bezier(0.4,0,0.2,1); --radius: 10px;
-}
-html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); font-family: var(--font-sans); min-height: 100vh; line-height: 1.6; overflow-x: hidden; }
 
-/* ONBOARDING */
-.onboarding-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; animation: fadeIn 0.4s ease; }
+:root {
+  --bg: #0d0f14;
+  --surface: #13161d;
+  --surface2: #1a1e28;
+  --surface3: #20253200;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --border3: rgba(255,255,255,0.2);
+  --text: #e8e6df;
+  --muted: #7a7871;
+  --muted2: #555048;
+  --accent: #c8a96e;
+  --accent2: #8fc4b4;
+  --accent3: #c47a7a;
+  --green: #6bbd8b;
+  --amber: #e8b84b;
+  --red: #d96060;
+  --blue: #6ea8d8;
+  --purple: #c678dd;
+  --phase1: #8fc4b4;
+  --phase2: #c8a96e;
+  --phase3: #c47a7a;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-sans: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════
+   ONBOARDING MODAL
+═══════════════════════════════════════ */
+.onboarding-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(16px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.4s ease;
+}
 .onboarding-overlay.hidden { display: none; }
-.onboarding-modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; width: 100%; max-width: 520px; padding: 2.5rem; animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1); }
-.onboarding-logo { font-family: var(--font-serif); font-size: 1.1rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 0.02em; }
+
+.onboarding-modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  padding: 2.5rem;
+  animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.onboarding-logo {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+}
 .onboarding-tagline { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2rem; }
-.onboarding-modal h2 { font-family: var(--font-serif); font-size: 1.8rem; color: var(--text); margin-bottom: 0.4rem; }
+
+.onboarding-modal h2 {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
 .onboarding-modal p { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.75rem; }
+
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
 .form-group.full { grid-column: 1 / -1; }
+
 .form-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.form-input, .form-select { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: var(--font-sans); font-size: 0.85rem; padding: 0.6rem 0.85rem; width: 100%; transition: border-color var(--transition); outline: none; -webkit-appearance: none; }
+
+.form-input, .form-select {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  width: 100%;
+  transition: border-color var(--transition);
+  outline: none;
+  -webkit-appearance: none;
+}
 .form-input:focus, .form-select:focus { border-color: var(--accent); }
 .form-select option { background: var(--surface2); }
+
 .level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
-.level-btn { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--muted); font-family: var(--font-sans); font-size: 0.78rem; font-weight: 500; padding: 0.55rem; cursor: pointer; transition: all var(--transition); text-align: center; }
+.level-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.55rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
 .level-btn:hover { border-color: var(--border3); color: var(--text); }
 .level-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(200,169,110,0.08); }
-.form-submit { width: 100%; margin-top: 1.5rem; background: var(--accent); border: none; border-radius: 8px; color: #0d0f14; font-family: var(--font-sans); font-size: 0.88rem; font-weight: 700; letter-spacing: 0.06em; padding: 0.8rem; cursor: pointer; transition: all var(--transition); text-transform: uppercase; }
+
+.form-submit {
+  width: 100%;
+  margin-top: 1.5rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #0d0f14;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.8rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-transform: uppercase;
+}
 .form-submit:hover { background: #d4b87a; transform: translateY(-1px); }
+.form-submit:active { transform: translateY(0); }
 
-/* SCORE MODAL */
-.score-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(12px); z-index: 600; display: flex; align-items: center; justify-content: center; padding: 1rem; animation: fadeIn 0.2s ease; }
-.score-modal-overlay.hidden { display: none; }
-.score-modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; width: 100%; max-width: 420px; padding: 1.75rem; animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1); }
-.modal-type-tag { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; font-family: var(--font-mono); }
-.modal-task-title { font-family: var(--font-serif); font-size: 1.2rem; line-height: 1.3; margin-bottom: 0.2rem; }
-.modal-task-meta { font-size: 0.72rem; color: var(--muted); margin-bottom: 1.25rem; }
-.score-input-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
-.score-field { flex: 1; }
-.score-field-label { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; display: block; }
-.score-number-input { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: var(--font-mono); font-size: 1.4rem; padding: 0.6rem 0.85rem; width: 100%; outline: none; transition: border-color var(--transition); text-align: center; -moz-appearance: textfield; }
-.score-number-input::-webkit-inner-spin-button, .score-number-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-.score-number-input:focus { border-color: var(--accent); }
-.score-number-input[readonly] { opacity: 0.5; cursor: not-allowed; }
-.score-slash { font-family: var(--font-mono); font-size: 1.6rem; color: var(--muted); padding-top: 1.4rem; flex-shrink: 0; }
-.score-preview { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 1rem; }
-.preview-pct { font-family: var(--font-mono); font-size: 1.8rem; font-weight: 500; min-width: 60px; transition: color 0.2s; }
-.preview-right { flex: 1; }
-.preview-label { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
-.preview-bar-bg { background: var(--surface); border-radius: 3px; height: 6px; overflow: hidden; }
-.preview-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s ease, background 0.3s ease; }
-.preview-grade { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
-.modal-btn-row { display: flex; gap: 0.65rem; }
-.modal-btn-save { flex: 1; background: var(--accent); border: none; border-radius: 8px; color: #0d0f14; font-family: var(--font-sans); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em; padding: 0.65rem; cursor: pointer; transition: all var(--transition); text-transform: uppercase; }
-.modal-btn-save:hover { background: #d4b87a; transform: translateY(-1px); }
-.modal-btn-cancel { background: none; border: 1px solid var(--border2); border-radius: 8px; color: var(--muted); font-family: var(--font-sans); font-size: 0.82rem; padding: 0.65rem 1rem; cursor: pointer; transition: all var(--transition); }
-.modal-btn-cancel:hover { border-color: var(--border3); color: var(--text); }
-.modal-btn-clear { background: none; border: 1px solid rgba(196,122,122,0.3); border-radius: 8px; color: var(--accent3); font-family: var(--font-sans); font-size: 0.82rem; padding: 0.65rem 1rem; cursor: pointer; transition: all var(--transition); }
-.modal-btn-clear:hover { background: rgba(196,122,122,0.08); }
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 2rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(13,15,20,0.94);
+  backdrop-filter: blur(16px);
+  z-index: 100;
+  gap: 1rem;
+}
 
-/* SCORE CHIP */
-.score-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 0.62rem; font-family: var(--font-mono); padding: 3px 8px; border-radius: 20px; cursor: pointer; transition: all var(--transition); white-space: nowrap; border: 1px solid var(--border2); color: var(--muted); user-select: none; }
-.score-chip:hover { border-color: var(--accent); color: var(--accent); }
-.score-chip.has-score { background: rgba(200,169,110,0.12); border-color: var(--accent); color: var(--accent); }
-.score-chip.mock.has-score { background: rgba(196,122,122,0.12); border-color: var(--accent3); color: var(--accent3); }
-.score-chip-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-
-/* NAV */
-.nav { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 2rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(13,15,20,0.94); backdrop-filter: blur(16px); z-index: 100; gap: 1rem; }
 .nav-logo { font-family: var(--font-serif); font-size: 1.1rem; color: var(--accent); letter-spacing: 0.02em; flex-shrink: 0; }
 .nav-logo span { color: var(--muted); font-size: 0.72rem; font-family: var(--font-sans); display: block; letter-spacing: 0.1em; text-transform: uppercase; }
-.nav-tabs { display: flex; gap: 0.2rem; background: var(--surface); padding: 4px; border-radius: 8px; border: 1px solid var(--border); }
-.tab-btn { background: none; border: none; color: var(--muted); font-family: var(--font-sans); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.38rem 0.85rem; border-radius: 5px; cursor: pointer; transition: all var(--transition); white-space: nowrap; }
+
+.nav-tabs {
+  display: flex;
+  gap: 0.2rem;
+  background: var(--surface);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.38rem 0.85rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border2); }
-.nav-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
 .nav-student { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); text-align: right; }
 .nav-student strong { color: var(--text); display: block; }
-.nav-edit-btn { background: none; border: 1px solid var(--border2); border-radius: 6px; color: var(--muted); font-family: var(--font-sans); font-size: 0.68rem; padding: 0.28rem 0.6rem; cursor: pointer; transition: all var(--transition); white-space: nowrap; }
+.nav-edit-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  padding: 0.28rem 0.6rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
 .nav-edit-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-/* VIEWS */
-.view { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; animation: fadeIn 0.25s ease; }
+/* ═══════════════════════════════════════
+   VIEWS
+═══════════════════════════════════════ */
+.view {
+  display: none;
+  padding: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  animation: fadeIn 0.25s ease;
+}
 .view.active { display: block; }
 
-/* DASHBOARD */
+/* ═══════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════ */
 .dash-header { margin-bottom: 1.75rem; }
 .dash-title { font-family: var(--font-serif); font-size: 2rem; color: var(--text); }
 .dash-subtitle { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; letter-spacing: 0.05em; }
-.countdown-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+
+.countdown-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
 .countdown-block { flex-shrink: 0; }
 .countdown-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.1rem; }
 .countdown-num { font-family: var(--font-serif); font-size: 2rem; color: var(--accent); line-height: 1; }
@@ -114,25 +262,64 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 .countdown-divider { width: 1px; height: 36px; background: var(--border); flex-shrink: 0; }
 .overall-bar-wrap { flex: 1; min-width: 160px; }
 .overall-bar-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-bottom: 0.4rem; }
+
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
-.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.15rem; transition: border-color var(--transition); }
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.15rem;
+  transition: border-color var(--transition);
+}
 .stat-card:hover { border-color: var(--border2); }
 .stat-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.45rem; }
 .stat-val { font-family: var(--font-mono); font-size: 1.85rem; font-weight: 500; line-height: 1; }
 .stat-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+
 .progress-bar-wrap { background: var(--surface2); border-radius: 3px; height: 4px; overflow: hidden; margin-top: 0.65rem; }
 .progress-bar { height: 100%; border-radius: 3px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+
 .phases-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
-.phase-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.15rem; border-top: 2px solid var(--phase-color, var(--accent)); transition: transform var(--transition), border-color var(--transition); }
+.phase-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+  border-top: 2px solid var(--phase-color, var(--accent));
+  transition: transform var(--transition), border-color var(--transition);
+}
 .phase-card:hover { transform: translateY(-2px); }
 .phase-name { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 .phase-title { font-family: var(--font-serif); font-size: 0.95rem; margin: 0.2rem 0; }
 .phase-dates { font-size: 0.68rem; color: var(--muted); font-family: var(--font-mono); }
 .phase-pct { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 500; margin: 0.45rem 0; }
-.section-title { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+
+.section-title {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
 .week-timeline { display: flex; flex-direction: column; gap: 0.4rem; }
-.week-row { display: grid; grid-template-columns: 130px 1fr 56px; align-items: center; gap: 1rem; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid transparent; border-radius: 8px; padding: 0.55rem 0.9rem; cursor: pointer; transition: all var(--transition); }
+.week-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 56px;
+  align-items: center;
+  gap: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
 .week-row:hover { border-color: var(--border2); transform: translateX(2px); }
 .week-row.current { border-left-color: var(--accent) !important; }
 .week-row.done { opacity: 0.55; }
@@ -140,49 +327,131 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 .week-tasks { font-size: 0.78rem; }
 .week-pct-col { font-family: var(--font-mono); font-size: 0.75rem; text-align: right; }
 
-/* CHECKLIST */
+/* ═══════════════════════════════════════
+   CHECKLIST
+═══════════════════════════════════════ */
 .checklist-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
 .week-selector { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-.week-selector select { background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: var(--font-sans); font-size: 0.8rem; padding: 0.45rem 0.75rem; cursor: pointer; outline: none; transition: border-color var(--transition); }
+
+.week-selector select {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition);
+}
 .week-selector select:focus { border-color: var(--accent); }
-.action-btn { background: none; border: 1px solid var(--border2); border-radius: 6px; color: var(--muted); font-family: var(--font-sans); font-size: 0.72rem; padding: 0.38rem 0.8rem; cursor: pointer; transition: all var(--transition); letter-spacing: 0.05em; white-space: nowrap; }
+
+.action-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  padding: 0.38rem 0.8rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
 .action-btn:hover { border-color: var(--border3); color: var(--text); }
 .action-btn.danger:hover { border-color: var(--accent3); color: var(--accent3); }
-.week-header-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; }
+.action-btn.export:hover { border-color: var(--accent); color: var(--accent); }
+
+.week-header-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
 .week-info-title { font-family: var(--font-serif); font-size: 1.15rem; }
 .week-info-phase { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .week-progress-mini { display: flex; align-items: center; gap: 0.75rem; }
 .week-pct-big { font-family: var(--font-mono); font-size: 1.4rem; }
 .week-of { font-size: 0.68rem; color: var(--muted); font-family: var(--font-mono); }
+
 .checklist-area { display: flex; flex-direction: column; gap: 0.6rem; }
-.check-item { display: flex; align-items: flex-start; gap: 0.85rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.85rem 1.1rem; transition: all var(--transition); user-select: none; }
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+}
 .check-item:hover { border-color: var(--border2); transform: translateX(2px); }
 .check-item.checked { opacity: 0.5; }
 .check-item.checked:hover { opacity: 0.7; }
-.check-box { width: 19px; height: 19px; border: 1.5px solid var(--border2); border-radius: 5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; transition: all var(--transition); cursor: pointer; }
+
+.check-box {
+  width: 19px; height: 19px;
+  border: 1.5px solid var(--border2);
+  border-radius: 5px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+  transition: all var(--transition);
+}
 .check-item.checked .check-box { background: var(--green); border-color: var(--green); }
 .check-box svg { display: none; }
 .check-item.checked .check-box svg { display: block; }
+
 .check-content { flex: 1; }
 .check-title { font-size: 0.86rem; font-weight: 500; }
 .check-item.checked .check-title { text-decoration: line-through; color: var(--muted); }
-.check-meta { display: flex; gap: 0.65rem; margin-top: 0.3rem; flex-wrap: wrap; align-items: center; }
-.check-badge { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border-radius: 4px; font-weight: 500; font-family: var(--font-mono); }
+.check-meta { display: flex; gap: 0.65rem; margin-top: 0.3rem; flex-wrap: wrap; }
+
+.check-badge {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+}
 .badge-reading { background: rgba(111,189,139,0.12); color: var(--green); }
 .badge-test { background: rgba(200,169,110,0.15); color: var(--accent); }
 .badge-review { background: rgba(110,168,216,0.13); color: var(--blue); }
 .badge-mock { background: rgba(196,122,122,0.13); color: var(--accent3); }
 .badge-spaced { background: rgba(198,120,221,0.15); color: var(--purple); }
+
 .check-days { font-size: 0.68rem; color: var(--muted); font-family: var(--font-mono); }
 
-/* SCHEDULE */
+/* ═══════════════════════════════════════
+   SCHEDULE
+═══════════════════════════════════════ */
 .schedule-grid { display: flex; flex-direction: column; gap: 2rem; }
 .phase-block-header { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.9rem; }
 .phase-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .phase-block-title { font-family: var(--font-serif); font-size: 1.25rem; }
 .phase-block-sub { font-size: 0.72rem; color: var(--muted); font-family: var(--font-mono); }
 .weeks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; }
-.schedule-week { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1.1rem; transition: border-color var(--transition), transform var(--transition); border-top-width: 2px; }
+
+.schedule-week {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.1rem;
+  transition: border-color var(--transition), transform var(--transition);
+  border-top-width: 2px;
+}
 .schedule-week:hover { transform: translateY(-2px); border-color: var(--border2); }
 .schedule-week.current-week { box-shadow: 0 0 0 1px var(--accent) inset; }
 .sw-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.55rem; }
@@ -194,58 +463,106 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 .sw-done-bar { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.65rem; }
 .sw-done-pct { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); }
 
-/* ANALYTICS */
-.analytics-header { margin-bottom: 1.25rem; }
-.analytics-subtabs { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.a-tab { background: none; border: 1px solid var(--border2); border-radius: 6px; color: var(--muted); font-family: var(--font-sans); font-size: 0.72rem; padding: 0.35rem 0.85rem; cursor: pointer; transition: all var(--transition); letter-spacing: 0.05em; }
-.a-tab:hover { color: var(--text); border-color: var(--border3); }
-.a-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(200,169,110,0.08); }
-.a-panel { display: none; }
-.a-panel.active { display: block; animation: fadeIn 0.2s ease; }
+/* ═══════════════════════════════════════
+   ANALYTICS
+═══════════════════════════════════════ */
+.analytics-header { margin-bottom: 1.75rem; }
 .analytics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.25rem 1rem; }
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.25rem 1rem;
+}
 .chart-card.full { grid-column: 1 / -1; }
 .chart-title { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
 .chart-wrap { position: relative; height: 200px; }
 .chart-wrap.tall { height: 260px; }
+
 .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
-.insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; }
+.insight-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+}
 .insight-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
 .insight-val { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 500; }
 .insight-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
-.scores-table-wrap { border-radius: var(--radius); overflow: hidden; }
-.scores-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-.scores-table th { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 0.6rem 0.85rem; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface2); }
-.scores-table td { padding: 0.6rem 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
-.scores-table tr:last-child td { border-bottom: none; }
-.scores-table tr:hover td { background: var(--surface2); }
-.score-pct-pill { font-family: var(--font-mono); font-size: 0.72rem; padding: 2px 9px; border-radius: 20px; }
-.score-pct-pill.high { background: rgba(107,189,139,0.15); color: var(--green); }
-.score-pct-pill.mid  { background: rgba(200,169,110,0.15); color: var(--accent); }
-.score-pct-pill.low  { background: rgba(196,122,122,0.15); color: var(--accent3); }
-.mini-bar-wrap { background: var(--surface2); border-radius: 2px; height: 4px; width: 72px; overflow: hidden; }
-.mini-bar-fill { height: 100%; border-radius: 2px; }
-.no-scores-msg { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.82rem; }
-.no-scores-msg strong { display: block; font-family: var(--font-serif); font-size: 1.1rem; color: var(--text); margin-bottom: 0.4rem; }
 
-/* EXPORT BAR */
-.export-bar { display: flex; justify-content: flex-end; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.export-btn { border: none; border-radius: 8px; font-family: var(--font-sans); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; padding: 0.55rem 1.2rem; cursor: pointer; transition: all var(--transition); text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem; }
-.export-btn.primary { background: var(--accent); color: #0d0f14; }
-.export-btn.primary:hover { background: #d4b87a; transform: translateY(-1px); }
-.export-btn.secondary { background: none; border: 1px solid var(--border2); color: var(--accent); }
-.export-btn.secondary:hover { border-color: var(--accent); background: rgba(200,169,110,0.07); transform: translateY(-1px); }
-#export-report { position: fixed; top: -9999px; left: -9999px; width: 900px; background: #0d0f14; }
+/* ═══════════════════════════════════════
+   EXPORT PANEL
+═══════════════════════════════════════ */
+.export-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.export-btn {
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #0d0f14;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.55rem 1.2rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.export-btn:hover { background: #d4b87a; transform: translateY(-1px); }
+.export-btn:active { transform: translateY(0); }
 
-/* TOAST */
-.toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; padding: 0.75rem 1.25rem; font-size: 0.82rem; color: var(--text); z-index: 999; transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); pointer-events: none; }
+/* Hidden export-ready report DOM */
+#export-report {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 900px;
+  background: #0d0f14;
+  color: #e8e6df;
+  font-family: 'Syne', sans-serif;
+  padding: 48px;
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.82rem;
+  color: var(--text);
+  z-index: 999;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+}
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast.success { border-color: var(--green); }
 .toast.error { border-color: var(--red); }
 
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
 @media (max-width: 768px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .phases-row { grid-template-columns: 1fr; }
@@ -268,17 +585,20 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
 </head>
 <body>
 
-<!-- ONBOARDING -->
+<!-- ═══════════════════════════════════════
+     ONBOARDING MODAL
+═══════════════════════════════════════ -->
 <div class="onboarding-overlay" id="onboarding">
   <div class="onboarding-modal">
     <div class="onboarding-logo">CFA Level 2 (2026)</div>
     <div class="onboarding-tagline">Precision Study Tracker</div>
     <h2>Let's set you up</h2>
     <p>This takes 30 seconds. Your schedule, timeline, and analytics will be built around your actual dates.</p>
+
     <div class="form-grid">
       <div class="form-group full">
         <label class="form-label">Your name</label>
-        <input class="form-input" type="text" id="f-name" placeholder="e.g. Moiz Patrawala" autocomplete="given-name">
+        <input class="form-input" type="text" id="f-name" placeholder="e.g. Moiz Ahmed" autocomplete="given-name">
       </div>
       <div class="form-group">
         <label class="form-label">Exam date</label>
@@ -301,46 +621,19 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
         <input class="form-input" type="number" id="f-hours" placeholder="e.g. 1.5" value="1.5" min="0.5" max="12" step="0.5">
       </div>
     </div>
+
     <button class="form-submit" onclick="submitOnboarding()">Build My Study Plan →</button>
   </div>
 </div>
 
-<!-- SCORE MODAL -->
-<div class="score-modal-overlay hidden" id="score-modal-overlay">
-  <div class="score-modal">
-    <div class="modal-type-tag" id="modal-type-tag">Subject Test</div>
-    <div class="modal-task-title" id="modal-task-title">—</div>
-    <div class="modal-task-meta" id="modal-task-meta">—</div>
-    <div class="score-input-row">
-      <div class="score-field">
-        <span class="score-field-label">Your score</span>
-        <input class="score-number-input" type="number" id="modal-score-got" min="0" placeholder="—" oninput="updateScorePreview()">
-      </div>
-      <div class="score-slash">/</div>
-      <div class="score-field">
-        <span class="score-field-label">Out of</span>
-        <input class="score-number-input" type="number" id="modal-score-outof" min="1" placeholder="—" oninput="updateScorePreview()">
-      </div>
-    </div>
-    <div class="score-preview">
-      <div class="preview-pct" id="preview-pct" style="color:var(--muted)">—</div>
-      <div class="preview-right">
-        <div class="preview-label">Performance</div>
-        <div class="preview-bar-bg"><div class="preview-bar-fill" id="preview-bar-fill" style="width:0%;background:var(--muted)"></div></div>
-        <div class="preview-grade" id="preview-grade"></div>
-      </div>
-    </div>
-    <div class="modal-btn-row">
-      <button class="modal-btn-save" onclick="saveScore()">Save score</button>
-      <button class="modal-btn-cancel" onclick="closeScoreModal()">Cancel</button>
-      <button class="modal-btn-clear" id="modal-btn-clear" style="display:none" onclick="clearScore()">Clear</button>
-    </div>
-  </div>
-</div>
-
-<!-- NAV -->
+<!-- ═══════════════════════════════════════
+     NAV
+═══════════════════════════════════════ -->
 <nav class="nav" id="main-nav" style="display:none">
-  <div class="nav-logo">CFA Level 2 (2026)<span>Precision Study Tracker</span></div>
+  <div class="nav-logo">
+    CFA Level 2 (2026)
+    <span>Precision Study Tracker</span>
+  </div>
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
     <button class="tab-btn" onclick="switchTab('checklist')">Checklist</button>
@@ -348,45 +641,96 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
     <button class="tab-btn" onclick="switchTab('analytics')">Analytics</button>
   </div>
   <div class="nav-right">
-    <div class="nav-student"><strong id="nav-name">—</strong><span id="nav-exam">Exam: —</span></div>
+    <div class="nav-student">
+      <strong id="nav-name">—</strong>
+      <span id="nav-exam">Exam: —</span>
+    </div>
     <button class="nav-edit-btn" onclick="editProfile()">Edit profile</button>
   </div>
 </nav>
 
-<!-- DASHBOARD -->
+<!-- ═══════════════════════════════════════
+     DASHBOARD VIEW
+═══════════════════════════════════════ -->
 <div class="view active" id="view-dashboard">
   <div class="dash-header">
     <div class="dash-title" id="dash-greeting">Your Progress</div>
     <div class="dash-subtitle" id="dash-subtitle">CFA Level 2 · November 20, 2026 Exam</div>
   </div>
+
   <div class="countdown-bar">
-    <div class="countdown-block"><div class="countdown-label">Days to exam</div><div class="countdown-num" id="days-left">—</div><div class="countdown-unit">days</div></div>
+    <div class="countdown-block">
+      <div class="countdown-label">Days to exam</div>
+      <div class="countdown-num" id="days-left">—</div>
+      <div class="countdown-unit">days</div>
+    </div>
     <div class="countdown-divider"></div>
-    <div class="countdown-block"><div class="countdown-label">Weeks remaining</div><div class="countdown-num" id="weeks-left">—</div><div class="countdown-unit">weeks</div></div>
+    <div class="countdown-block">
+      <div class="countdown-label">Weeks remaining</div>
+      <div class="countdown-num" id="weeks-left">—</div>
+      <div class="countdown-unit">weeks</div>
+    </div>
     <div class="countdown-divider"></div>
-    <div class="countdown-block"><div class="countdown-label">Hours/day target</div><div class="countdown-num" id="hours-target" style="color:var(--accent2)">—</div><div class="countdown-unit">hrs</div></div>
+    <div class="countdown-block">
+      <div class="countdown-label">Hours/day target</div>
+      <div class="countdown-num" id="hours-target" style="color:var(--accent2)">—</div>
+      <div class="countdown-unit">hrs</div>
+    </div>
     <div class="countdown-divider"></div>
     <div class="overall-bar-wrap">
-      <div class="overall-bar-label"><span>Overall completion</span><span id="overall-pct-label">0%</span></div>
-      <div class="progress-bar-wrap" style="height:8px"><div class="progress-bar" id="overall-bar" style="background:var(--accent);width:0%"></div></div>
+      <div class="overall-bar-label">
+        <span>Overall completion</span>
+        <span id="overall-pct-label">0%</span>
+      </div>
+      <div class="progress-bar-wrap" style="height:8px">
+        <div class="progress-bar" id="overall-bar" style="background:var(--accent);width:0%"></div>
+      </div>
       <div style="font-size:0.68rem;color:var(--muted);margin-top:0.3rem" id="overall-tasks-label">0 / 0 tasks complete</div>
     </div>
   </div>
+
   <div class="stats-grid">
-    <div class="stat-card"><div class="stat-label">Current Week</div><div class="stat-val" id="stat-week" style="color:var(--accent)">W1</div><div class="stat-sub" id="stat-week-phase">Phase 1</div><div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-bar" style="background:var(--accent);width:0%"></div></div></div>
-    <div class="stat-card"><div class="stat-label">Tasks this week</div><div class="stat-val" id="stat-week-tasks" style="color:var(--green)">0/0</div><div class="stat-sub" id="stat-week-pct">0% done</div><div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-task-bar" style="background:var(--green);width:0%"></div></div></div>
-    <div class="stat-card"><div class="stat-label">Tests done</div><div class="stat-val" id="stat-tests" style="color:var(--blue)">0/—</div><div class="stat-sub">subject tests</div><div class="progress-bar-wrap"><div class="progress-bar" id="stat-test-bar" style="background:var(--blue);width:0%"></div></div></div>
-    <div class="stat-card"><div class="stat-label">Mock Exams</div><div class="stat-val" id="stat-mocks" style="color:var(--accent3)">0/5</div><div class="stat-sub">completed</div><div class="progress-bar-wrap"><div class="progress-bar" id="stat-mock-bar" style="background:var(--accent3);width:0%"></div></div></div>
+    <div class="stat-card">
+      <div class="stat-label">Current Week</div>
+      <div class="stat-val" id="stat-week" style="color:var(--accent)">W1</div>
+      <div class="stat-sub" id="stat-week-phase">Phase 1</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-bar" style="background:var(--accent);width:0%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Tasks this week</div>
+      <div class="stat-val" id="stat-week-tasks" style="color:var(--green)">0/0</div>
+      <div class="stat-sub" id="stat-week-pct">0% done</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-task-bar" style="background:var(--green);width:0%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Tests done</div>
+      <div class="stat-val" id="stat-tests" style="color:var(--blue)">0/—</div>
+      <div class="stat-sub">subject tests</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-test-bar" style="background:var(--blue);width:0%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Mock Exams</div>
+      <div class="stat-val" id="stat-mocks" style="color:var(--accent3)">0/8</div>
+      <div class="stat-sub">completed</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-mock-bar" style="background:var(--accent3);width:0%"></div></div>
+    </div>
   </div>
+
   <div class="phases-row" id="phases-row"></div>
+
   <div class="section-title">All weeks at a glance</div>
   <div class="week-timeline" id="week-timeline"></div>
 </div>
 
-<!-- CHECKLIST -->
+<!-- ═══════════════════════════════════════
+     CHECKLIST VIEW
+═══════════════════════════════════════ -->
 <div class="view" id="view-checklist">
   <div class="checklist-header">
-    <div><div class="dash-title" style="font-size:1.5rem">Daily Checklist</div><div class="dash-subtitle">Click tests or mocks to log your score</div></div>
+    <div>
+      <div class="dash-title" style="font-size:1.5rem">Daily Checklist</div>
+      <div class="dash-subtitle">Readings split across individual days</div>
+    </div>
     <div class="week-selector">
       <select id="week-select" onchange="renderChecklist()"></select>
       <button class="action-btn danger" onclick="resetWeek()">Reset week</button>
@@ -396,7 +740,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
   <div class="checklist-area" id="checklist-area"></div>
 </div>
 
-<!-- SCHEDULE -->
+<!-- ═══════════════════════════════════════
+     SCHEDULE VIEW
+═══════════════════════════════════════ -->
 <div class="view" id="view-schedule">
   <div style="margin-bottom:1.5rem">
     <div class="dash-title" style="font-size:1.5rem">Full Schedule</div>
@@ -405,52 +751,62 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-sans);
   <div class="schedule-grid" id="schedule-grid"></div>
 </div>
 
-<!-- ANALYTICS -->
+<!-- ═══════════════════════════════════════
+     ANALYTICS VIEW
+═══════════════════════════════════════ -->
 <div class="view" id="view-analytics">
   <div class="analytics-header">
     <div class="dash-title" style="font-size:1.5rem">Analytics</div>
-    <div class="dash-subtitle">Scores, completion, and performance across every subject</div>
+    <div class="dash-subtitle">Track your performance across every subject</div>
   </div>
+
   <div class="export-bar">
-    <button class="export-btn secondary" onclick="exportScoresCSV()">
+    <button class="export-btn" onclick="exportPDF()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Export Scores CSV
-    </button>
-    <button class="export-btn primary" onclick="exportFullReport()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Export Full PDF Report
+      Export Progress Report
     </button>
   </div>
-  <div class="analytics-subtabs">
-    <button class="a-tab active" onclick="switchATab('scores', this)">Scores</button>
-    <button class="a-tab" onclick="switchATab('completion', this)">Completion</button>
-  </div>
-  <div class="a-panel active" id="panel-scores">
-    <div class="insight-grid" id="score-insight-grid"></div>
-    <div class="analytics-grid">
-      <div class="chart-card full"><div class="chart-title">Average score % by subject (tests)</div><div class="chart-wrap tall"><canvas id="chart-subj-scores"></canvas></div></div>
-      <div class="chart-card"><div class="chart-title">Score distribution</div><div class="chart-wrap"><canvas id="chart-score-dist"></canvas></div></div>
-      <div class="chart-card"><div class="chart-title">Mock exam trend</div><div class="chart-wrap"><canvas id="chart-mock-trend"></canvas></div></div>
+
+  <div class="insight-grid" id="insight-grid"></div>
+
+  <div class="analytics-grid">
+    <div class="chart-card full">
+      <div class="chart-title">Subject-wise completion %</div>
+      <div class="chart-wrap tall"><canvas id="chart-subjects"></canvas></div>
     </div>
-    <div class="section-title">All recorded scores</div>
-    <div class="chart-card" style="padding:0;overflow:hidden"><div id="scores-table-wrap"></div></div>
-  </div>
-  <div class="a-panel" id="panel-completion">
-    <div class="insight-grid" id="completion-insight-grid"></div>
-    <div class="analytics-grid">
-      <div class="chart-card full"><div class="chart-title">Subject-wise completion %</div><div class="chart-wrap tall"><canvas id="chart-subjects"></canvas></div></div>
-      <div class="chart-card"><div class="chart-title">Tests completed vs pending</div><div class="chart-wrap"><canvas id="chart-tests"></canvas></div></div>
-      <div class="chart-card"><div class="chart-title">Weekly consistency</div><div class="chart-wrap"><canvas id="chart-consistency"></canvas></div></div>
-      <div class="chart-card full"><div class="chart-title">Mock exam progress (target trajectory)</div><div class="chart-wrap"><canvas id="chart-mocks"></canvas></div></div>
+    <div class="chart-card">
+      <div class="chart-title">Tests completed vs pending</div>
+      <div class="chart-wrap"><canvas id="chart-tests"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Weekly consistency</div>
+      <div class="chart-wrap"><canvas id="chart-consistency"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-title">Mock exam progress (target trajectory)</div>
+      <div class="chart-wrap"><canvas id="chart-mocks"></canvas></div>
     </div>
   </div>
 </div>
 
+<!-- Hidden export report DOM (not visible, used for pdf gen) -->
 <div id="export-report"></div>
+
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
 <script>
+/* ─────────────────────────────────────
+   SCHEDULE DATA
+   To modify subjects/readings: edit the SCHEDULE_TEMPLATE array below.
+   Each week object: { weekOffset, phaseKey, label, tasks[] }
+   Each task: { id, title, type ('reading'|'test'|'review'|'mock'|'spaced'), days, subject }
+───────────────────────────────────── */
 const SCHEDULE_TEMPLATE = [
+  // ── PHASE 1: BASE BUILDING ──────────────────────────────────
   { w:1, phase:1, label:'Corp Issuers I', tasks:[
     { id:'w1t1', title:'Analysis of Dividends (Pt 1)', type:'reading', days:'Mon', subject:'Corporate Issuers' },
     { id:'w1t2', title:'Analysis of Dividends (Pt 2)', type:'reading', days:'Tue', subject:'Corporate Issuers' },
@@ -507,25 +863,26 @@ const SCHEDULE_TEMPLATE = [
     { id:'w8t4', title:'Equity Test 1', type:'test', days:'Thu', subject:'Equity Valuation' },
     { id:'w8t5', title:'Equity Test 2', type:'test', days:'Fri', subject:'Equity Valuation' },
   ]},
-  { w:9, phase:1, label:'Equity IV & FSA Bridge', tasks:[
+  { w:9, phase:1, label:'Equity IV & FSA I', tasks:[
     { id:'w9t1', title:'Equity Test 3 — Capstone', type:'test', days:'Mon', subject:'Equity Valuation' },
     { id:'w9t2', title:'Spaced Recall: Corp Issuers Test 4', type:'spaced', days:'Tue', subject:'Corporate Issuers' },
-    { id:'w9t3', title:'Spaced Recall: Quant Test 4 (Early)', type:'spaced', days:'Wed', subject:'Quant Methods' },
-    { id:'w9t4', title:'Intercorporate Investments (Pt 1)', type:'reading', days:'Thu', subject:'FSA' },
-    { id:'w9t5', title:'Intercorporate Investments (Pt 2)', type:'reading', days:'Fri', subject:'FSA' },
+    { id:'w9t3', title:'Intercorporate Investments (Pt 1)', type:'reading', days:'Wed', subject:'FSA' },
+    { id:'w9t4', title:'Intercorporate Investments (Pt 2)', type:'reading', days:'Thu', subject:'FSA' },
+    { id:'w9t5', title:'Intercorporate Investments (Pt 3)', type:'reading', days:'Fri', subject:'FSA' },
   ]},
+  // ── PHASE 2: ACCELERATION ───────────────────────────────────
   { w:10, phase:2, label:'FSA II', tasks:[
-    { id:'w10t1', title:'Intercorporate Investments (Pt 3)', type:'reading', days:'Mon', subject:'FSA' },
-    { id:'w10t2', title:'Employee Compensation: Post & Share-Based', type:'reading', days:'Tue', subject:'FSA' },
-    { id:'w10t3', title:'Multinational Operations', type:'reading', days:'Wed', subject:'FSA' },
-    { id:'w10t4', title:'Analysis of Financial Institutions', type:'reading', days:'Thu', subject:'FSA' },
+    { id:'w10t1', title:'Employee Compensation: Post & Share-Based', type:'reading', days:'Mon', subject:'FSA' },
+    { id:'w10t2', title:'Multinational Operations', type:'reading', days:'Tue', subject:'FSA' },
+    { id:'w10t3', title:'Analysis of Financial Institutions', type:'reading', days:'Wed', subject:'FSA' },
+    { id:'w10t4', title:'Evaluating Quality of Financial Reports', type:'reading', days:'Thu', subject:'FSA' },
     { id:'w10t5', title:'Integration of FSA Techniques', type:'reading', days:'Fri', subject:'FSA' },
   ]},
-  { w:11, phase:2, label:'FSA III & FI Bridge', tasks:[
-    { id:'w11t1', title:'Evaluating Quality of Financial Reports', type:'reading', days:'Mon', subject:'FSA' },
-    { id:'w11t2', title:'FSA Test 1', type:'test', days:'Tue', subject:'FSA' },
-    { id:'w11t3', title:'FSA Test 2', type:'test', days:'Wed', subject:'FSA' },
-    { id:'w11t4', title:'FSA Test 3 — Capstone', type:'test', days:'Thu', subject:'FSA' },
+  { w:11, phase:2, label:'FSA III & FI I', tasks:[
+    { id:'w11t1', title:'FSA Test 1', type:'test', days:'Mon', subject:'FSA' },
+    { id:'w11t2', title:'FSA Test 2', type:'test', days:'Tue', subject:'FSA' },
+    { id:'w11t3', title:'FSA Test 3 — Capstone', type:'test', days:'Wed', subject:'FSA' },
+    { id:'w11t4', title:'Spaced Recall: Quant Test 4', type:'spaced', days:'Thu', subject:'Quant Methods' },
     { id:'w11t5', title:'Term Structure & Interest Rate Dynamics', type:'reading', days:'Fri', subject:'Fixed Income' },
   ]},
   { w:12, phase:2, label:'Fixed Income II', tasks:[
@@ -535,18 +892,18 @@ const SCHEDULE_TEMPLATE = [
     { id:'w12t4', title:'Credit Default Swaps', type:'reading', days:'Thu', subject:'Fixed Income' },
     { id:'w12t5', title:'FI Test 1', type:'test', days:'Fri', subject:'Fixed Income' },
   ]},
-  { w:13, phase:2, label:'FI III & Derivatives Bridge', tasks:[
+  { w:13, phase:2, label:'FI III & Derivatives I', tasks:[
     { id:'w13t1', title:'FI Test 2', type:'test', days:'Mon', subject:'Fixed Income' },
     { id:'w13t2', title:'FI Test 3 — Capstone', type:'test', days:'Tue', subject:'Fixed Income' },
     { id:'w13t3', title:'Spaced Recall: Equity Test 4', type:'spaced', days:'Wed', subject:'Equity Valuation' },
-    { id:'w13t4', title:'Spaced Recall: FSA Test 4', type:'spaced', days:'Thu', subject:'FSA' },
-    { id:'w13t5', title:'Pricing & Valuation of Forward Commitments', type:'reading', days:'Fri', subject:'Derivatives' },
+    { id:'w13t4', title:'Pricing & Valuation of Forward Commitments', type:'reading', days:'Thu', subject:'Derivatives' },
+    { id:'w13t5', title:'Valuation of Contingent Claims', type:'reading', days:'Fri', subject:'Derivatives' },
   ]},
-  { w:14, phase:2, label:'Derivatives II & Alts Bridge', tasks:[
-    { id:'w14t1', title:'Valuation of Contingent Claims', type:'reading', days:'Mon', subject:'Derivatives' },
-    { id:'w14t2', title:'Derivatives Test 1', type:'test', days:'Tue', subject:'Derivatives' },
-    { id:'w14t3', title:'Derivatives Test 2', type:'test', days:'Wed', subject:'Derivatives' },
-    { id:'w14t4', title:'Derivatives Test 3 — Capstone', type:'test', days:'Thu', subject:'Derivatives' },
+  { w:14, phase:2, label:'Derivatives II & Alts I', tasks:[
+    { id:'w14t1', title:'Derivatives Test 1', type:'test', days:'Mon', subject:'Derivatives' },
+    { id:'w14t2', title:'Derivatives Test 2', type:'test', days:'Tue', subject:'Derivatives' },
+    { id:'w14t3', title:'Derivatives Test 3 — Capstone', type:'test', days:'Wed', subject:'Derivatives' },
+    { id:'w14t4', title:'Spaced Recall: FSA Test 4', type:'spaced', days:'Thu', subject:'FSA' },
     { id:'w14t5', title:'Intro to Commodities & Derivatives', type:'reading', days:'Fri', subject:'Alt Investments' },
   ]},
   { w:15, phase:2, label:'Alternatives II', tasks:[
@@ -559,14 +916,14 @@ const SCHEDULE_TEMPLATE = [
   { w:16, phase:2, label:'Alts III & Economics', tasks:[
     { id:'w16t1', title:'Alts Test 3 — Capstone', type:'test', days:'Mon', subject:'Alt Investments' },
     { id:'w16t2', title:'Spaced Recall: FI Test 4', type:'spaced', days:'Tue', subject:'Fixed Income' },
-    { id:'w16t3', title:'Spaced Recall: Derivatives Test 4', type:'spaced', days:'Wed', subject:'Derivatives' },
-    { id:'w16t4', title:'Currency Exchange Rates', type:'reading', days:'Thu', subject:'Economics' },
-    { id:'w16t5', title:'Economic Growth', type:'reading', days:'Fri', subject:'Economics' },
+    { id:'w16t3', title:'Currency Exchange Rates', type:'reading', days:'Wed', subject:'Economics' },
+    { id:'w16t4', title:'Economic Growth', type:'reading', days:'Thu', subject:'Economics' },
+    { id:'w16t5', title:'Econ Test 1', type:'test', days:'Fri', subject:'Economics' },
   ]},
   { w:17, phase:2, label:'Econ II & Portfolio Mgmt I', tasks:[
-    { id:'w17t1', title:'Econ Test 1', type:'test', days:'Mon', subject:'Economics' },
-    { id:'w17t2', title:'Econ Test 2', type:'test', days:'Tue', subject:'Economics' },
-    { id:'w17t3', title:'Econ Test 3 — Capstone', type:'test', days:'Wed', subject:'Economics' },
+    { id:'w17t1', title:'Econ Test 2', type:'test', days:'Mon', subject:'Economics' },
+    { id:'w17t2', title:'Econ Test 3 — Capstone', type:'test', days:'Tue', subject:'Economics' },
+    { id:'w17t3', title:'Spaced Recall: Derivatives Test 4', type:'spaced', days:'Wed', subject:'Derivatives' },
     { id:'w17t4', title:'Economics and Investment Markets', type:'reading', days:'Thu', subject:'Portfolio Mgmt' },
     { id:'w17t5', title:'Analysis of Active Portfolio Mgmt', type:'reading', days:'Fri', subject:'Portfolio Mgmt' },
   ]},
@@ -577,7 +934,7 @@ const SCHEDULE_TEMPLATE = [
     { id:'w18t4', title:'Backtesting and Simulation', type:'reading', days:'Thu', subject:'Portfolio Mgmt' },
     { id:'w18t5', title:'PM Test 1', type:'test', days:'Fri', subject:'Portfolio Mgmt' },
   ]},
-  { w:19, phase:2, label:'Portfolio Mgmt III & Ethics Bridge', tasks:[
+  { w:19, phase:2, label:'Portfolio Mgmt III & Ethics I', tasks:[
     { id:'w19t1', title:'PM Test 2', type:'test', days:'Mon', subject:'Portfolio Mgmt' },
     { id:'w19t2', title:'PM Test 3 — Capstone', type:'test', days:'Tue', subject:'Portfolio Mgmt' },
     { id:'w19t3', title:'Spaced Recall: Alts Test 4', type:'spaced', days:'Wed', subject:'Alt Investments' },
@@ -591,64 +948,65 @@ const SCHEDULE_TEMPLATE = [
     { id:'w20t4', title:'Ethics Test 1', type:'test', days:'Thu', subject:'Ethics' },
     { id:'w20t5', title:'Ethics Test 2', type:'test', days:'Fri', subject:'Ethics' },
   ]},
-  { w:21, phase:2, label:'Ethics III & Pre-Sprint Integration', tasks:[
+  { w:21, phase:2, label:'Ethics III & Final Prep', tasks:[
     { id:'w21t1', title:'Ethics Test 3 — Capstone', type:'test', days:'Mon', subject:'Ethics' },
     { id:'w21t2', title:'Spaced Recall: PM Test 4', type:'spaced', days:'Tue', subject:'Portfolio Mgmt' },
     { id:'w21t3', title:'Spaced Recall: Ethics Test 4', type:'spaced', days:'Wed', subject:'Ethics' },
-    { id:'w21t4', title:'Full Error Log Review & Weak Area Map', type:'review', days:'Thu', subject:'All Subjects' },
-    { id:'w21t5', title:'Formula Sheet Build & Memorisation', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w21t4', title:'Deep Review of All Error Logs', type:'review', days:'Thu', subject:'All Subjects' },
+    { id:'w21t5', title:'Formula Dump Preparation', type:'review', days:'Fri', subject:'All Subjects' },
   ]},
-  { w:22, phase:3, label:'Sprint — Mock 1', tasks:[
-    { id:'w22t1', title:'Targeted QBank: Corp Issuers (all weak LOs)', type:'review', days:'Mon', subject:'Corporate Issuers' },
-    { id:'w22t2', title:'Targeted QBank: Quant Methods (all weak LOs)', type:'review', days:'Tue', subject:'Quant Methods' },
-    { id:'w22t3', title:'Targeted QBank: Equity Valuation (all weak LOs)', type:'review', days:'Wed', subject:'Equity Valuation' },
-    { id:'w22t4', title:'Targeted QBank: FSA (all weak LOs)', type:'review', days:'Thu', subject:'FSA' },
-    { id:'w22t5', title:'Light Review & Rest Before Mock', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w22t6', title:'Mock Exam 1 — Full Exam Conditions', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w22t7', title:'Grade Mock 1 · Deep Error Review · Update Weak Area Map', type:'review', days:'Sun', subject:'All Subjects' },
+  // ── PHASE 3: MOCK SPRINT ────────────────────────────────────
+  { w:22, phase:3, label:'Sprint: Mock 1', tasks:[
+    { id:'w22t1', title:'QBank Sweep: Corp Issuers & Quant', type:'review', days:'Mon', subject:'All Subjects' },
+    { id:'w22t2', title:'QBank Sweep: Equity & FSA', type:'review', days:'Tue', subject:'All Subjects' },
+    { id:'w22t3', title:'QBank Sweep: Fixed Income & Deriv', type:'review', days:'Wed', subject:'All Subjects' },
+    { id:'w22t4', title:'QBank Sweep: Alts & Econ', type:'review', days:'Thu', subject:'All Subjects' },
+    { id:'w22t5', title:'QBank Sweep: PM & Ethics', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w22t6', title:'Mock Exam 1', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w22t7', title:'Grade & Deep Review Mock 1', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:23, phase:3, label:'Sprint — Mock 2', tasks:[
-    { id:'w23t1', title:'Drill Weakest Subject from Mock 1 (QBank)', type:'review', days:'Mon', subject:'All Subjects' },
-    { id:'w23t2', title:'Targeted QBank: Fixed Income (all weak LOs)', type:'review', days:'Tue', subject:'Fixed Income' },
-    { id:'w23t3', title:'Targeted QBank: Derivatives (all weak LOs)', type:'review', days:'Wed', subject:'Derivatives' },
-    { id:'w23t4', title:'Targeted QBank: Alt Investments (all weak LOs)', type:'review', days:'Thu', subject:'Alt Investments' },
-    { id:'w23t5', title:'Light Review & Rest Before Mock', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w23t6', title:'Mock Exam 2 — Full Exam Conditions', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w23t7', title:'Grade Mock 2 · Deep Error Review · Update Weak Area Map', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:23, phase:3, label:'Sprint: Mocks 2 & 3', tasks:[
+    { id:'w23t1', title:'Final Sprint: Corp Issuers Test 5', type:'test', days:'Mon', subject:'Corporate Issuers' },
+    { id:'w23t2', title:'Final Sprint: Quant Test 5', type:'test', days:'Tue', subject:'Quant Methods' },
+    { id:'w23t3', title:'Mock Exam 2', type:'mock', days:'Wed', subject:'All Subjects' },
+    { id:'w23t4', title:'Final Sprint: Equity Test 5', type:'test', days:'Thu', subject:'Equity Valuation' },
+    { id:'w23t5', title:'Final Sprint: FSA Test 5', type:'test', days:'Fri', subject:'FSA' },
+    { id:'w23t6', title:'Mock Exam 3', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w23t7', title:'Grade & Deep Review Mocks 2 & 3', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:24, phase:3, label:'Sprint — Mock 3', tasks:[
-    { id:'w24t1', title:'Drill Top-2 Weak Subjects from Mock 2 (QBank)', type:'review', days:'Mon', subject:'All Subjects' },
-    { id:'w24t2', title:'Targeted QBank: Economics (all weak LOs)', type:'review', days:'Tue', subject:'Economics' },
-    { id:'w24t3', title:'Targeted QBank: Portfolio Mgmt (all weak LOs)', type:'review', days:'Wed', subject:'Portfolio Mgmt' },
-    { id:'w24t4', title:'Targeted QBank: Ethics — Cases & Standards', type:'review', days:'Thu', subject:'Ethics' },
-    { id:'w24t5', title:'Light Review & Rest Before Mock', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w24t6', title:'Mock Exam 3 — Full Exam Conditions', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w24t7', title:'Grade Mock 3 · Deep Error Review · Update Weak Area Map', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:24, phase:3, label:'Sprint: Mocks 4 & 5', tasks:[
+    { id:'w24t1', title:'Final Sprint: FI Test 5', type:'test', days:'Mon', subject:'Fixed Income' },
+    { id:'w24t2', title:'Final Sprint: Derivatives Test 5', type:'test', days:'Tue', subject:'Derivatives' },
+    { id:'w24t3', title:'Mock Exam 4', type:'mock', days:'Wed', subject:'All Subjects' },
+    { id:'w24t4', title:'Final Sprint: Alts Test 5', type:'test', days:'Thu', subject:'Alt Investments' },
+    { id:'w24t5', title:'Final Sprint: Econ Test 5', type:'test', days:'Fri', subject:'Economics' },
+    { id:'w24t6', title:'Mock Exam 5', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w24t7', title:'Grade & Deep Review Mocks 4 & 5', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:25, phase:3, label:'Sprint — Mock 4', tasks:[
-    { id:'w25t1', title:'Final Sprint Test: Corp Issuers Test 5', type:'test', days:'Mon', subject:'Corporate Issuers' },
-    { id:'w25t2', title:'Final Sprint Test: Equity Test 5', type:'test', days:'Tue', subject:'Equity Valuation' },
-    { id:'w25t3', title:'Final Sprint Test: FSA Test 5', type:'test', days:'Wed', subject:'FSA' },
-    { id:'w25t4', title:'Ethics Standards Re-Read & Case Studies', type:'reading', days:'Thu', subject:'Ethics' },
-    { id:'w25t5', title:'Formula Dump Mastery & Light Review', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w25t6', title:'Mock Exam 4 — Full Exam Conditions', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w25t7', title:'Grade Mock 4 · Deep Error Review · Final Weak Area Map', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:25, phase:3, label:'Sprint: Mocks 6 & 7', tasks:[
+    { id:'w25t1', title:'Final Sprint: PM Test 5', type:'test', days:'Mon', subject:'Portfolio Mgmt' },
+    { id:'w25t2', title:'Final Sprint: Ethics Test 5', type:'test', days:'Tue', subject:'Ethics' },
+    { id:'w25t3', title:'Mock Exam 6', type:'mock', days:'Wed', subject:'All Subjects' },
+    { id:'w25t4', title:'Ethics Standards Re-Read', type:'reading', days:'Thu', subject:'Ethics' },
+    { id:'w25t5', title:'Formula Dump Mastery', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w25t6', title:'Mock Exam 7', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w25t7', title:'Grade & Deep Review Mocks 6 & 7', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
-  { w:26, phase:3, label:'Sprint — Mock 5 (Final)', tasks:[
-    { id:'w26t1', title:'Final Sprint Test: FI Test 5', type:'test', days:'Mon', subject:'Fixed Income' },
-    { id:'w26t2', title:'Final Sprint Test: Derivatives Test 5', type:'test', days:'Tue', subject:'Derivatives' },
-    { id:'w26t3', title:'Final Sprint Test: Quant Test 5', type:'test', days:'Wed', subject:'Quant Methods' },
-    { id:'w26t4', title:'Targeted Drilling: Confirmed Weakest 2 Subjects', type:'review', days:'Thu', subject:'All Subjects' },
-    { id:'w26t5', title:'Light Review & Mental Rest Before Final Mock', type:'review', days:'Fri', subject:'All Subjects' },
-    { id:'w26t6', title:'Mock Exam 5 — Final Gauge (Strict Conditions)', type:'mock', days:'Sat', subject:'All Subjects' },
-    { id:'w26t7', title:'Grade Mock 5 · Identify Final Priority Areas · Stop heavy study', type:'review', days:'Sun', subject:'All Subjects' },
+  { w:26, phase:3, label:'Sprint: Mock 8', tasks:[
+    { id:'w26t1', title:'Targeted QBank: Weakest Subject', type:'review', days:'Mon', subject:'All Subjects' },
+    { id:'w26t2', title:'Targeted QBank: 2nd Weakest', type:'review', days:'Tue', subject:'All Subjects' },
+    { id:'w26t3', title:'Targeted QBank: 3rd Weakest', type:'review', days:'Wed', subject:'All Subjects' },
+    { id:'w26t4', title:'Ethics Case Studies Review', type:'reading', days:'Thu', subject:'Ethics' },
+    { id:'w26t5', title:'Light Review & Rest', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w26t6', title:'Mock Exam 8 — Final Gauge', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w26t7', title:'Grade & Final Error Review', type:'review', days:'Sun', subject:'All Subjects' },
   ]},
   { w:27, phase:3, label:'Exam Week', tasks:[
-    { id:'w27t1', title:'Formula Sheet Read-Through — Passive Revision Only', type:'review', days:'Mon', subject:'All Subjects' },
-    { id:'w27t2', title:'Light Ethics Review — Cases & Ethical Reasoning', type:'review', days:'Tue', subject:'Ethics' },
-    { id:'w27t3', title:'Exam Logistics: Location, ID, Kit Prep', type:'review', days:'Wed', subject:'All Subjects' },
-    { id:'w27t4', title:'Exam Eve — No new material. Visualise. Rest.', type:'review', days:'Thu', subject:'All Subjects' },
-    { id:'w27t5', title:'EXAM DAY — CFA Level 2 ✦', type:'test', days:'Fri', subject:'All Subjects' },
+    { id:'w27t1', title:'Formula Memorization & Dump', type:'review', days:'Mon', subject:'All Subjects' },
+    { id:'w27t2', title:'Mental Rest & Light Ethics', type:'review', days:'Tue', subject:'Ethics' },
+    { id:'w27t3', title:'Exam Logistics Prep', type:'review', days:'Wed', subject:'All Subjects' },
+    { id:'w27t4', title:'Exam Eve — Visualization & Rest', type:'review', days:'Thu', subject:'All Subjects' },
+    { id:'w27t5', title:'EXAM DAY — CFA Level 2', type:'test', days:'Fri', subject:'All Subjects' },
   ]},
 ];
 
@@ -656,204 +1014,238 @@ const SUBJECTS = ['Corporate Issuers','Quant Methods','Equity Valuation','FSA','
 const PHASE_NAMES = { 1:'Phase 1 — Base Building', 2:'Phase 2 — Acceleration', 3:'Phase 3 — Mock Sprint' };
 const PHASE_COLORS = { 1:'var(--phase1)', 2:'var(--phase2)', 3:'var(--phase3)' };
 const PHASE_HEX = { 1:'#8fc4b4', 2:'#c8a96e', 3:'#c47a7a' };
-const MOCK_TOTAL = 88;
-const AXIS_STYLE = {
-  grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
-  ticks: { color: '#7a7871', font: { family: 'DM Mono', size: 10 } }
-};
 
-let state = {}, scores = {}, profile = null, SCHEDULE = [], charts = {}, activeScoreTask = null;
-const STORAGE_KEYS = { profile:'cfaTracker_profile_v1', state:'cfaTracker_state_v1', scores:'cfaTracker_scores_v1' };
+/* ─────────────────────────────────────
+   STATE & STORAGE
+───────────────────────────────────── */
+let state = {};      // task completion { taskId: bool }
+let profile = null;  // { name, examDate, startDate, level, hours }
+let SCHEDULE = [];   // runtime schedule with computed dates
+let charts = {};     // Chart.js instances keyed by canvas id
+
+const STORAGE_KEYS = { profile: 'cfaTracker_profile_v1', state: 'cfaTracker_state_v1' };
 
 function loadStorage() {
   try { profile = JSON.parse(localStorage.getItem(STORAGE_KEYS.profile)); } catch(e) { profile = null; }
-  try { state   = JSON.parse(localStorage.getItem(STORAGE_KEYS.state) || '{}'); } catch(e) { state = {}; }
-  try { scores  = JSON.parse(localStorage.getItem(STORAGE_KEYS.scores) || '{}'); } catch(e) { scores = {}; }
+  try { state = JSON.parse(localStorage.getItem(STORAGE_KEYS.state) || '{}'); } catch(e) { state = {}; }
 }
-function saveState()   { localStorage.setItem(STORAGE_KEYS.state,   JSON.stringify(state));   }
-function saveScores()  { localStorage.setItem(STORAGE_KEYS.scores,  JSON.stringify(scores));  }
+function saveState() { localStorage.setItem(STORAGE_KEYS.state, JSON.stringify(state)); }
 function saveProfile() { localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile)); }
 
+/* ─────────────────────────────────────
+   ONBOARDING
+───────────────────────────────────── */
 let selectedLevel = 'Intermediate';
+
 function selectLevel(btn) {
   document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active'); selectedLevel = btn.dataset.level;
+  btn.classList.add('active');
+  selectedLevel = btn.dataset.level;
 }
+
 function submitOnboarding() {
   const name = document.getElementById('f-name').value.trim();
   const exam = document.getElementById('f-exam').value;
   const start = document.getElementById('f-start').value;
   const hours = parseFloat(document.getElementById('f-hours').value) || 1.5;
-  if (!name) { showToast('Please enter your name','error'); return; }
-  if (!exam||!start) { showToast('Please fill in both dates','error'); return; }
-  if (new Date(start)>=new Date(exam)) { showToast('Start date must be before exam date','error'); return; }
-  profile = { name, examDate:exam, startDate:start, level:selectedLevel, hours };
-  saveProfile(); initApp();
+
+  if (!name) { showToast('Please enter your name', 'error'); return; }
+  if (!exam || !start) { showToast('Please fill in both dates', 'error'); return; }
+  if (new Date(start) >= new Date(exam)) { showToast('Start date must be before exam date', 'error'); return; }
+
+  profile = { name, examDate: exam, startDate: start, level: selectedLevel, hours };
+  saveProfile();
+  initApp();
 }
+
 function editProfile() {
   if (!profile) return;
-  document.getElementById('f-name').value  = profile.name||'';
-  document.getElementById('f-exam').value  = profile.examDate||'';
-  document.getElementById('f-start').value = profile.startDate||'';
-  document.getElementById('f-hours').value = profile.hours||1.5;
-  document.querySelectorAll('.level-btn').forEach(b => b.classList.toggle('active', b.dataset.level===profile.level));
+  document.getElementById('f-name').value = profile.name || '';
+  document.getElementById('f-exam').value = profile.examDate || '';
+  document.getElementById('f-start').value = profile.startDate || '';
+  document.getElementById('f-hours').value = profile.hours || 1.5;
+  document.querySelectorAll('.level-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.level === profile.level);
+  });
   selectedLevel = profile.level;
   document.getElementById('onboarding').classList.remove('hidden');
 }
 
+/* ─────────────────────────────────────
+   SCHEDULE GENERATION
+   Dynamically computes week dates based on profile.startDate.
+   Phase splits: P1=45%, P2=35%, P3=20% of total weeks (min 1 week each).
+───────────────────────────────────── */
 function buildSchedule() {
   const start = new Date(profile.startDate);
   SCHEDULE = SCHEDULE_TEMPLATE.map(week => {
-    const ws = new Date(start); ws.setDate(ws.getDate()+(week.w-1)*7);
-    const we = new Date(ws); we.setDate(we.getDate()+6);
-    return { ...week, week:week.w, dates:formatDateRange(ws,we), weekStart:ws };
+    const weekStart = new Date(start);
+    weekStart.setDate(weekStart.getDate() + (week.w - 1) * 7);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    return {
+      ...week,
+      week: week.w,
+      dates: formatDateRange(weekStart, weekEnd),
+      weekStart
+    };
   });
 }
-function formatDateRange(s,e) {
-  const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${m[s.getMonth()]} ${s.getDate()}–${m[e.getMonth()]} ${e.getDate()}`;
+
+function formatDateRange(start, end) {
+  const ms = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const s = `${ms[start.getMonth()]} ${start.getDate()}`;
+  const e = `${ms[end.getMonth()]} ${end.getDate()}`;
+  return `${s}–${e}`;
 }
+
+/* ─────────────────────────────────────
+   COMPUTED HELPERS
+───────────────────────────────────── */
 function getCurrentWeekNum() {
   const start = new Date(profile.startDate);
-  const diff  = Math.floor((new Date()-start)/86400000);
-  if (diff<0) return 1;
-  return Math.min(Math.max(Math.floor(diff/7)+1,1),SCHEDULE.length);
+  const today = new Date();
+  const diffDays = Math.floor((today - start) / 86400000);
+  if (diffDays < 0) return 1;
+  return Math.min(Math.max(Math.floor(diffDays / 7) + 1, 1), SCHEDULE.length);
 }
-function isChecked(id)  { return !!state[id]; }
-function isScoreable(t) { return t.type==='test'||t.type==='mock'||t.type==='spaced'; }
-function getWeekPct(week) { if(!week||!week.tasks.length) return 0; return Math.round(week.tasks.filter(t=>isChecked(t.id)).length/week.tasks.length*100); }
-function getPhasePct(p) { const tasks=SCHEDULE.filter(w=>w.phase===p).flatMap(w=>w.tasks); if(!tasks.length) return 0; return Math.round(tasks.filter(t=>isChecked(t.id)).length/tasks.length*100); }
-function getOverall() { const all=SCHEDULE.flatMap(w=>w.tasks); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length,pct:all.length?Math.round(done/all.length*100):0}; }
-function getSubjectStats(subj) { const tasks=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.subject===subj); const done=tasks.filter(t=>isChecked(t.id)).length; return {total:tasks.length,done,pct:tasks.length?Math.round(done/tasks.length*100):0}; }
-function getTestStats() { const all=SCHEDULE.flatMap(w=>w.tasks).filter(t=>(t.type==='test'||t.type==='spaced')&&t.title!=='EXAM DAY — CFA Level 2 ✦'); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length}; }
-function getMockStats() { const all=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock'); const done=all.filter(t=>isChecked(t.id)).length; return {done,total:all.length}; }
-function getWeeklyConsistency() { const cur=getCurrentWeekNum(); return SCHEDULE.filter(w=>w.week<=cur).map(w=>({week:w.week,pct:getWeekPct(w),label:w.label})); }
 
-/* ── SCORE MODAL ── */
-function openScoreModal(e, taskId) {
-  e.stopPropagation();
-  const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===taskId); if(!task) return;
-  activeScoreTask=task;
-  const isMock=task.type==='mock';
-  const week=SCHEDULE.find(w=>w.tasks.some(t=>t.id===taskId));
-  document.getElementById('modal-type-tag').textContent   = isMock?'Mock Exam':'Subject Test';
-  document.getElementById('modal-task-title').textContent = task.title;
-  document.getElementById('modal-task-meta').textContent  = `${task.subject} · Week ${week?.week||''}`;
-  const gotEl=document.getElementById('modal-score-got');
-  const outofEl=document.getElementById('modal-score-outof');
-  const existing=scores[taskId];
-  gotEl.value=existing?existing.got:'';
-  outofEl.value=existing?existing.outof:(isMock?MOCK_TOTAL:'');
-  if(isMock){ outofEl.readOnly=true; outofEl.style.opacity='0.5'; }
-  else { outofEl.readOnly=false; outofEl.style.opacity='1'; }
-  document.getElementById('modal-btn-clear').style.display=existing?'block':'none';
-  updateScorePreview();
-  document.getElementById('score-modal-overlay').classList.remove('hidden');
-  setTimeout(()=>gotEl.focus(),100);
-}
-function closeScoreModal() { document.getElementById('score-modal-overlay').classList.add('hidden'); activeScoreTask=null; }
-function updateScorePreview() {
-  const got=parseFloat(document.getElementById('modal-score-got').value);
-  const outof=parseFloat(document.getElementById('modal-score-outof').value);
-  const pctEl=document.getElementById('preview-pct');
-  const fillEl=document.getElementById('preview-bar-fill');
-  const gradeEl=document.getElementById('preview-grade');
-  if(!isNaN(got)&&!isNaN(outof)&&outof>0&&got>=0) {
-    const pct=Math.round(got/outof*100);
-    const col=pct>=70?'var(--green)':pct>=50?'var(--accent)':'var(--accent3)';
-    const grade=pct>=70?'On track ✓':pct>=50?'Needs revision':'Needs more work';
-    pctEl.textContent=pct+'%'; pctEl.style.color=col;
-    fillEl.style.width=Math.min(pct,100)+'%'; fillEl.style.background=col;
-    gradeEl.textContent=grade; gradeEl.style.color=col;
-  } else {
-    pctEl.textContent='—'; pctEl.style.color='var(--muted)';
-    fillEl.style.width='0%'; fillEl.style.background='var(--muted)'; gradeEl.textContent='';
-  }
-}
-function saveScore() {
-  if(!activeScoreTask) return;
-  const got=parseFloat(document.getElementById('modal-score-got').value);
-  const outof=parseFloat(document.getElementById('modal-score-outof').value);
-  if(isNaN(got)||isNaN(outof)||outof<=0){ showToast('Enter valid score values','error'); return; }
-  if(got<0||got>outof){ showToast('Score must be between 0 and total marks','error'); return; }
-  const pct=Math.round(got/outof*100);
-  scores[activeScoreTask.id]={got,outof,pct,date:new Date().toISOString()};
-  saveScores(); closeScoreModal(); renderChecklist();
-  if(document.getElementById('view-analytics').classList.contains('active')) renderAnalytics();
-  showToast(`Score saved: ${got}/${outof} (${pct}%)`, 'success');
-}
-function clearScore() {
-  if(!activeScoreTask) return;
-  delete scores[activeScoreTask.id]; saveScores(); closeScoreModal(); renderChecklist();
-  if(document.getElementById('view-analytics').classList.contains('active')) renderAnalytics();
-  showToast('Score cleared','success');
-}
-document.getElementById('score-modal-overlay').addEventListener('click',function(e){ if(e.target===this) closeScoreModal(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeScoreModal(); });
-document.getElementById('modal-score-got').addEventListener('keydown',e=>{ if(e.key==='Enter') saveScore(); });
+function isChecked(id) { return !!state[id]; }
 
-/* ── DASHBOARD ── */
+function getWeekPct(week) {
+  if (!week || !week.tasks.length) return 0;
+  return Math.round(week.tasks.filter(t => isChecked(t.id)).length / week.tasks.length * 100);
+}
+
+function getPhasePct(phaseNum) {
+  const tasks = SCHEDULE.filter(w => w.phase === phaseNum).flatMap(w => w.tasks);
+  if (!tasks.length) return 0;
+  return Math.round(tasks.filter(t => isChecked(t.id)).length / tasks.length * 100);
+}
+
+function getOverall() {
+  const all = SCHEDULE.flatMap(w => w.tasks);
+  const done = all.filter(t => isChecked(t.id)).length;
+  return { done, total: all.length, pct: all.length ? Math.round(done / all.length * 100) : 0 };
+}
+
+function getSubjectStats(subj) {
+  const tasks = SCHEDULE.flatMap(w => w.tasks).filter(t => t.subject === subj);
+  const done = tasks.filter(t => isChecked(t.id)).length;
+  return { total: tasks.length, done, pct: tasks.length ? Math.round(done/tasks.length*100) : 0 };
+}
+
+function getTestStats() {
+  const all = SCHEDULE.flatMap(w => w.tasks).filter(t => (t.type==='test'||t.type==='spaced') && t.title !== 'EXAM DAY — CFA Level 2');
+  const done = all.filter(t => isChecked(t.id)).length;
+  return { done, total: all.length };
+}
+
+function getMockStats() {
+  const all = SCHEDULE.flatMap(w => w.tasks).filter(t => t.type === 'mock');
+  const done = all.filter(t => isChecked(t.id)).length;
+  return { done, total: all.length };
+}
+
+function getWeeklyConsistency() {
+  // Returns array of { week, pct } for weeks that have started
+  const curWeek = getCurrentWeekNum();
+  return SCHEDULE.filter(w => w.week <= curWeek).map(w => ({ week: w.week, pct: getWeekPct(w), label: w.label }));
+}
+
+/* ─────────────────────────────────────
+   RENDER FUNCTIONS
+───────────────────────────────────── */
 function renderDashboard() {
-  const today=new Date(); const exam=new Date(profile.examDate);
-  const daysLeft=Math.max(0,Math.ceil((exam-today)/86400000));
-  const weeksLeft=Math.ceil(daysLeft/7);
-  const overall=getOverall(); const curWeekNum=getCurrentWeekNum();
-  const curWeek=SCHEDULE.find(w=>w.week===curWeekNum)||SCHEDULE[0];
-  document.getElementById('dash-greeting').textContent=`${profile.name}'s Progress`;
-  document.getElementById('dash-subtitle').textContent=`CFA Level 2 · ${formatDisplayDate(exam)} Exam · ${profile.level} · ${profile.hours}h/day target`;
-  document.getElementById('days-left').textContent=daysLeft;
-  document.getElementById('weeks-left').textContent=weeksLeft;
-  document.getElementById('hours-target').textContent=profile.hours;
-  document.getElementById('overall-pct-label').textContent=overall.pct+'%';
-  document.getElementById('overall-bar').style.width=overall.pct+'%';
-  document.getElementById('overall-tasks-label').textContent=`${overall.done} / ${overall.total} tasks complete`;
-  document.getElementById('stat-week').textContent='W'+curWeekNum;
-  document.getElementById('stat-week-phase').textContent=PHASE_NAMES[curWeek.phase];
-  document.getElementById('stat-week-bar').style.width=getWeekPct(curWeek)+'%';
-  const wDone=curWeek.tasks.filter(t=>isChecked(t.id)).length;
-  const wTotal=curWeek.tasks.length; const wPct=getWeekPct(curWeek);
-  document.getElementById('stat-week-tasks').textContent=`${wDone}/${wTotal}`;
-  document.getElementById('stat-week-pct').textContent=wPct+'% done';
-  document.getElementById('stat-week-task-bar').style.width=wPct+'%';
-  const ts=getTestStats(); const ms=getMockStats();
-  document.getElementById('stat-tests').textContent=`${ts.done}/${ts.total}`;
-  document.getElementById('stat-test-bar').style.width=(ts.total?Math.round(ts.done/ts.total*100):0)+'%';
-  document.getElementById('stat-mocks').textContent=`${ms.done}/${ms.total}`;
-  document.getElementById('stat-mock-bar').style.width=(ms.total?Math.round(ms.done/ms.total*100):0)+'%';
-  const pr=document.getElementById('phases-row'); pr.innerHTML='';
-  [1,2,3].forEach(p=>{
-    const pct=getPhasePct(p); const phaseWeeks=SCHEDULE.filter(w=>w.phase===p);
-    const startDate=phaseWeeks[0]?.dates.split('–')[0]||'';
-    const endDate=phaseWeeks[phaseWeeks.length-1]?.dates.split('–')[1]||'';
-    pr.innerHTML+=`<div class="phase-card" style="--phase-color:${PHASE_COLORS[p]}">
-      <div class="phase-name">Phase ${p}</div>
-      <div class="phase-title">${PHASE_NAMES[p].replace(`Phase ${p} — `, '')}</div>
-      <div class="phase-dates">${startDate} — ${endDate}</div>
-      <div class="phase-pct" style="color:${PHASE_COLORS[p]}">${pct}%</div>
-      <div class="progress-bar-wrap"><div class="progress-bar" style="background:${PHASE_COLORS[p]};width:${pct}%"></div></div>
-    </div>`;
+  const today = new Date();
+  const exam = new Date(profile.examDate);
+  const daysLeft = Math.max(0, Math.ceil((exam - today) / 86400000));
+  const weeksLeft = Math.ceil(daysLeft / 7);
+  const overall = getOverall();
+  const curWeekNum = getCurrentWeekNum();
+  const curWeek = SCHEDULE.find(w => w.week === curWeekNum) || SCHEDULE[0];
+
+  // Greeting & subtitle
+  document.getElementById('dash-greeting').textContent = `${profile.name}'s Progress`;
+  document.getElementById('dash-subtitle').textContent = `CFA Level 2 · ${formatDisplayDate(exam)} Exam · ${profile.level} · ${profile.hours}h/day target`;
+
+  // Countdown
+  document.getElementById('days-left').textContent = daysLeft;
+  document.getElementById('weeks-left').textContent = weeksLeft;
+  document.getElementById('hours-target').textContent = profile.hours;
+
+  // Overall bar
+  document.getElementById('overall-pct-label').textContent = overall.pct + '%';
+  document.getElementById('overall-bar').style.width = overall.pct + '%';
+  document.getElementById('overall-tasks-label').textContent = `${overall.done} / ${overall.total} tasks complete`;
+
+  // Stats cards
+  document.getElementById('stat-week').textContent = 'W' + curWeekNum;
+  document.getElementById('stat-week-phase').textContent = PHASE_NAMES[curWeek.phase];
+  document.getElementById('stat-week-bar').style.width = getWeekPct(curWeek) + '%';
+
+  const wDone = curWeek.tasks.filter(t => isChecked(t.id)).length;
+  const wTotal = curWeek.tasks.length;
+  const wPct = getWeekPct(curWeek);
+  document.getElementById('stat-week-tasks').textContent = `${wDone}/${wTotal}`;
+  document.getElementById('stat-week-pct').textContent = wPct + '% done';
+  document.getElementById('stat-week-task-bar').style.width = wPct + '%';
+
+  const ts = getTestStats(); const ms = getMockStats();
+  document.getElementById('stat-tests').textContent = `${ts.done}/${ts.total}`;
+  document.getElementById('stat-test-bar').style.width = Math.round(ts.done/ts.total*100) + '%';
+  document.getElementById('stat-mocks').textContent = `${ms.done}/${ms.total}`;
+  document.getElementById('stat-mock-bar').style.width = Math.round(ms.done/ms.total*100) + '%';
+
+  // Phase cards
+  const pr = document.getElementById('phases-row');
+  pr.innerHTML = '';
+  [1,2,3].forEach(p => {
+    const pct = getPhasePct(p);
+    const phaseWeeks = SCHEDULE.filter(w => w.phase === p);
+    const startDate = phaseWeeks[0]?.dates.split('–')[0] || '';
+    const endDate = phaseWeeks[phaseWeeks.length-1]?.dates.split('–')[1] || '';
+    pr.innerHTML += `
+      <div class="phase-card" style="--phase-color:${PHASE_COLORS[p]}">
+        <div class="phase-name">Phase ${p}</div>
+        <div class="phase-title">${PHASE_NAMES[p].replace(`Phase ${p} — `, '')}</div>
+        <div class="phase-dates">${startDate} — ${endDate}</div>
+        <div class="phase-pct" style="color:${PHASE_COLORS[p]}">${pct}%</div>
+        <div class="progress-bar-wrap"><div class="progress-bar" style="background:${PHASE_COLORS[p]};width:${pct}%"></div></div>
+      </div>`;
   });
-  const container=document.getElementById('week-timeline'); container.innerHTML='';
-  SCHEDULE.forEach(w=>{
-    const pct=getWeekPct(w); const isCur=w.week===curWeekNum; const color=PHASE_HEX[w.phase];
-    const row=document.createElement('div');
-    row.className=`week-row${isCur?' current':''}${pct===100?' done':''}`;
-    row.style.borderLeftColor=isCur?color:'transparent';
-    row.innerHTML=`<div class="week-label">Wk ${w.week} · ${w.dates}</div>
-      <div class="week-tasks">${w.label}<div class="progress-bar-wrap" style="margin-top:4px"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div></div>
+
+  // Timeline
+  const container = document.getElementById('week-timeline');
+  container.innerHTML = '';
+  SCHEDULE.forEach(w => {
+    const pct = getWeekPct(w);
+    const isCur = w.week === curWeekNum;
+    const color = PHASE_HEX[w.phase];
+    const row = document.createElement('div');
+    row.className = `week-row${isCur ? ' current' : ''}${pct===100 ? ' done' : ''}`;
+    row.style.borderLeftColor = isCur ? color : 'transparent';
+    row.innerHTML = `
+      <div class="week-label">Wk ${w.week} · ${w.dates}</div>
+      <div class="week-tasks">${w.label}
+        <div class="progress-bar-wrap" style="margin-top:4px"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div>
+      </div>
       <div class="week-pct-col" style="color:${color}">${pct}%</div>`;
-    row.onclick=()=>{ switchTab('checklist'); document.getElementById('week-select').value=w.week; renderChecklist(); };
+    row.onclick = () => { switchTab('checklist'); document.getElementById('week-select').value = w.week; renderChecklist(); };
     container.appendChild(row);
   });
 }
 
-/* ── CHECKLIST ── */
 function renderChecklist() {
-  const sel=document.getElementById('week-select');
-  const weekNum=parseInt(sel.value);
-  const week=SCHEDULE.find(w=>w.week===weekNum); if(!week) return;
-  const pct=getWeekPct(week); const done=week.tasks.filter(t=>isChecked(t.id)).length; const color=PHASE_HEX[week.phase];
-  document.getElementById('week-header-card').innerHTML=`
+  const sel = document.getElementById('week-select');
+  const weekNum = parseInt(sel.value);
+  const week = SCHEDULE.find(w => w.week === weekNum);
+  if (!week) return;
+  const pct = getWeekPct(week);
+  const done = week.tasks.filter(t => isChecked(t.id)).length;
+  const color = PHASE_HEX[week.phase];
+
+  document.getElementById('week-header-card').innerHTML = `
     <div>
       <div class="week-info-phase">${PHASE_NAMES[week.phase]}</div>
       <div class="week-info-title">Week ${week.week} — ${week.label}</div>
@@ -866,583 +1258,624 @@ function renderChecklist() {
       </div>
       <div style="width:80px"><div class="progress-bar-wrap" style="height:5px"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div></div>
     </div>`;
-  const area=document.getElementById('checklist-area'); area.innerHTML='';
-  week.tasks.forEach(t=>{
-    const checked=isChecked(t.id);
-    const labelMap={reading:'Reading',test:'Subject Test',review:'Review',mock:'Mock Exam',spaced:'Spaced Recall'};
-    const label=t.title.includes('EXAM DAY')?'EXAM':(labelMap[t.type]||t.type);
-    const scoreData=scores[t.id];
-    let chipHtml='';
-    if(isScoreable(t)&&!t.title.includes('EXAM DAY')) {
-      const isMock=t.type==='mock'; const hasScore=scoreData&&scoreData.got!=null;
-      const chipClass=`score-chip${hasScore?' has-score':''}${isMock?' mock':''}`;
-      const chipText=hasScore?`${scoreData.got}/${scoreData.outof} · ${scoreData.pct}%`:'+ Log score';
-      chipHtml=`<span class="${chipClass}" onclick="openScoreModal(event,'${t.id}')"><span class="score-chip-dot"></span>${chipText}</span>`;
-    }
-    const item=document.createElement('div');
-    item.className=`check-item${checked?' checked':''}`;
-    item.innerHTML=`
-      <div class="check-box" onclick="toggleTask('${t.id}', this.closest('.check-item'))">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#0d0f14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+  const area = document.getElementById('checklist-area');
+  area.innerHTML = '';
+  week.tasks.forEach(t => {
+    const checked = isChecked(t.id);
+    const labelMap = { reading:'Reading', test:'Subject Test', review:'Review', mock:'Mock Exam', spaced:'Spaced Recall' };
+    const label = t.title === 'EXAM DAY — CFA Level 2' ? 'EXAM' : (labelMap[t.type] || t.type);
+    const item = document.createElement('div');
+    item.className = `check-item${checked ? ' checked' : ''}`;
+    item.innerHTML = `
+      <div class="check-box">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <polyline points="1.5,5 4,7.5 8.5,2" stroke="#0d0f14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
       <div class="check-content">
         <div class="check-title">${t.title}</div>
         <div class="check-meta">
           <span class="check-badge badge-${t.type}">${label}</span>
           <span class="check-days">${t.days} · ${t.subject}</span>
-          ${chipHtml}
         </div>
       </div>`;
+    item.onclick = () => { toggleTask(t.id, item); };
     area.appendChild(item);
   });
 }
 
-/* ── SCHEDULE ── */
 function renderSchedule() {
-  document.getElementById('schedule-subtitle').textContent=`${SCHEDULE.length} weeks · 5 mocks · Exam ${formatDisplayDate(new Date(profile.examDate))}`;
-  const grid=document.getElementById('schedule-grid'); grid.innerHTML='';
-  const curWeekNum=getCurrentWeekNum();
-  [1,2,3].forEach(phase=>{
-    const weeks=SCHEDULE.filter(w=>w.phase===phase); const color=PHASE_HEX[phase];
-    const block=document.createElement('div'); block.className='phase-block';
-    block.innerHTML=`<div class="phase-block-header">
-      <div class="phase-dot" style="background:${color}"></div>
-      <div><div class="phase-block-title">${PHASE_NAMES[phase]}</div><div class="phase-block-sub">${getPhasePct(phase)}% complete</div></div>
-    </div>
-    <div class="weeks-grid">${weeks.map(w=>{
-      const pct=getWeekPct(w); const isCur=w.week===curWeekNum;
-      return `<div class="schedule-week${isCur?' current-week':''}" style="border-top-color:${color}">
-        <div class="sw-header"><span class="sw-num">WEEK ${w.week}${isCur?' · NOW':''}</span><span class="sw-dates">${w.dates}</span></div>
-        <div class="sw-tasks">${w.tasks.map(t=>`<div class="sw-task"><span class="sw-task-bullet">▸</span><span>${t.title}</span></div>`).join('')}</div>
-        <div class="sw-done-bar"><div style="flex:1"><div class="progress-bar-wrap"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div></div><span class="sw-done-pct">${pct}%</span></div>
+  document.getElementById('schedule-subtitle').textContent = `${SCHEDULE.length} weeks · Exam ${formatDisplayDate(new Date(profile.examDate))}`;
+  const grid = document.getElementById('schedule-grid');
+  grid.innerHTML = '';
+  const curWeekNum = getCurrentWeekNum();
+
+  [1,2,3].forEach(phase => {
+    const weeks = SCHEDULE.filter(w => w.phase === phase);
+    const color = PHASE_HEX[phase];
+    const block = document.createElement('div');
+    block.className = 'phase-block';
+    block.innerHTML = `
+      <div class="phase-block-header">
+        <div class="phase-dot" style="background:${color}"></div>
+        <div>
+          <div class="phase-block-title">${PHASE_NAMES[phase]}</div>
+          <div class="phase-block-sub">${getPhasePct(phase)}% complete</div>
+        </div>
+      </div>
+      <div class="weeks-grid">
+        ${weeks.map(w => {
+          const pct = getWeekPct(w);
+          const isCur = w.week === curWeekNum;
+          return `<div class="schedule-week${isCur?' current-week':''}" style="border-top-color:${color}">
+            <div class="sw-header">
+              <span class="sw-num">WEEK ${w.week}${isCur?' · NOW':''}</span>
+              <span class="sw-dates">${w.dates}</span>
+            </div>
+            <div class="sw-tasks">${w.tasks.map(t=>`<div class="sw-task"><span class="sw-task-bullet">▸</span><span>${t.title}</span></div>`).join('')}</div>
+            <div class="sw-done-bar">
+              <div style="flex:1"><div class="progress-bar-wrap"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div></div>
+              <span class="sw-done-pct">${pct}%</span>
+            </div>
+          </div>`;
+        }).join('')}
       </div>`;
-    }).join('')}</div>`;
     grid.appendChild(block);
   });
 }
 
-/* ── ANALYTICS ── */
-function destroyChart(id) { if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
+/* ─────────────────────────────────────
+   ANALYTICS & CHARTS
+───────────────────────────────────── */
+const CHART_DEFAULTS = {
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#7a7871', font: { family: 'DM Mono', size: 10 } } },
+    y: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#7a7871', font: { family: 'DM Mono', size: 10 } }, max: 100, min: 0 }
+  },
+  animation: { duration: 600, easing: 'easeInOutQuart' }
+};
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
 function renderAnalytics() {
-  const activePanel=document.querySelector('.a-panel.active');
-  if(activePanel&&activePanel.id==='panel-scores') renderScoresPanel();
-  else renderCompletionPanel();
-}
-function switchATab(name, btn) {
-  document.querySelectorAll('.a-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.a-panel').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('panel-'+name).classList.add('active');
-  if(name==='scores') renderScoresPanel();
-  if(name==='completion') renderCompletionPanel();
-}
-function renderScoresPanel() {
-  const allTaskScores=Object.entries(scores).map(([id,s])=>{
-    const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id);
-    const week=SCHEDULE.find(w=>w.tasks.some(t=>t.id===id));
-    return task?{...s,task,week}:null;
-  }).filter(Boolean);
-  const testScores=allTaskScores.filter(s=>s.task.type!=='mock');
-  const mockScores=allTaskScores.filter(s=>s.task.type==='mock');
-  const avgTests=testScores.length?Math.round(testScores.reduce((a,b)=>a+b.pct,0)/testScores.length):null;
-  const avgMocks=mockScores.length?Math.round(mockScores.reduce((a,b)=>a+b.pct,0)/mockScores.length):null;
-  const best=allTaskScores.length?allTaskScores.reduce((a,b)=>a.pct>b.pct?a:b):null;
-  const scoreCol=pct=>pct>=70?'var(--green)':pct>=50?'var(--accent)':'var(--accent3)';
-  document.getElementById('score-insight-grid').innerHTML=`
-    <div class="insight-card"><div class="insight-label">Avg test score</div><div class="insight-val" style="color:${avgTests!=null?scoreCol(avgTests):'var(--muted)'}">${avgTests!=null?avgTests+'%':'—'}</div><div class="insight-sub">${testScores.length} test${testScores.length!==1?'s':''} logged</div></div>
-    <div class="insight-card"><div class="insight-label">Avg mock score</div><div class="insight-val" style="color:${avgMocks!=null?scoreCol(avgMocks):'var(--muted)'}">${avgMocks!=null?avgMocks+'%':'—'}</div><div class="insight-sub">${mockScores.length} of 5 mocks logged · /88 each</div></div>
-    <div class="insight-card"><div class="insight-label">Best score</div><div class="insight-val" style="color:var(--green)">${best?best.pct+'%':'—'}</div><div class="insight-sub">${best?best.task.title.slice(0,30)+(best.task.title.length>30?'…':''):' '}</div></div>`;
-  destroyChart('chart-subj-scores');
-  const subjAvgs=SUBJECTS.map(s=>{ const ss=allTaskScores.filter(x=>x.task.subject===s&&x.task.type!=='mock'); return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):null; });
-  charts['chart-subj-scores']=new Chart(document.getElementById('chart-subj-scores'),{
-    type:'bar', data:{ labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s), datasets:[{data:subjAvgs.map(v=>v??0), backgroundColor:subjAvgs.map(v=>v==null?'rgba(120,120,120,0.1)':v>=70?'#6bbd8b':v>=50?'#c8a96e':'#d96060'), borderRadius:4, borderSkipped:false}] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>subjAvgs[ctx.dataIndex]!=null?ctx.raw+'%':'No data yet'}}}, scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,max:100,ticks:{...AXIS_STYLE.ticks,callback:v=>v+'%'}}} }
-  });
-  destroyChart('chart-score-dist');
-  if(allTaskScores.length) {
-    const bins=[0,0,0,0,0];
-    allTaskScores.forEach(s=>{ if(s.pct<50)bins[0]++; else if(s.pct<60)bins[1]++; else if(s.pct<70)bins[2]++; else if(s.pct<80)bins[3]++; else bins[4]++; });
-    charts['chart-score-dist']=new Chart(document.getElementById('chart-score-dist'),{
-      type:'bar', data:{labels:['<50%','50–59%','60–69%','70–79%','80%+'],datasets:[{data:bins,backgroundColor:['#d96060','#c8a96e','#e8b84b','#8fc4b4','#6bbd8b'],borderRadius:4,borderSkipped:false}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} test${ctx.raw!==1?'s':''}`}}},scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,ticks:{...AXIS_STYLE.ticks,stepSize:1}}}}
-    });
-  }
-  destroyChart('chart-mock-trend');
-  if(mockScores.length) {
-    const sorted=[...mockScores].sort((a,b)=>new Date(a.date)-new Date(b.date));
-    charts['chart-mock-trend']=new Chart(document.getElementById('chart-mock-trend'),{
-      type:'line', data:{labels:sorted.map((_,i)=>`Mock ${i+1}`),datasets:[
-        {label:'Score %',data:sorted.map(s=>s.pct),borderColor:'#c47a7a',backgroundColor:'rgba(196,122,122,0.08)',borderWidth:2,tension:0.35,fill:true,pointBackgroundColor:'#c47a7a',pointRadius:5},
-        {label:'70% target',data:sorted.map(()=>70),borderColor:'rgba(107,189,139,0.4)',borderDash:[5,4],borderWidth:1.5,tension:0,fill:false,pointRadius:0}
-      ]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a7871',font:{family:'DM Mono',size:10},padding:12}}},scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,max:100,ticks:{...AXIS_STYLE.ticks,callback:v=>v+'%'}}}}
-    });
-  }
-  const wrap=document.getElementById('scores-table-wrap');
-  if(!allTaskScores.length) { wrap.innerHTML=`<div class="no-scores-msg"><strong>No scores logged yet</strong>Click "+ Log score" on any test or mock in the Checklist tab.</div>`; return; }
-  const sorted=[...allTaskScores].sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const rows=sorted.map(s=>{
-    const pCls=s.pct>=70?'high':s.pct>=50?'mid':'low';
-    const barCol=s.pct>=70?'var(--green)':s.pct>=50?'var(--accent)':'var(--accent3)';
-    const dateStr=new Date(s.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-    const badge=s.task.type==='mock'?`<span class="check-badge badge-mock">Mock</span>`:`<span class="check-badge badge-test">Test</span>`;
-    return `<tr><td>${badge}</td><td style="max-width:220px">${s.task.title}</td><td style="color:var(--muted);font-size:0.72rem">${s.task.subject}</td><td style="font-family:var(--font-mono);font-size:0.78rem">${s.got}/${s.outof}</td><td><span class="score-pct-pill ${pCls}">${s.pct}%</span></td><td><div class="mini-bar-wrap"><div class="mini-bar-fill" style="width:${s.pct}%;background:${barCol}"></div></div></td><td style="color:var(--muted2);font-size:0.68rem;font-family:var(--font-mono)">${dateStr}</td></tr>`;
-  }).join('');
-  wrap.innerHTML=`<div class="scores-table-wrap"><table class="scores-table"><thead><tr><th></th><th>Test</th><th>Subject</th><th>Score</th><th>%</th><th></th><th>Date</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-}
-function renderCompletionPanel() {
-  const overall=getOverall(); const ts=getTestStats(); const ms=getMockStats();
-  document.getElementById('completion-insight-grid').innerHTML=`
-    <div class="insight-card"><div class="insight-label">Overall completion</div><div class="insight-val" style="color:var(--accent)">${overall.pct}%</div><div class="insight-sub">${overall.done} of ${overall.total} tasks done</div></div>
-    <div class="insight-card"><div class="insight-label">Tests completed</div><div class="insight-val" style="color:var(--blue)">${ts.done}/${ts.total}</div><div class="insight-sub">${ts.total?Math.round(ts.done/ts.total*100):0}% of subject tests</div></div>
-    <div class="insight-card"><div class="insight-label">Mocks done</div><div class="insight-val" style="color:var(--accent3)">${ms.done}/5</div><div class="insight-sub">${ms.total?Math.round(ms.done/ms.total*100):0}% of 5 mock exams</div></div>`;
+  const overall = getOverall();
+  const ts = getTestStats();
+  const ms = getMockStats();
+  const consData = getWeeklyConsistency();
+  const doneWeeks = consData.filter(w => w.pct > 0).length;
+  const avgConsistency = doneWeeks ? Math.round(consData.filter(w=>w.pct>0).reduce((a,b)=>a+b.pct,0)/doneWeeks) : 0;
+
+  // Insight cards
+  document.getElementById('insight-grid').innerHTML = `
+    <div class="insight-card">
+      <div class="insight-label">Overall completion</div>
+      <div class="insight-val" style="color:var(--accent)">${overall.pct}%</div>
+      <div class="insight-sub">${overall.done} of ${overall.total} tasks done</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Tests completed</div>
+      <div class="insight-val" style="color:var(--blue)">${ts.done}/${ts.total}</div>
+      <div class="insight-sub">${ts.total ? Math.round(ts.done/ts.total*100) : 0}% of subject tests</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Mocks done</div>
+      <div class="insight-val" style="color:var(--accent3)">${ms.done}/${ms.total}</div>
+      <div class="insight-sub">${ms.total ? Math.round(ms.done/ms.total*100) : 0}% of mock exams</div>
+    </div>`;
+
+  // Chart 1: Subject-wise completion
+  const subjPcts = SUBJECTS.map(s => getSubjectStats(s).pct);
+  const subjColors = subjPcts.map(p => p === 100 ? '#6bbd8b' : p > 50 ? '#c8a96e' : '#8fc4b4');
   destroyChart('chart-subjects');
-  const subjPcts=SUBJECTS.map(s=>getSubjectStats(s).pct);
-  charts['chart-subjects']=new Chart(document.getElementById('chart-subjects'),{
-    type:'bar', data:{labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s),datasets:[{data:subjPcts,backgroundColor:subjPcts.map(p=>p===100?'#6bbd8b':p>50?'#c8a96e':'#8fc4b4'),borderRadius:4,borderSkipped:false}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw+'%'}}},scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,max:100,ticks:{...AXIS_STYLE.ticks,callback:v=>v+'%'}}}}
+  charts['chart-subjects'] = new Chart(document.getElementById('chart-subjects'), {
+    type: 'bar',
+    data: {
+      labels: SUBJECTS.map(s => s.length > 12 ? s.slice(0,11)+'…' : s),
+      datasets: [{ data: subjPcts, backgroundColor: subjColors, borderRadius: 4, borderSkipped: false }]
+    },
+    options: { ...CHART_DEFAULTS, plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>`${ctx.raw}%`}} } }
   });
+
+  // Chart 2: Tests done vs pending (doughnut)
   destroyChart('chart-tests');
-  charts['chart-tests']=new Chart(document.getElementById('chart-tests'),{
-    type:'doughnut', data:{labels:['Done','Pending'],datasets:[{data:[ts.done,ts.total-ts.done],backgroundColor:['#6bbd8b','#1a1e28'],borderColor:['#6bbd8b','rgba(255,255,255,0.07)'],borderWidth:1}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a7871',font:{family:'DM Mono',size:10},padding:12}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw}`}}},animation:{duration:600}}
+  charts['chart-tests'] = new Chart(document.getElementById('chart-tests'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Done', 'Pending'],
+      datasets: [{ data: [ts.done, ts.total - ts.done], backgroundColor: ['#6bbd8b','#1a1e28'], borderColor: ['#6bbd8b','rgba(255,255,255,0.07)'], borderWidth: 1 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '68%',
+      plugins: { legend: { display: true, position: 'bottom', labels: { color:'#7a7871', font:{family:'DM Mono',size:10}, padding: 12 } },
+        tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw}` } } },
+      animation: { duration: 600 }
+    }
   });
+
+  // Chart 3: Weekly consistency
   destroyChart('chart-consistency');
-  const consData=getWeeklyConsistency();
-  charts['chart-consistency']=new Chart(document.getElementById('chart-consistency'),{
-    type:'line', data:{labels:consData.map(w=>`W${w.week}`),datasets:[{data:consData.map(w=>w.pct),borderColor:'#c8a96e',backgroundColor:'rgba(200,169,110,0.08)',borderWidth:2,tension:0.35,fill:true,pointBackgroundColor:'#c8a96e',pointRadius:3}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw+'%'}}},scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,min:0,max:100,ticks:{...AXIS_STYLE.ticks,callback:v=>v+'%'}}}}
+  charts['chart-consistency'] = new Chart(document.getElementById('chart-consistency'), {
+    type: 'line',
+    data: {
+      labels: consData.map(w => `W${w.week}`),
+      datasets: [{
+        data: consData.map(w => w.pct),
+        borderColor: '#c8a96e',
+        backgroundColor: 'rgba(200,169,110,0.08)',
+        borderWidth: 2,
+        tension: 0.35,
+        fill: true,
+        pointBackgroundColor: '#c8a96e',
+        pointRadius: 3
+      }]
+    },
+    options: { ...CHART_DEFAULTS, plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>`${ctx.raw}%`}} } }
   });
+
+  // Chart 4: Mock progress with target trajectory
+  const mockWeeks = SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock');
+  const mockLabels = mockWeeks.map((_,i) => `Mock ${i+1}`);
+  const mockDone = mockWeeks.map(t => isChecked(t.id) ? 1 : 0).reduce((acc,v,i)=>{ acc.push((acc[i-1]||0)+v); return acc; }, []);
+  const mockTarget = mockWeeks.map((_,i) => Math.round((i+1)/mockWeeks.length*ms.total));
   destroyChart('chart-mocks');
-  const mockWeeks=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock');
-  const mockLabels=mockWeeks.map((_,i)=>`Mock ${i+1}`);
-  const mockDone=mockWeeks.map(t=>isChecked(t.id)?1:0).reduce((acc,v,i)=>{ acc.push((acc[i-1]||0)+v); return acc; },[]);
-  const mockTarget=mockWeeks.map((_,i)=>i+1);
-  charts['chart-mocks']=new Chart(document.getElementById('chart-mocks'),{
-    type:'line', data:{labels:mockLabels,datasets:[
-      {label:'Completed',data:mockDone,borderColor:'#c47a7a',backgroundColor:'rgba(196,122,122,0.08)',borderWidth:2,tension:0.3,fill:true,pointBackgroundColor:'#c47a7a',pointRadius:4},
-      {label:'Target',data:mockTarget,borderColor:'rgba(255,255,255,0.15)',borderDash:[4,4],borderWidth:1.5,tension:0,fill:false,pointRadius:0}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,scales:{x:AXIS_STYLE,y:{...AXIS_STYLE,max:5,min:0,ticks:{...AXIS_STYLE.ticks,stepSize:1}}},plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a7871',font:{family:'DM Mono',size:10},padding:12}}}}
+  charts['chart-mocks'] = new Chart(document.getElementById('chart-mocks'), {
+    type: 'line',
+    data: {
+      labels: mockLabels,
+      datasets: [
+        { label:'Completed', data: mockDone, borderColor:'#c47a7a', backgroundColor:'rgba(196,122,122,0.08)', borderWidth:2, tension:0.3, fill:true, pointBackgroundColor:'#c47a7a', pointRadius:4 },
+        { label:'Target', data: mockTarget, borderColor:'rgba(255,255,255,0.15)', borderDash:[4,4], borderWidth:1.5, tension:0, fill:false, pointRadius:0 }
+      ]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: { ...CHART_DEFAULTS.scales, y: { ...CHART_DEFAULTS.scales.y, max: ms.total, min: 0 } },
+      plugins: { legend: { display:true, position:'bottom', labels:{ color:'#7a7871', font:{family:'DM Mono',size:10}, padding:12 } } }
+    }
   });
 }
 
-/* ── TASK TOGGLE ── */
-function toggleTask(taskId, itemEl) {
-  state[taskId]=!state[taskId]; saveState();
-  itemEl.classList.toggle('checked',!!state[taskId]);
-  const cb=itemEl.querySelector('.check-box');
-  if(state[taskId]){ cb.style.background='var(--green)'; cb.style.borderColor='var(--green)'; cb.querySelector('svg').style.display='block'; }
-  else { cb.style.background=''; cb.style.borderColor=''; cb.querySelector('svg').style.display='none'; }
-  renderChecklist();
-  if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
-  if(document.getElementById('view-analytics').classList.contains('active')) renderAnalytics();
-}
-function resetWeek() {
-  const weekNum=parseInt(document.getElementById('week-select').value);
-  const week=SCHEDULE.find(w=>w.week===weekNum); if(!week) return;
-  week.tasks.forEach(t=>{ state[t.id]=false; }); saveState(); renderChecklist();
-  showToast('Week reset','success');
-}
+/* ─────────────────────────────────────
+   EXPORT PDF
+   Strategy: render fresh Chart.js instances into hidden off-screen canvases,
+   capture each as a dataURL, inject as <img> tags into the report div,
+   then html2canvas the whole thing → jsPDF. This avoids cross-origin/
+   off-screen issues with the live chart canvases.
+───────────────────────────────────── */
 
-/* ── CSV EXPORT ── */
-function exportScoresCSV() {
-  const allTaskScores=Object.entries(scores).map(([id,s])=>{
-    const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id);
-    const week=SCHEDULE.find(w=>w.tasks.some(t=>t.id===id));
-    return task?{...s,task,week}:null;
-  }).filter(Boolean);
-  if(!allTaskScores.length){ showToast('No scores logged yet','error'); return; }
-  const sorted=[...allTaskScores].sort((a,b)=>new Date(a.date)-new Date(b.date));
-  const headers=['Type','Week','Phase','Subject','Test Title','Score (Got)','Score (Out Of)','Percentage (%)','Grade','Date Logged'];
-  const rows=sorted.map(s=>{
-    const type=s.task.type==='mock'?'Mock Exam':s.task.type==='spaced'?'Spaced Recall':'Subject Test';
-    const phase=`Phase ${s.week?.phase||''}`;
-    const dateStr=new Date(s.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-    const grade=s.pct>=70?'On Track':s.pct>=50?'Needs Revision':'Needs More Work';
-    const title=`"${s.task.title.replace(/"/g,'""')}"`;
-    return [type,`Week ${s.week?.week||''}`,phase,s.task.subject,title,s.got,s.outof,s.pct,grade,dateStr].join(',');
-  });
-  const csv=[headers.join(','),...rows].join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url;
-  a.download=`CFA-L2-Scores-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click(); URL.revokeObjectURL(url);
-  showToast(`Exported ${sorted.length} scores as CSV ✓`,'success');
-}
-
-/* ════════════════════════════════════════════════════════
-   CHART RENDERER FOR EXPORT
-   Draws a Chart.js config onto an isolated off-screen
-   canvas with animation disabled, then resolves with the
-   PNG data URL once the frame has painted.
-   This avoids the race condition in both previous versions
-   (setting onComplete after construction, or calling
-   update() while animation was still pending).
-════════════════════════════════════════════════════════ */
-function renderChartOffscreen(config, w, h) {
-  return new Promise((resolve, reject) => {
+/** Renders a Chart.js config into a hidden canvas and returns a PNG dataURL */
+function renderChartToDataURL(config, width, height) {
+  return new Promise(resolve => {
     const canvas = document.createElement('canvas');
-    canvas.width  = w * 2;   // @2x for sharpness
-    canvas.height = h * 2;
-    // Keep it invisible but in-DOM so the canvas context works
-    canvas.style.cssText = 'position:fixed;top:-9999px;left:-9999px;pointer-events:none;opacity:0';
+    canvas.width = width * 2;   // 2x for retina sharpness in PDF
+    canvas.height = height * 2;
+    canvas.style.position = 'absolute';
+    canvas.style.top = '-9999px';
+    canvas.style.left = '-9999px';
     document.body.appendChild(canvas);
 
-    // Deep-merge animation:0 so nothing else can re-enable it
-    const cfg = JSON.parse(JSON.stringify(config));
-    cfg.options = cfg.options || {};
-    cfg.options.animation = { duration: 0 };
-    cfg.options.responsive = false;
-    cfg.options.maintainAspectRatio = false;
+    const chart = new Chart(canvas, config);
 
-    let chart;
-    try { chart = new Chart(canvas, cfg); }
-    catch(err) { document.body.removeChild(canvas); reject(err); return; }
-
-    // requestAnimationFrame gives the browser one paint cycle
-    // to flush the synchronous (duration:0) draw before we read pixels
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        try {
-          const url = canvas.toDataURL('image/png');
-          chart.destroy();
-          document.body.removeChild(canvas);
-          resolve(url);
-        } catch(err) {
-          chart.destroy();
-          document.body.removeChild(canvas);
-          reject(err);
-        }
-      });
-    });
+    // Chart.js fires 'afterRender' when animation completes
+    chart.options.animation = {
+      duration: 0,  // instant — no animation needed for export
+      onComplete: () => {
+        const dataURL = canvas.toDataURL('image/png');
+        chart.destroy();
+        document.body.removeChild(canvas);
+        resolve(dataURL);
+      }
+    };
+    chart.update();
   });
 }
 
-/* ── BUILD ALL 6 CHART IMAGES FOR PDF ── */
+/** Build all four chart configs with export-safe font sizes and solid backgrounds */
 async function buildExportChartImages() {
-  const ax = {
-    grid:  { color: 'rgba(255,255,255,0.06)', drawBorder: false },
-    ticks: { color: '#9a9890', font: { family: 'monospace', size: 11 } }
-  };
-  const noLegend = { legend:{ display:false }, tooltip:{ enabled:false } };
-
-  const allTaskScores = Object.entries(scores).map(([id,s])=>{
-    const task = SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id);
-    const week = SCHEDULE.find(w=>w.tasks.some(t=>t.id===id));
-    return task ? {...s, task, week} : null;
-  }).filter(Boolean);
-  const testScores = allTaskScores.filter(s=>s.task.type!=='mock');
-  const mockScores = allTaskScores.filter(s=>s.task.type==='mock');
-
-  /* 1 — Completion by subject */
-  const subjPcts = SUBJECTS.map(s=>getSubjectStats(s).pct);
-  const img_completion = await renderChartOffscreen({
-    type:'bar',
-    data:{ labels:SUBJECTS, datasets:[{ data:subjPcts, backgroundColor:subjPcts.map(p=>p===100?'#6bbd8b':p>50?'#c8a96e':'#8fc4b4'), borderRadius:4, borderSkipped:false }] },
-    options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
-  }, 820, 220);
-
-  /* 2 — Avg test score by subject */
-  const subjAvgs = SUBJECTS.map(s=>{ const ss=testScores.filter(x=>x.task.subject===s); return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):0; });
-  const img_subjscores = await renderChartOffscreen({
-    type:'bar',
-    data:{ labels:SUBJECTS, datasets:[{ data:subjAvgs, backgroundColor:subjAvgs.map(v=>v>=70?'#6bbd8b':v>=50?'#c8a96e':'#d96060'), borderRadius:4, borderSkipped:false }] },
-    options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
-  }, 820, 220);
-
-  /* 3 — Score distribution */
-  const bins=[0,0,0,0,0];
-  allTaskScores.forEach(s=>{ if(s.pct<50)bins[0]++; else if(s.pct<60)bins[1]++; else if(s.pct<70)bins[2]++; else if(s.pct<80)bins[3]++; else bins[4]++; });
-  const img_dist = await renderChartOffscreen({
-    type:'bar',
-    data:{ labels:['<50%','50–59%','60–69%','70–79%','80%+'], datasets:[{ data:bins, backgroundColor:['#d96060','#c8a96e','#e8b84b','#8fc4b4','#6bbd8b'], borderRadius:4, borderSkipped:false }] },
-    options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,ticks:{...ax.ticks,stepSize:1}} } }
-  }, 400, 200);
-
-  /* 4 — Weekly consistency */
-  const consData = getWeeklyConsistency();
-  const img_consistency = await renderChartOffscreen({
-    type:'line',
-    data:{ labels:consData.map(w=>`W${w.week}`), datasets:[{ data:consData.map(w=>w.pct), borderColor:'#c8a96e', backgroundColor:'rgba(200,169,110,0.1)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c8a96e', pointRadius:3 }] },
-    options:{ plugins:{...noLegend}, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
-  }, 400, 200);
-
-  /* 5 — Mock score trend (conditional) */
-  let img_mocktrend = null;
-  if(mockScores.length) {
-    const sorted=[...mockScores].sort((a,b)=>new Date(a.date)-new Date(b.date));
-    img_mocktrend = await renderChartOffscreen({
-      type:'line',
-      data:{ labels:sorted.map((_,i)=>`Mock ${i+1}`), datasets:[
-        { label:'Score %', data:sorted.map(s=>s.pct), borderColor:'#c47a7a', backgroundColor:'rgba(196,122,122,0.1)', borderWidth:2, tension:0.35, fill:true, pointBackgroundColor:'#c47a7a', pointRadius:5 },
-        { label:'70% target', data:sorted.map(()=>70), borderColor:'rgba(107,189,139,0.5)', borderDash:[5,4], borderWidth:1.5, tension:0, fill:false, pointRadius:0 }
-      ]},
-      options:{ plugins:{ legend:{ display:true, position:'bottom', labels:{ color:'#9a9890', font:{family:'monospace',size:11}, padding:14 } }, tooltip:{enabled:false} }, scales:{ x:ax, y:{...ax,min:0,max:100,ticks:{...ax.ticks,callback:v=>v+'%'}} } }
-    }, 820, 200);
-  }
-
-  /* 6 — Tests done doughnut */
+  const overall = getOverall();
   const ts = getTestStats();
-  const img_doughnut = await renderChartOffscreen({
-    type:'doughnut',
-    data:{ labels:['Done','Pending'], datasets:[{ data:[ts.done, ts.total-ts.done], backgroundColor:['#6bbd8b','#1a1e28'], borderColor:['#6bbd8b','rgba(255,255,255,0.1)'], borderWidth:1 }] },
-    options:{ cutout:'68%', plugins:{ legend:{ display:true, position:'bottom', labels:{ color:'#9a9890', font:{family:'monospace',size:11}, padding:12 } }, tooltip:{enabled:false} } }
-  }, 400, 200);
+  const ms = getMockStats();
+  const consData = getWeeklyConsistency();
 
-  return { img_completion, img_subjscores, img_dist, img_consistency, img_mocktrend, img_doughnut };
+  const axisStyle = {
+    grid: { color: 'rgba(255,255,255,0.06)', drawBorder: false },
+    ticks: { color: '#7a7871', font: { family: 'monospace', size: 11 } }
+  };
+  const pluginBase = { legend: { display: false } };
+
+  // ── Chart A: Subject completion bar ─────────────────────────
+  const subjPcts = SUBJECTS.map(s => getSubjectStats(s).pct);
+  const subjColors = subjPcts.map(p => p === 100 ? '#6bbd8b' : p > 50 ? '#c8a96e' : '#8fc4b4');
+  const chartA = await renderChartToDataURL({
+    type: 'bar',
+    data: {
+      labels: SUBJECTS.map(s => s.length > 14 ? s.slice(0,13)+'…' : s),
+      datasets: [{ data: subjPcts, backgroundColor: subjColors, borderRadius: 4, borderSkipped: false }]
+    },
+    options: {
+      responsive: false,
+      plugins: { ...pluginBase, tooltip: { enabled: false } },
+      scales: { x: axisStyle, y: { ...axisStyle, min: 0, max: 100 } }
+    }
+  }, 820, 240);
+
+  // ── Chart B: Tests doughnut ──────────────────────────────────
+  const chartB = await renderChartToDataURL({
+    type: 'doughnut',
+    data: {
+      labels: ['Done', 'Pending'],
+      datasets: [{ data: [ts.done, ts.total - ts.done],
+        backgroundColor: ['#6bbd8b','#1a1e28'],
+        borderColor: ['#6bbd8b','rgba(255,255,255,0.07)'],
+        borderWidth: 1 }]
+    },
+    options: {
+      responsive: false,
+      cutout: '65%',
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { color: '#7a7871', font: { family: 'monospace', size: 11 }, padding: 14 } },
+        tooltip: { enabled: false }
+      }
+    }
+  }, 360, 220);
+
+  // ── Chart C: Weekly consistency line ────────────────────────
+  const chartC = await renderChartToDataURL({
+    type: 'line',
+    data: {
+      labels: consData.map(w => `W${w.week}`),
+      datasets: [{
+        data: consData.map(w => w.pct),
+        borderColor: '#c8a96e',
+        backgroundColor: 'rgba(200,169,110,0.1)',
+        borderWidth: 2, tension: 0.35, fill: true,
+        pointBackgroundColor: '#c8a96e', pointRadius: 3
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: { ...pluginBase, tooltip: { enabled: false } },
+      scales: { x: axisStyle, y: { ...axisStyle, min: 0, max: 100 } }
+    }
+  }, 360, 220);
+
+  // ── Chart D: Mock progress line ──────────────────────────────
+  const mockTasks = SCHEDULE.flatMap(w => w.tasks).filter(t => t.type === 'mock');
+  const mockDone = mockTasks.map(t => isChecked(t.id) ? 1 : 0)
+    .reduce((acc, v, i) => { acc.push((acc[i-1] || 0) + v); return acc; }, []);
+  const mockTarget = mockTasks.map((_, i) => Math.round((i+1) / mockTasks.length * ms.total));
+  const chartD = await renderChartToDataURL({
+    type: 'line',
+    data: {
+      labels: mockTasks.map((_, i) => `Mock ${i+1}`),
+      datasets: [
+        { label: 'Completed', data: mockDone, borderColor: '#c47a7a', backgroundColor: 'rgba(196,122,122,0.1)', borderWidth: 2, tension: 0.3, fill: true, pointBackgroundColor: '#c47a7a', pointRadius: 4 },
+        { label: 'Target', data: mockTarget, borderColor: 'rgba(255,255,255,0.2)', borderDash: [4,4], borderWidth: 1.5, tension: 0, fill: false, pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { color: '#7a7871', font: { family: 'monospace', size: 11 }, padding: 14 } },
+        tooltip: { enabled: false }
+      },
+      scales: { x: axisStyle, y: { ...axisStyle, min: 0, max: ms.total || 8 } }
+    }
+  }, 820, 200);
+
+  return { chartA, chartB, chartC, chartD };
 }
 
-/* ── FULL PDF EXPORT ── */
-async function exportFullReport() {
-  showToast('Building PDF report…','success');
-  const overall=getOverall(); const ts=getTestStats(); const ms=getMockStats();
-  const exam=new Date(profile.examDate); const today=new Date();
-  const daysLeft=Math.max(0,Math.ceil((exam-today)/86400000));
+async function exportPDF() {
+  showToast('Building charts for export…', 'success');
 
-  const allTaskScores=Object.entries(scores).map(([id,s])=>{
-    const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===id);
-    const week=SCHEDULE.find(w=>w.tasks.some(t=>t.id===id));
-    return task?{...s,task,week}:null;
-  }).filter(Boolean);
-  const testScores=allTaskScores.filter(s=>s.task.type!=='mock');
-  const mockScores=allTaskScores.filter(s=>s.task.type==='mock');
-  const avgTests=testScores.length?Math.round(testScores.reduce((a,b)=>a+b.pct,0)/testScores.length):null;
-  const avgMocks=mockScores.length?Math.round(mockScores.reduce((a,b)=>a+b.pct,0)/mockScores.length):null;
-  const best=allTaskScores.length?allTaskScores.reduce((a,b)=>a.pct>b.pct?a:b):null;
+  const overall = getOverall();
+  const ts = getTestStats();
+  const ms = getMockStats();
+  const exam = new Date(profile.examDate);
+  const today = new Date();
+  const daysLeft = Math.max(0, Math.ceil((exam - today) / 86400000));
 
+  // Render all four charts to images first
   let chartImgs;
-  try { chartImgs=await buildExportChartImages(); }
-  catch(err){ console.error(err); showToast('Chart render failed','error'); return; }
+  try {
+    chartImgs = await buildExportChartImages();
+  } catch(err) {
+    console.error('Chart render failed:', err);
+    showToast('Chart render failed — try again', 'error');
+    return;
+  }
 
-  /* Scores table rows */
-  const scoreRowsHTML = allTaskScores.length
-    ? [...allTaskScores].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(s=>{
-        const col=s.pct>=70?'#6bbd8b':s.pct>=50?'#c8a96e':'#d96060';
-        const typeLbl=s.task.type==='mock'?'Mock':s.task.type==='spaced'?'Spaced':'Test';
-        const typeBg=s.task.type==='mock'?'rgba(196,122,122,0.18)':s.task.type==='spaced'?'rgba(198,120,221,0.15)':'rgba(200,169,110,0.15)';
-        const typeCol=s.task.type==='mock'?'#c47a7a':s.task.type==='spaced'?'#c678dd':'#c8a96e';
-        const dateStr=new Date(s.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-        return `<tr style="border-bottom:1px solid rgba(255,255,255,0.05)">
-          <td style="padding:7px 10px;white-space:nowrap"><span style="background:${typeBg};color:${typeCol};font-size:9px;font-family:monospace;padding:2px 7px;border-radius:3px;text-transform:uppercase">${typeLbl}</span></td>
-          <td style="padding:7px 10px;font-size:11px;max-width:220px;word-break:break-word">${s.task.title}</td>
-          <td style="padding:7px 10px;font-size:10px;color:#9a9890">${s.task.subject}</td>
-          <td style="padding:7px 10px;font-family:monospace;font-size:11px">${s.got}/${s.outof}</td>
-          <td style="padding:7px 10px"><span style="background:${col}22;color:${col};font-family:monospace;font-size:10px;padding:2px 8px;border-radius:20px">${s.pct}%</span></td>
-          <td style="padding:7px 10px"><div style="width:70px;height:4px;background:#1a1e28;border-radius:2px;overflow:hidden"><div style="width:${Math.min(s.pct,100)}%;height:100%;background:${col};border-radius:2px"></div></div></td>
-          <td style="padding:7px 10px;font-family:monospace;font-size:10px;color:#666">${dateStr}</td>
-        </tr>`;
-      }).join('')
-    : `<tr><td colspan="7" style="padding:24px;text-align:center;color:#555;font-size:12px">No scores logged yet</td></tr>`;
+  showToast('Composing report…', 'success');
 
-  /* Subject detail rows */
-  const subjDetailHTML = SUBJECTS.map(s=>{
-    const st=getSubjectStats(s);
-    const ss=testScores.filter(x=>x.task.subject===s);
-    const avg=ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):null;
-    const col=st.pct===100?'#6bbd8b':st.pct>50?'#c8a96e':'#8fc4b4';
-    return `<div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+  // Subject progress bars (HTML, not chart)
+  const subjRows = SUBJECTS.map(s => {
+    const st = getSubjectStats(s);
+    return `<div style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
         <span style="font-size:11px;color:#e8e6df">${s}</span>
-        <span style="font-size:11px;font-family:monospace;color:${col}">${st.pct}% done${avg!=null?' · avg '+avg+'%':' · no scores yet'}</span>
+        <span style="font-size:11px;font-family:monospace;color:${st.pct===100?'#6bbd8b':st.pct>50?'#c8a96e':'#8fc4b4'}">${st.pct}%  (${st.done}/${st.total})</span>
       </div>
       <div style="height:4px;background:#1a1e28;border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${st.pct}%;background:${col};border-radius:2px"></div>
+        <div style="height:100%;width:${st.pct}%;background:${st.pct===100?'#6bbd8b':st.pct>50?'#c8a96e':'#8fc4b4'};border-radius:2px"></div>
       </div>
     </div>`;
   }).join('');
 
-  const scoreCol=pct=>pct>=70?'#6bbd8b':pct>=50?'#c8a96e':'#d96060';
+  // Build the full report HTML (all inline styles, dark bg, A4-ish width)
+  const report = document.getElementById('export-report');
+  report.style.display = 'block';
+  report.innerHTML = `
+    <div style="font-family:Georgia,serif;background:#0d0f14;padding:48px;width:900px;color:#e8e6df">
 
-  const report=document.getElementById('export-report');
-  report.style.cssText='display:block;position:fixed;top:-9999px;left:-9999px;width:900px;background:#0d0f14;padding:48px;font-family:Georgia,serif;color:#e8e6df';
-
-  report.innerHTML=`<div style="background:#0d0f14;width:900px;padding:0">
-
-    <!-- HEADER -->
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid rgba(255,255,255,0.1)">
-      <div>
-        <div style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#7a7871;margin-bottom:8px;font-family:monospace">CFA Level 2 · Precision Study Tracker</div>
-        <div style="font-size:30px;color:#c8a96e;line-height:1.1;font-family:Georgia,serif">Progress Report</div>
-        <div style="font-size:13px;color:#7a7871;margin-top:6px;font-family:monospace">${profile.name} &nbsp;·&nbsp; Generated ${formatDisplayDate(today)}</div>
+      <!-- HEADER -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:24px;margin-bottom:32px;border-bottom:1px solid rgba(255,255,255,0.1)">
+        <div>
+          <div style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#7a7871;margin-bottom:8px">CFA Level 2 · Precision Study Tracker</div>
+          <div style="font-size:30px;color:#c8a96e;line-height:1.1">Progress Report</div>
+          <div style="font-size:13px;color:#7a7871;margin-top:6px">${profile.name} &nbsp;·&nbsp; Generated ${formatDisplayDate(today)}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:10px;color:#7a7871;margin-bottom:3px;letter-spacing:0.08em;text-transform:uppercase">Exam Date</div>
+          <div style="font-size:22px;color:#e8e6df">${formatDisplayDate(exam)}</div>
+          <div style="font-size:11px;color:#c8a96e;margin-top:3px">${daysLeft} days remaining</div>
+        </div>
       </div>
-      <div style="text-align:right">
-        <div style="font-size:10px;color:#7a7871;margin-bottom:3px;letter-spacing:0.08em;text-transform:uppercase;font-family:monospace">Exam Date</div>
-        <div style="font-size:22px;color:#e8e6df;font-family:Georgia,serif">${formatDisplayDate(exam)}</div>
-        <div style="font-size:11px;color:#c8a96e;margin-top:3px;font-family:monospace">${daysLeft} days remaining</div>
+
+      <!-- KPI CARDS -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px">
+        ${[
+          { label:'Overall',      val: overall.pct+'%',       sub: `${overall.done}/${overall.total} tasks`, col:'#c8a96e' },
+          { label:'Tests done',   val: `${ts.done}/${ts.total}`, sub: `${ts.total?Math.round(ts.done/ts.total*100):0}% complete`, col:'#6ea8d8' },
+          { label:'Mocks done',   val: `${ms.done}/${ms.total}`, sub: `${ms.total?Math.round(ms.done/ms.total*100):0}% complete`, col:'#c47a7a' },
+          { label:'Study level',  val: profile.level,         sub: `${profile.hours}h/day target`,         col:'#8fc4b4' },
+        ].map(c => `
+          <div style="background:#13161d;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px 16px">
+            <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7a7871;margin-bottom:7px">${c.label}</div>
+            <div style="font-family:monospace;font-size:24px;font-weight:500;color:${c.col};line-height:1">${c.val}</div>
+            <div style="font-size:10px;color:#7a7871;margin-top:5px">${c.sub}</div>
+          </div>`).join('')}
       </div>
-    </div>
 
-    <!-- SUMMARY STATS -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
-      ${[
-        {label:'Overall completion', val:overall.pct+'%', sub:`${overall.done}/${overall.total} tasks`, col:'#c8a96e'},
-        {label:'Avg test score', val:avgTests!=null?avgTests+'%':'—', sub:`${testScores.length} tests logged`, col:avgTests!=null?scoreCol(avgTests):'#7a7871'},
-        {label:'Avg mock score', val:avgMocks!=null?avgMocks+'%':'—', sub:`${mockScores.length} of 5 mocks logged`, col:avgMocks!=null?scoreCol(avgMocks):'#7a7871'},
-        {label:'Best score', val:best?best.pct+'%':'—', sub:best?best.task.subject:'none yet', col:'#6bbd8b'},
-      ].map(c=>`<div style="background:#13161d;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px 16px">
-        <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7a7871;margin-bottom:7px;font-family:monospace">${c.label}</div>
-        <div style="font-family:monospace;font-size:26px;font-weight:500;color:${c.col};line-height:1">${c.val}</div>
-        <div style="font-size:10px;color:#7a7871;margin-top:5px;font-family:monospace">${c.sub}</div>
-      </div>`).join('')}
-    </div>
-
-    <!-- PHASE PROGRESS -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px">
-      ${[1,2,3].map(p=>{
-        const pct=getPhasePct(p); const col=PHASE_HEX[p];
-        return `<div style="background:#13161d;border:1px solid rgba(255,255,255,0.08);border-top:2px solid ${col};border-radius:8px;padding:14px 16px">
-          <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#7a7871;margin-bottom:4px;font-family:monospace">Phase ${p}</div>
-          <div style="font-size:13px;color:#e8e6df;margin-bottom:8px;font-family:Georgia,serif">${PHASE_NAMES[p].replace(`Phase ${p} — `, '')}</div>
-          <div style="font-family:monospace;font-size:22px;color:${col};margin-bottom:8px">${pct}%</div>
-          <div style="height:4px;background:#1a1e28;border-radius:2px"><div style="width:${pct}%;height:100%;background:${col};border-radius:2px"></div></div>
-        </div>`;
-      }).join('')}
-    </div>
-
-    <!-- CHART: Completion by subject -->
-    <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
-      <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Completion by subject</div>
-      <img src="${chartImgs.img_completion}" style="width:100%;display:block;border-radius:4px">
-    </div>
-
-    <!-- CHART: Avg test score by subject -->
-    <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
-      <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Average score % by subject (tests only)</div>
-      <img src="${chartImgs.img_subjscores}" style="width:100%;display:block;border-radius:4px">
-    </div>
-
-    <!-- CHARTS ROW: Distribution + Consistency -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
-        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Score distribution</div>
-        <img src="${chartImgs.img_dist}" style="width:100%;display:block;border-radius:4px">
+      <!-- CHART A: Subject completion bar (full width) -->
+      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px 20px 14px;margin-bottom:20px">
+        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Subject-wise completion %</div>
+        <img src="${chartImgs.chartA}" style="width:100%;display:block;border-radius:4px">
       </div>
-      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
-        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Weekly study consistency</div>
-        <img src="${chartImgs.img_consistency}" style="width:100%;display:block;border-radius:4px">
+
+      <!-- CHARTS B + C: side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px 20px 14px">
+          <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Tests: completed vs pending</div>
+          <img src="${chartImgs.chartB}" style="width:100%;display:block;border-radius:4px">
+        </div>
+        <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px 20px 14px">
+          <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Weekly consistency</div>
+          <img src="${chartImgs.chartC}" style="width:100%;display:block;border-radius:4px">
+        </div>
       </div>
-    </div>
 
-    <!-- CHARTS ROW: Tests doughnut + Mock trend -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
-        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Tests completed vs pending</div>
-        <img src="${chartImgs.img_doughnut}" style="width:100%;display:block;border-radius:4px">
+      <!-- CHART D: Mock progress (full width) -->
+      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px 20px 14px;margin-bottom:20px">
+        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Mock exam progress vs target trajectory</div>
+        <img src="${chartImgs.chartD}" style="width:100%;display:block;border-radius:4px">
       </div>
-      ${chartImgs.img_mocktrend
-        ? `<div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
-             <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px;font-family:monospace">Mock exam score trend</div>
-             <img src="${chartImgs.img_mocktrend}" style="width:100%;display:block;border-radius:4px">
-           </div>`
-        : `<div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;display:flex;align-items:center;justify-content:center">
-             <div style="text-align:center;color:#555;font-size:12px;font-family:monospace">Mock trend available<br>after first mock exam</div>
-           </div>`
-      }
-    </div>
 
-    <!-- SUBJECT DETAIL -->
-    <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
-      <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:16px;font-family:monospace">Subject detail — completion & avg score</div>
-      ${subjDetailHTML}
-    </div>
+      <!-- SUBJECT DETAIL BARS -->
+      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px">
+        <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:16px">Subject detail</div>
+        ${subjRows}
+      </div>
 
-    <!-- ALL SCORES TABLE -->
-    <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px;margin-bottom:20px;overflow:hidden">
-      <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:16px;font-family:monospace">All recorded test scores (${allTaskScores.length} total)</div>
-      <table style="width:100%;border-collapse:collapse;font-size:11px;font-family:monospace">
-        <thead>
-          <tr style="border-bottom:1px solid rgba(255,255,255,0.1)">
-            <th style="padding:6px 10px;text-align:left;color:#7a7871;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Type</th>
-            <th style="padding:6px 10px;text-align:left;color:#7a7871;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Test</th>
-            <th style="padding:6px 10px;text-align:left;color:#7a7871;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Subject</th>
-            <th style="padding:6px 10px;text-align:left;color:#7a7871;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Score</th>
-            <th style="padding:6px 10px;text-align:left;color:#7a7871;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">%</th>
-            <th style="padding:6px 10px;text-align:left;color:#7a7871;font-size:9px;letter-spacing:0.1em;text-transform:uppercase"></th>
-            <th style="padding:6px 10px;text-align:left;color:#7a7871;font-size:9px;letter-spacing:0.1em;text-transform:uppercase">Date</th>
-          </tr>
-        </thead>
-        <tbody>${scoreRowsHTML}</tbody>
-      </table>
-    </div>
+      <!-- PHASE PROGRESS + STUDY PROFILE -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px">
+        <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
+          <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Phase progress</div>
+          ${[1,2,3].map(p => {
+            const pct = getPhasePct(p);
+            return `<div style="margin-bottom:11px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:11px;color:#e8e6df">${PHASE_NAMES[p]}</span>
+                <span style="font-size:11px;font-family:monospace;color:${PHASE_HEX[p]}">${pct}%</span>
+              </div>
+              <div style="height:4px;background:#1a1e28;border-radius:2px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:${PHASE_HEX[p]};border-radius:2px"></div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:20px">
+          <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#7a7871;margin-bottom:14px">Study profile</div>
+          ${[
+            ['Study level',  profile.level],
+            ['Daily target', profile.hours + ' hours/day'],
+            ['Start date',   formatDisplayDate(new Date(profile.startDate))],
+            ['Exam date',    formatDisplayDate(exam)],
+            ['Total weeks',  SCHEDULE.length + ' weeks'],
+            ['Current week', 'Week ' + getCurrentWeekNum()],
+          ].map(([k,v]) => `
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+              <span style="font-size:11px;color:#7a7871">${k}</span>
+              <span style="font-size:11px;color:#e8e6df">${v}</span>
+            </div>`).join('')}
+        </div>
+      </div>
 
-    <!-- FOOTER -->
-    <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;font-size:10px;color:#555048;text-align:center;font-family:monospace">
-      CFA Level 2 Precision Study Tracker &nbsp;·&nbsp; ${new Date().toLocaleString()} &nbsp;·&nbsp; ${profile.name} &nbsp;·&nbsp; Confidential
-    </div>
+      <!-- FOOTER -->
+      <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;font-size:10px;color:#555048;text-align:center">
+        CFA Level 2 Precision Study Tracker &nbsp;·&nbsp; ${new Date().toLocaleString()} &nbsp;·&nbsp; Confidential
+      </div>
 
-  </div>`;
+    </div>`;
 
   try {
-    await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,300)));
-    const canvas=await html2canvas(report.firstElementChild,{
-      backgroundColor:'#0d0f14', scale:1.5, useCORS:true, logging:false, width:900, windowWidth:900
+    // Give the browser one frame to paint the injected <img> tags
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 200)));
+
+    const canvas = await html2canvas(report.firstElementChild, {
+      backgroundColor: '#0d0f14',
+      scale: 1.5,
+      useCORS: true,
+      logging: false,
+      width: 900,
+      windowWidth: 900
     });
-    const { jsPDF }=window.jspdf;
-    const pdfW=900; const pdfH=Math.round(canvas.height/1.5);
-    const pdf=new jsPDF({orientation:'portrait',unit:'px',format:[pdfW,pdfH]});
-    pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,pdfW,pdfH);
+
+    const { jsPDF } = window.jspdf;
+    // Use the canvas aspect ratio to set PDF page height correctly
+    const pdfW = 900;
+    const pdfH = Math.round(canvas.height / 1.5);
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [pdfW, pdfH] });
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfW, pdfH);
     pdf.save(`CFA-L2-Report-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`);
-    showToast('PDF exported successfully ✓','success');
+    showToast('Report exported! ✓', 'success');
   } catch(err) {
-    console.error(err); showToast('PDF export failed — check console','error');
+    console.error('PDF export error:', err);
+    showToast('Export failed — check console', 'error');
   } finally {
-    report.style.display='none'; report.innerHTML='';
+    report.style.display = 'none';
+    report.innerHTML = '';
   }
 }
 
-/* ── TAB SWITCHING ── */
-function switchTab(name) {
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('view-'+name).classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b=>{ if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${name}'`)) b.classList.add('active'); });
-  if(name==='dashboard') renderDashboard();
-  if(name==='checklist') renderChecklist();
-  if(name==='schedule')  renderSchedule();
-  if(name==='analytics') renderAnalytics();
+/* ─────────────────────────────────────
+   TASK TOGGLE
+───────────────────────────────────── */
+function toggleTask(taskId, itemEl) {
+  state[taskId] = !state[taskId];
+  saveState();
+  itemEl.classList.toggle('checked', !!state[taskId]);
+  const cb = itemEl.querySelector('.check-box');
+  if (state[taskId]) {
+    cb.style.background = 'var(--green)';
+    cb.style.borderColor = 'var(--green)';
+    cb.querySelector('svg').style.display = 'block';
+  } else {
+    cb.style.background = '';
+    cb.style.borderColor = '';
+    cb.querySelector('svg').style.display = 'none';
+  }
+  // Partial re-render (only nav & header, avoid full re-render flicker)
+  updateWeekHeader();
+  // Lazy-update dashboard if visible
+  if (document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
+  if (document.getElementById('view-analytics').classList.contains('active')) renderAnalytics();
 }
 
-/* ── UTILITIES ── */
+function updateWeekHeader() {
+  const sel = document.getElementById('week-select');
+  const weekNum = parseInt(sel.value);
+  const week = SCHEDULE.find(w => w.week === weekNum);
+  if (!week) return;
+  const pct = getWeekPct(week);
+  const done = week.tasks.filter(t => isChecked(t.id)).length;
+  const color = PHASE_HEX[week.phase];
+  const header = document.getElementById('week-header-card');
+  if (header) {
+    header.querySelector('.week-pct-big').textContent = pct + '%';
+    header.querySelector('.week-pct-big').style.color = color;
+    const progressBar = header.querySelector('.progress-bar');
+    if (progressBar) progressBar.style.width = pct + '%';
+    const countEl = header.querySelector('.week-of') ? header.querySelector('div:first-child div:last-child') : null;
+  }
+}
+
+function resetWeek() {
+  const weekNum = parseInt(document.getElementById('week-select').value);
+  const week = SCHEDULE.find(w => w.week === weekNum);
+  if (!week) return;
+  week.tasks.forEach(t => { state[t.id] = false; });
+  saveState();
+  renderChecklist();
+  showToast('Week reset', 'success');
+}
+
+/* ─────────────────────────────────────
+   TAB SWITCHING
+───────────────────────────────────── */
+function switchTab(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${name}'`)) b.classList.add('active');
+  });
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'checklist') renderChecklist();
+  if (name === 'schedule') renderSchedule();
+  if (name === 'analytics') renderAnalytics();
+}
+
+/* ─────────────────────────────────────
+   UTILITY
+───────────────────────────────────── */
 function formatDisplayDate(d) {
-  const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()}`;
+  const ms = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${d.getDate()} ${ms[d.getMonth()]} ${d.getFullYear()}`;
 }
-function showToast(msg, type='') {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className=`toast${type?' '+type:''}`;
-  t.classList.add('show'); clearTimeout(t._timeout);
-  t._timeout=setTimeout(()=>t.classList.remove('show'),3200);
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast${type ? ' ' + type : ''}`;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 3200);
 }
+
 function populateWeekSelect() {
-  const sel=document.getElementById('week-select'); sel.innerHTML='';
-  const cur=getCurrentWeekNum();
-  SCHEDULE.forEach(w=>{
-    const opt=document.createElement('option');
-    opt.value=w.week; opt.textContent=`Week ${w.week} — ${w.label} (${w.dates})`;
-    if(w.week===cur) opt.selected=true;
+  const sel = document.getElementById('week-select');
+  sel.innerHTML = '';
+  const curWeekNum = getCurrentWeekNum();
+  SCHEDULE.forEach(w => {
+    const opt = document.createElement('option');
+    opt.value = w.week;
+    opt.textContent = `Week ${w.week} — ${w.label} (${w.dates})`;
+    if (w.week === curWeekNum) opt.selected = true;
     sel.appendChild(opt);
   });
 }
 
-/* ── INIT ── */
+/* ─────────────────────────────────────
+   APP INIT
+───────────────────────────────────── */
 function initApp() {
+  // Hide onboarding
   document.getElementById('onboarding').classList.add('hidden');
-  document.getElementById('main-nav').style.display='flex';
-  document.querySelectorAll('.view').forEach(v=>v.style.display='');
-  document.getElementById('nav-name').textContent=profile.name;
-  document.getElementById('nav-exam').textContent='Exam: '+formatDisplayDate(new Date(profile.examDate));
-  buildSchedule(); populateWeekSelect();
-  renderDashboard(); renderChecklist(); renderSchedule(); renderAnalytics();
+  // Show nav
+  document.getElementById('main-nav').style.display = 'flex';
+  // Show all views
+  document.querySelectorAll('.view').forEach(v => v.style.display = '');
+  // Update nav
+  document.getElementById('nav-name').textContent = profile.name;
+  document.getElementById('nav-exam').textContent = 'Exam: ' + formatDisplayDate(new Date(profile.examDate));
+  // Build schedule
+  buildSchedule();
+  populateWeekSelect();
+  // Render active view
+  renderAll();
 }
 
+function renderAll() {
+  renderDashboard();
+  renderChecklist();
+  renderSchedule();
+  renderAnalytics();
+}
+
+/* ─────────────────────────────────────
+   BOOT
+───────────────────────────────────── */
 loadStorage();
-if(profile&&profile.name&&profile.examDate&&profile.startDate) {
+if (profile && profile.name && profile.examDate && profile.startDate) {
   initApp();
 } else {
-  document.getElementById('main-nav').style.display='none';
-  document.querySelectorAll('.view').forEach(v=>v.style.display='none');
+  // Show onboarding, hide nav
+  document.getElementById('main-nav').style.display = 'none';
+  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
 }
 </script>
 </body>
