@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CFA Level 2 — Study Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+/* ═══════════════════════════════════════
+   RESET & VARIABLES
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d0f14;
+  --surface: #13161d;
+  --surface2: #1a1e28;
+  --surface3: #20253200;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --border3: rgba(255,255,255,0.2);
+  --text: #e8e6df;
+  --muted: #7a7871;
+  --muted2: #555048;
+  --accent: #c8a96e;
+  --accent2: #8fc4b4;
+  --accent3: #c47a7a;
+  --green: #6bbd8b;
+  --amber: #e8b84b;
+  --red: #d96060;
+  --blue: #6ea8d8;
+  --purple: #c678dd;
+  --phase1: #8fc4b4;
+  --phase2: #c8a96e;
+  --phase3: #c47a7a;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-sans: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════
+   ONBOARDING MODAL
+═══════════════════════════════════════ */
+.onboarding-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(16px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.4s ease;
+}
+.onboarding-overlay.hidden { display: none; }
+
+.onboarding-modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  padding: 2.5rem;
+  animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.onboarding-logo {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+}
+.onboarding-tagline { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2rem; }
+
+.onboarding-modal h2 {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.onboarding-modal p { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.75rem; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group.full { grid-column: 1 / -1; }
+
+.form-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+.form-input, .form-select {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  width: 100%;
+  transition: border-color var(--transition);
+  outline: none;
+  -webkit-appearance: none;
+}
+.form-input:focus, .form-select:focus { border-color: var(--accent); }
+.form-select option { background: var(--surface2); }
+
+.level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.level-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.55rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+.level-btn:hover { border-color: var(--border3); color: var(--text); }
+.level-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(200,169,110,0.08); }
+
+.form-submit {
+  width: 100%;
+  margin-top: 1.5rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #0d0f14;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.8rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-transform: uppercase;
+}
+.form-submit:hover { background: #d4b87a; transform: translateY(-1px); }
+.form-submit:active { transform: translateY(0); }
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 2rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(13,15,20,0.94);
+  backdrop-filter: blur(16px);
+  z-index: 100;
+  gap: 1rem;
+}
+
+.nav-logo { font-family: var(--font-serif); font-size: 1.1rem; color: var(--accent); letter-spacing: 0.02em; flex-shrink: 0; }
+.nav-logo span { color: var(--muted); font-size: 0.72rem; font-family: var(--font-sans); display: block; letter-spacing: 0.1em; text-transform: uppercase; }
+
+.nav-tabs {
+  display: flex;
+  gap: 0.2rem;
+  background: var(--surface);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.38rem 0.85rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border2); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+.nav-student { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); text-align: right; }
+.nav-student strong { color: var(--text); display: block; }
+.nav-edit-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  padding: 0.28rem 0.6rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.nav-edit-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ═══════════════════════════════════════
+   VIEWS
+═══════════════════════════════════════ */
+.view {
+  display: none;
+  padding: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  animation: fadeIn 0.25s ease;
+}
+.view.active { display: block; }
+
+/* ═══════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════ */
+.dash-header { margin-bottom: 1.75rem; }
+.dash-title { font-family: var(--font-serif); font-size: 2rem; color: var(--text); }
+.dash-subtitle { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; letter-spacing: 0.05em; }
+
+.countdown-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.countdown-block { flex-shrink: 0; }
+.countdown-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.1rem; }
+.countdown-num { font-family: var(--font-serif); font-size: 2rem; color: var(--accent); line-height: 1; }
+.countdown-unit { font-size: 0.65rem; color: var(--muted); }
+.countdown-divider { width: 1px; height: 36px; background: var(--border); flex-shrink: 0; }
+.overall-bar-wrap { flex: 1; min-width: 160px; }
+.overall-bar-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-bottom: 0.4rem; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.15rem;
+  transition: border-color var(--transition);
+}
+.stat-card:hover { border-color: var(--border2); }
+.stat-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.45rem; }
+.stat-val { font-family: var(--font-mono); font-size: 1.85rem; font-weight: 500; line-height: 1; }
+.stat-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+
+.progress-bar-wrap { background: var(--surface2); border-radius: 3px; height: 4px; overflow: hidden; margin-top: 0.65rem; }
+.progress-bar { height: 100%; border-radius: 3px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+
+.phases-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+.phase-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+  border-top: 2px solid var(--phase-color, var(--accent));
+  transition: transform var(--transition), border-color var(--transition);
+}
+.phase-card:hover { transform: translateY(-2px); }
+.phase-name { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.phase-title { font-family: var(--font-serif); font-size: 0.95rem; margin: 0.2rem 0; }
+.phase-dates { font-size: 0.68rem; color: var(--muted); font-family: var(--font-mono); }
+.phase-pct { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 500; margin: 0.45rem 0; }
+
+.section-title {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.week-timeline { display: flex; flex-direction: column; gap: 0.4rem; }
+.week-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 56px;
+  align-items: center;
+  gap: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.week-row:hover { border-color: var(--border2); transform: translateX(2px); }
+.week-row.current { border-left-color: var(--accent) !important; }
+.week-row.done { opacity: 0.55; }
+.week-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); }
+.week-tasks { font-size: 0.78rem; }
+.week-pct-col { font-family: var(--font-mono); font-size: 0.75rem; text-align: right; }
+
+/* ═══════════════════════════════════════
+   CHECKLIST
+═══════════════════════════════════════ */
+.checklist-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+.week-selector { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+
+.week-selector select {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition);
+}
+.week-selector select:focus { border-color: var(--accent); }
+
+.action-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  padding: 0.38rem 0.8rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.action-btn:hover { border-color: var(--border3); color: var(--text); }
+.action-btn.danger:hover { border-color: var(--accent3); color: var(--accent3); }
+.action-btn.export:hover { border-color: var(--accent); color: var(--accent); }
+
+.week-header-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.week-info-title { font-family: var(--font-serif); font-size: 1.15rem; }
+.week-info-phase { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.week-progress-mini { display: flex; align-items: center; gap: 0.75rem; }
+.week-pct-big { font-family: var(--font-mono); font-size: 1.4rem; }
+.week-of { font-size: 0.68rem; color: var(--muted); font-family: var(--font-mono); }
+
+.checklist-area { display: flex; flex-direction: column; gap: 0.6rem; }
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+}
+.check-item:hover { border-color: var(--border2); transform: translateX(2px); }
+.check-item.checked { opacity: 0.5; }
+.check-item.checked:hover { opacity: 0.7; }
+
+.check-box {
+  width: 19px; height: 19px;
+  border: 1.5px solid var(--border2);
+  border-radius: 5px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+  transition: all var(--transition);
+}
+.check-item.checked .check-box { background: var(--green); border-color: var(--green); }
+.check-box svg { display: none; }
+.check-item.checked .check-box svg { display: block; }
+
+.check-content { flex: 1; }
+.check-title { font-size: 0.86rem; font-weight: 500; }
+.check-item.checked .check-title { text-decoration: line-through; color: var(--muted); }
+.check-meta { display: flex; gap: 0.65rem; margin-top: 0.3rem; flex-wrap: wrap; }
+
+.check-badge {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+}
+.badge-reading { background: rgba(111,189,139,0.12); color: var(--green); }
+.badge-test { background: rgba(200,169,110,0.15); color: var(--accent); }
+.badge-review { background: rgba(110,168,216,0.13); color: var(--blue); }
+.badge-mock { background: rgba(196,122,122,0.13); color: var(--accent3); }
+.badge-spaced { background: rgba(198,120,221,0.15); color: var(--purple); }
+
+.check-days { font-size: 0.68rem; color: var(--muted); font-family: var(--font-mono); }
+
+/* ═══════════════════════════════════════
+   SCHEDULE
+═══════════════════════════════════════ */
+.schedule-grid { display: flex; flex-direction: column; gap: 2rem; }
+.phase-block-header { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.9rem; }
+.phase-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.phase-block-title { font-family: var(--font-serif); font-size: 1.25rem; }
+.phase-block-sub { font-size: 0.72rem; color: var(--muted); font-family: var(--font-mono); }
+.weeks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; }
+
+.schedule-week {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.1rem;
+  transition: border-color var(--transition), transform var(--transition);
+  border-top-width: 2px;
+}
+.schedule-week:hover { transform: translateY(-2px); border-color: var(--border2); }
+.schedule-week.current-week { box-shadow: 0 0 0 1px var(--accent) inset; }
+.sw-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.55rem; }
+.sw-num { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.08em; }
+.sw-dates { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); }
+.sw-tasks { display: flex; flex-direction: column; gap: 0.3rem; }
+.sw-task { font-size: 0.76rem; display: flex; gap: 0.45rem; align-items: flex-start; }
+.sw-task-bullet { color: var(--muted); flex-shrink: 0; font-size: 0.55rem; margin-top: 4px; }
+.sw-done-bar { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.65rem; }
+.sw-done-pct { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); }
+
+/* ═══════════════════════════════════════
+   ANALYTICS
+═══════════════════════════════════════ */
+.analytics-header { margin-bottom: 1.75rem; }
+.analytics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.25rem 1rem;
+}
+.chart-card.full { grid-column: 1 / -1; }
+.chart-title { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+.chart-wrap { position: relative; height: 200px; }
+.chart-wrap.tall { height: 260px; }
+
+.insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+.insight-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+}
+.insight-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+.insight-val { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 500; }
+.insight-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* ═══════════════════════════════════════
+   EXPORT PANEL
+═══════════════════════════════════════ */
+.export-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.export-btn {
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #0d0f14;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.55rem 1.2rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.export-btn:hover { background: #d4b87a; transform: translateY(-1px); }
+.export-btn:active { transform: translateY(0); }
+
+/* Hidden export-ready report DOM */
+#export-report {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 900px;
+  background: #0d0f14;
+  color: #e8e6df;
+  font-family: 'Syne', sans-serif;
+  padding: 48px;
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.82rem;
+  color: var(--text);
+  z-index: 999;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-color: var(--green); }
+.toast.error { border-color: var(--red); }
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .phases-row { grid-template-columns: 1fr; }
+  .analytics-grid { grid-template-columns: 1fr; }
+  .insight-grid { grid-template-columns: repeat(2, 1fr); }
+  .weeks-grid { grid-template-columns: 1fr; }
+  .nav { padding: 0.75rem 1rem; }
+  .view { padding: 1rem; }
+  .countdown-bar { gap: 1rem; }
+  .nav-tabs .tab-btn { font-size: 0.65rem; padding: 0.35rem 0.6rem; }
+  .onboarding-modal { padding: 1.75rem; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .insight-grid { grid-template-columns: 1fr; }
+  .week-row { grid-template-columns: 100px 1fr 44px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     ONBOARDING MODAL
+═══════════════════════════════════════ -->
+<div class="onboarding-overlay" id="onboarding">
+  <div class="onboarding-modal">
+    <div class="onboarding-logo">CFA Level 2 (2026)</div>
+    <div class="onboarding-tagline">Precision Study Tracker</div>
+    <h2>Let's set you up</h2>
+    <p>This takes 30 seconds. Your schedule, timeline, and analytics will be built around your actual dates.</p>
+
+    <div class="form-grid">
+      <div class="form-group full">
+        <label class="form-label">Your name</label>
+        <input class="form-input" type="text" id="f-name" placeholder="e.g. Moiz Patrawala" autocomplete="given-name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Exam date</label>
+        <input class="form-input" type="date" id="f-exam" value="2026-11-20">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Start date</label>
+        <input class="form-input" type="date" id="f-start" value="2026-05-18">
+      </div>
+      <div class="form-group full">
+        <label class="form-label" style="margin-bottom:0.5rem">Study level</label>
+        <div class="level-grid">
+          <button class="level-btn" data-level="Beginner" onclick="selectLevel(this)">Beginner</button>
+          <button class="level-btn active" data-level="Intermediate" onclick="selectLevel(this)">Intermediate</button>
+          <button class="level-btn" data-level="Advanced" onclick="selectLevel(this)">Advanced</button>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Daily study hours target (weekdays)</label>
+        <input class="form-input" type="number" id="f-hours" placeholder="e.g. 1.5" value="1.5" min="0.5" max="12" step="0.5">
+      </div>
+    </div>
+
+    <button class="form-submit" onclick="submitOnboarding()">Build My Study Plan →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     NAV
+═══════════════════════════════════════ -->
+<nav class="nav" id="main-nav" style="display:none">
+  <div class="nav-logo">
+    CFA Level 2 (2026)
+    <span>Precision Study Tracker</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+    <button class="tab-btn" onclick="switchTab('checklist')">Checklist</button>
+    <button class="tab-btn" onclick="switchTab('schedule')">Schedule</button>
+    <button class="tab-btn" onclick="switchTab('analytics')">Analytics</button>
+  </div>
+  <div class="nav-right">
+    <div class="nav-student">
+      <strong id="nav-name">—</strong>
+      <span id="nav-exam">Exam: —</span>
+    </div>
+    <button class="nav-edit-btn" onclick="editProfile()">Edit profile</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     DASHBOARD VIEW
+═══════════════════════════════════════ -->
+<div class="view active" id="view-dashboard">
+  <div class="dash-header">
+    <div class="dash-title" id="dash-greeting">Your Progress</div>
+    <div class="dash-subtitle" id="dash-subtitle">CFA Level 2 · November 20, 2026 Exam</div>
+  </div>
+
+  <div class="countdown-bar">
+    <div class="countdown-block">
+      <div class="countdown-label">Days to exam</div>
+      <div class="countdown-num" id="days-left">—</div>
+      <div class="countdown-unit">days</div>
+    </div>
+    <div class="countdown-divider"></div>
+    <div class="countdown-block">
+      <div class="countdown-label">Weeks remaining</div>
+      <div class="countdown-num" id="weeks-left">—</div>
+      <div class="countdown-unit">weeks</div>
+    </div>
+    <div class="countdown-divider"></div>
+    <div class="countdown-block">
+      <div class="countdown-label">Hours/day target</div>
+      <div class="countdown-num" id="hours-target" style="color:var(--accent2)">—</div>
+      <div class="countdown-unit">hrs</div>
+    </div>
+    <div class="countdown-divider"></div>
+    <div class="overall-bar-wrap">
+      <div class="overall-bar-label">
+        <span>Overall completion</span>
+        <span id="overall-pct-label">0%</span>
+      </div>
+      <div class="progress-bar-wrap" style="height:8px">
+        <div class="progress-bar" id="overall-bar" style="background:var(--accent);width:0%"></div>
+      </div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:0.3rem" id="overall-tasks-label">0 / 0 tasks complete</div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Current Week</div>
+      <div class="stat-val" id="stat-week" style="color:var(--accent)">W1</div>
+      <div class="stat-sub" id="stat-week-phase">Phase 1</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-bar" style="background:var(--accent);width:0%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Tasks this week</div>
+      <div class="stat-val" id="stat-week-tasks" style="color:var(--green)">0/0</div>
+      <div class="stat-sub" id="stat-week-pct">0% done</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-week-task-bar" style="background:var(--green);width:0%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Tests done</div>
+      <div class="stat-val" id="stat-tests" style="color:var(--blue)">0/—</div>
+      <div class="stat-sub">subject tests</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-test-bar" style="background:var(--blue);width:0%"></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Mock Exams</div>
+      <div class="stat-val" id="stat-mocks" style="color:var(--accent3)">0/8</div>
+      <div class="stat-sub">completed</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="stat-mock-bar" style="background:var(--accent3);width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="phases-row" id="phases-row"></div>
+
+  <div class="section-title">All weeks at a glance</div>
+  <div class="week-timeline" id="week-timeline"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     CHECKLIST VIEW
+═══════════════════════════════════════ -->
+<div class="view" id="view-checklist">
+  <div class="checklist-header">
+    <div>
+      <div class="dash-title" style="font-size:1.5rem">Daily Checklist</div>
+      <div class="dash-subtitle">Readings split across individual days</div>
+    </div>
+    <div class="week-selector">
+      <select id="week-select" onchange="renderChecklist()"></select>
+      <button class="action-btn danger" onclick="resetWeek()">Reset week</button>
+    </div>
+  </div>
+  <div class="week-header-card" id="week-header-card"></div>
+  <div class="checklist-area" id="checklist-area"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCHEDULE VIEW
+═══════════════════════════════════════ -->
+<div class="view" id="view-schedule">
+  <div style="margin-bottom:1.5rem">
+    <div class="dash-title" style="font-size:1.5rem">Full Schedule</div>
+    <div class="dash-subtitle" id="schedule-subtitle">27 weeks · November 20, 2026 exam</div>
+  </div>
+  <div class="schedule-grid" id="schedule-grid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ANALYTICS VIEW
+═══════════════════════════════════════ -->
+<div class="view" id="view-analytics">
+  <div class="analytics-header">
+    <div class="dash-title" style="font-size:1.5rem">Analytics</div>
+    <div class="dash-subtitle">Track your performance across every subject</div>
+  </div>
+
+  <div class="export-bar">
+    <button class="export-btn" onclick="exportPDF()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export Progress Report
+    </button>
+  </div>
+
+  <div class="insight-grid" id="insight-grid"></div>
+
+  <div class="analytics-grid">
+    <div class="chart-card full">
+      <div class="chart-title">Subject-wise completion %</div>
+      <div class="chart-wrap tall"><canvas id="chart-subjects"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Tests completed vs pending</div>
+      <div class="chart-wrap"><canvas id="chart-tests"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Weekly consistency</div>
+      <div class="chart-wrap"><canvas id="chart-consistency"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-title">Mock exam progress (target trajectory)</div>
+      <div class="chart-wrap"><canvas id="chart-mocks"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden export report DOM (not visible, used for pdf gen) -->
+<div id="export-report"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────
+   SCHEDULE DATA
+   To modify subjects/readings: edit the SCHEDULE_TEMPLATE array below.
+   Each week object: { weekOffset, phaseKey, label, tasks[] }
+   Each task: { id, title, type ('reading'|'test'|'review'|'mock'|'spaced'), days, subject }
+───────────────────────────────────── */
+const SCHEDULE_TEMPLATE = [
+  // ── PHASE 1: BASE BUILDING ──────────────────────────────────
+  { w:1, phase:1, label:'Corp Issuers I', tasks:[
+    { id:'w1t1', title:'Analysis of Dividends (Pt 1)', type:'reading', days:'Mon', subject:'Corporate Issuers' },
+    { id:'w1t2', title:'Analysis of Dividends (Pt 2)', type:'reading', days:'Tue', subject:'Corporate Issuers' },
+    { id:'w1t3', title:'ESG Considerations (Pt 1)', type:'reading', days:'Wed', subject:'Corporate Issuers' },
+    { id:'w1t4', title:'ESG Considerations (Pt 2)', type:'reading', days:'Thu', subject:'Corporate Issuers' },
+    { id:'w1t5', title:'Cost of Capital: Advanced Topics', type:'reading', days:'Fri', subject:'Corporate Issuers' },
+  ]},
+  { w:2, phase:1, label:'Corp Issuers II', tasks:[
+    { id:'w2t1', title:'Corporate Restructuring (Pt 1)', type:'reading', days:'Mon', subject:'Corporate Issuers' },
+    { id:'w2t2', title:'Corporate Restructuring (Pt 2)', type:'reading', days:'Tue', subject:'Corporate Issuers' },
+    { id:'w2t3', title:'Corp Issuers Test 1', type:'test', days:'Wed', subject:'Corporate Issuers' },
+    { id:'w2t4', title:'Corp Issuers Test 2', type:'test', days:'Thu', subject:'Corporate Issuers' },
+    { id:'w2t5', title:'Corp Issuers Test 3 — Capstone', type:'test', days:'Fri', subject:'Corporate Issuers' },
+  ]},
+  { w:3, phase:1, label:'Quant Methods I', tasks:[
+    { id:'w3t1', title:'Basics of Multiple Regression (Pt 1)', type:'reading', days:'Mon', subject:'Quant Methods' },
+    { id:'w3t2', title:'Basics of Multiple Regression (Pt 2)', type:'reading', days:'Tue', subject:'Quant Methods' },
+    { id:'w3t3', title:'Evaluating Regression Model Fit (Pt 1)', type:'reading', days:'Wed', subject:'Quant Methods' },
+    { id:'w3t4', title:'Evaluating Regression Model Fit (Pt 2)', type:'reading', days:'Thu', subject:'Quant Methods' },
+    { id:'w3t5', title:'Model Misspecification (Pt 1)', type:'reading', days:'Fri', subject:'Quant Methods' },
+  ]},
+  { w:4, phase:1, label:'Quant Methods II', tasks:[
+    { id:'w4t1', title:'Model Misspecification (Pt 2)', type:'reading', days:'Mon', subject:'Quant Methods' },
+    { id:'w4t2', title:'Extensions of Multiple Regression (Pt 1)', type:'reading', days:'Tue', subject:'Quant Methods' },
+    { id:'w4t3', title:'Extensions of Multiple Regression (Pt 2)', type:'reading', days:'Wed', subject:'Quant Methods' },
+    { id:'w4t4', title:'Time-Series Analysis (Pt 1)', type:'reading', days:'Thu', subject:'Quant Methods' },
+    { id:'w4t5', title:'Time-Series Analysis (Pt 2)', type:'reading', days:'Fri', subject:'Quant Methods' },
+  ]},
+  { w:5, phase:1, label:'Quant Methods III', tasks:[
+    { id:'w5t1', title:'Time-Series Analysis (Pt 3)', type:'reading', days:'Mon', subject:'Quant Methods' },
+    { id:'w5t2', title:'Machine Learning (Pt 1)', type:'reading', days:'Tue', subject:'Quant Methods' },
+    { id:'w5t3', title:'Machine Learning (Pt 2)', type:'reading', days:'Wed', subject:'Quant Methods' },
+    { id:'w5t4', title:'Big Data Projects', type:'reading', days:'Thu', subject:'Quant Methods' },
+    { id:'w5t5', title:'Quant Test 1', type:'test', days:'Fri', subject:'Quant Methods' },
+  ]},
+  { w:6, phase:1, label:'Quant IV & Equity I', tasks:[
+    { id:'w6t1', title:'Quant Test 2', type:'test', days:'Mon', subject:'Quant Methods' },
+    { id:'w6t2', title:'Quant Test 3 — Capstone', type:'test', days:'Tue', subject:'Quant Methods' },
+    { id:'w6t3', title:'Equity Valuation: Apps & Processes', type:'reading', days:'Wed', subject:'Equity Valuation' },
+    { id:'w6t4', title:'Discounted Dividend Valuation (Pt 1)', type:'reading', days:'Thu', subject:'Equity Valuation' },
+    { id:'w6t5', title:'Discounted Dividend Valuation (Pt 2)', type:'reading', days:'Fri', subject:'Equity Valuation' },
+  ]},
+  { w:7, phase:1, label:'Equity II', tasks:[
+    { id:'w7t1', title:'Free Cash Flow Valuation (Pt 1)', type:'reading', days:'Mon', subject:'Equity Valuation' },
+    { id:'w7t2', title:'Free Cash Flow Valuation (Pt 2)', type:'reading', days:'Tue', subject:'Equity Valuation' },
+    { id:'w7t3', title:'Market-Based Valuation (Pt 1)', type:'reading', days:'Wed', subject:'Equity Valuation' },
+    { id:'w7t4', title:'Market-Based Valuation (Pt 2)', type:'reading', days:'Thu', subject:'Equity Valuation' },
+    { id:'w7t5', title:'Residual Income Valuation (Pt 1)', type:'reading', days:'Fri', subject:'Equity Valuation' },
+  ]},
+  { w:8, phase:1, label:'Equity III', tasks:[
+    { id:'w8t1', title:'Residual Income Valuation (Pt 2)', type:'reading', days:'Mon', subject:'Equity Valuation' },
+    { id:'w8t2', title:'Private Company Valuation (Pt 1)', type:'reading', days:'Tue', subject:'Equity Valuation' },
+    { id:'w8t3', title:'Private Company Valuation (Pt 2)', type:'reading', days:'Wed', subject:'Equity Valuation' },
+    { id:'w8t4', title:'Equity Test 1', type:'test', days:'Thu', subject:'Equity Valuation' },
+    { id:'w8t5', title:'Equity Test 2', type:'test', days:'Fri', subject:'Equity Valuation' },
+  ]},
+  { w:9, phase:1, label:'Equity IV & FSA I', tasks:[
+    { id:'w9t1', title:'Equity Test 3 — Capstone', type:'test', days:'Mon', subject:'Equity Valuation' },
+    { id:'w9t2', title:'Spaced Recall: Corp Issuers Test 4', type:'spaced', days:'Tue', subject:'Corporate Issuers' },
+    { id:'w9t3', title:'Intercorporate Investments (Pt 1)', type:'reading', days:'Wed', subject:'FSA' },
+    { id:'w9t4', title:'Intercorporate Investments (Pt 2)', type:'reading', days:'Thu', subject:'FSA' },
+    { id:'w9t5', title:'Intercorporate Investments (Pt 3)', type:'reading', days:'Fri', subject:'FSA' },
+  ]},
+  // ── PHASE 2: ACCELERATION ───────────────────────────────────
+  { w:10, phase:2, label:'FSA II', tasks:[
+    { id:'w10t1', title:'Employee Compensation: Post & Share-Based', type:'reading', days:'Mon', subject:'FSA' },
+    { id:'w10t2', title:'Multinational Operations', type:'reading', days:'Tue', subject:'FSA' },
+    { id:'w10t3', title:'Analysis of Financial Institutions', type:'reading', days:'Wed', subject:'FSA' },
+    { id:'w10t4', title:'Evaluating Quality of Financial Reports', type:'reading', days:'Thu', subject:'FSA' },
+    { id:'w10t5', title:'Integration of FSA Techniques', type:'reading', days:'Fri', subject:'FSA' },
+  ]},
+  { w:11, phase:2, label:'FSA III & FI I', tasks:[
+    { id:'w11t1', title:'FSA Test 1', type:'test', days:'Mon', subject:'FSA' },
+    { id:'w11t2', title:'FSA Test 2', type:'test', days:'Tue', subject:'FSA' },
+    { id:'w11t3', title:'FSA Test 3 — Capstone', type:'test', days:'Wed', subject:'FSA' },
+    { id:'w11t4', title:'Spaced Recall: Quant Test 4', type:'spaced', days:'Thu', subject:'Quant Methods' },
+    { id:'w11t5', title:'Term Structure & Interest Rate Dynamics', type:'reading', days:'Fri', subject:'Fixed Income' },
+  ]},
+  { w:12, phase:2, label:'Fixed Income II', tasks:[
+    { id:'w12t1', title:'Arbitrage-Free Valuation Framework', type:'reading', days:'Mon', subject:'Fixed Income' },
+    { id:'w12t2', title:'Valuation of Bonds with Embedded Options', type:'reading', days:'Tue', subject:'Fixed Income' },
+    { id:'w12t3', title:'Credit Analysis Models', type:'reading', days:'Wed', subject:'Fixed Income' },
+    { id:'w12t4', title:'Credit Default Swaps', type:'reading', days:'Thu', subject:'Fixed Income' },
+    { id:'w12t5', title:'FI Test 1', type:'test', days:'Fri', subject:'Fixed Income' },
+  ]},
+  { w:13, phase:2, label:'FI III & Derivatives I', tasks:[
+    { id:'w13t1', title:'FI Test 2', type:'test', days:'Mon', subject:'Fixed Income' },
+    { id:'w13t2', title:'FI Test 3 — Capstone', type:'test', days:'Tue', subject:'Fixed Income' },
+    { id:'w13t3', title:'Spaced Recall: Equity Test 4', type:'spaced', days:'Wed', subject:'Equity Valuation' },
+    { id:'w13t4', title:'Pricing & Valuation of Forward Commitments', type:'reading', days:'Thu', subject:'Derivatives' },
+    { id:'w13t5', title:'Valuation of Contingent Claims', type:'reading', days:'Fri', subject:'Derivatives' },
+  ]},
+  { w:14, phase:2, label:'Derivatives II & Alts I', tasks:[
+    { id:'w14t1', title:'Derivatives Test 1', type:'test', days:'Mon', subject:'Derivatives' },
+    { id:'w14t2', title:'Derivatives Test 2', type:'test', days:'Tue', subject:'Derivatives' },
+    { id:'w14t3', title:'Derivatives Test 3 — Capstone', type:'test', days:'Wed', subject:'Derivatives' },
+    { id:'w14t4', title:'Spaced Recall: FSA Test 4', type:'spaced', days:'Thu', subject:'FSA' },
+    { id:'w14t5', title:'Intro to Commodities & Derivatives', type:'reading', days:'Fri', subject:'Alt Investments' },
+  ]},
+  { w:15, phase:2, label:'Alternatives II', tasks:[
+    { id:'w15t1', title:'Overview of Real Estate Investment', type:'reading', days:'Mon', subject:'Alt Investments' },
+    { id:'w15t2', title:'Real Estate Through Public Securities', type:'reading', days:'Tue', subject:'Alt Investments' },
+    { id:'w15t3', title:'Hedge Fund Strategies', type:'reading', days:'Wed', subject:'Alt Investments' },
+    { id:'w15t4', title:'Alts Test 1', type:'test', days:'Thu', subject:'Alt Investments' },
+    { id:'w15t5', title:'Alts Test 2', type:'test', days:'Fri', subject:'Alt Investments' },
+  ]},
+  { w:16, phase:2, label:'Alts III & Economics', tasks:[
+    { id:'w16t1', title:'Alts Test 3 — Capstone', type:'test', days:'Mon', subject:'Alt Investments' },
+    { id:'w16t2', title:'Spaced Recall: FI Test 4', type:'spaced', days:'Tue', subject:'Fixed Income' },
+    { id:'w16t3', title:'Currency Exchange Rates', type:'reading', days:'Wed', subject:'Economics' },
+    { id:'w16t4', title:'Economic Growth', type:'reading', days:'Thu', subject:'Economics' },
+    { id:'w16t5', title:'Econ Test 1', type:'test', days:'Fri', subject:'Economics' },
+  ]},
+  { w:17, phase:2, label:'Econ II & Portfolio Mgmt I', tasks:[
+    { id:'w17t1', title:'Econ Test 2', type:'test', days:'Mon', subject:'Economics' },
+    { id:'w17t2', title:'Econ Test 3 — Capstone', type:'test', days:'Tue', subject:'Economics' },
+    { id:'w17t3', title:'Spaced Recall: Derivatives Test 4', type:'spaced', days:'Wed', subject:'Derivatives' },
+    { id:'w17t4', title:'Economics and Investment Markets', type:'reading', days:'Thu', subject:'Portfolio Mgmt' },
+    { id:'w17t5', title:'Analysis of Active Portfolio Mgmt', type:'reading', days:'Fri', subject:'Portfolio Mgmt' },
+  ]},
+  { w:18, phase:2, label:'Portfolio Mgmt II', tasks:[
+    { id:'w18t1', title:'ETFs: Mechanics & Applications', type:'reading', days:'Mon', subject:'Portfolio Mgmt' },
+    { id:'w18t2', title:'Using Multifactor Models', type:'reading', days:'Tue', subject:'Portfolio Mgmt' },
+    { id:'w18t3', title:'Measuring & Managing Market Risk', type:'reading', days:'Wed', subject:'Portfolio Mgmt' },
+    { id:'w18t4', title:'Backtesting and Simulation', type:'reading', days:'Thu', subject:'Portfolio Mgmt' },
+    { id:'w18t5', title:'PM Test 1', type:'test', days:'Fri', subject:'Portfolio Mgmt' },
+  ]},
+  { w:19, phase:2, label:'Portfolio Mgmt III & Ethics I', tasks:[
+    { id:'w19t1', title:'PM Test 2', type:'test', days:'Mon', subject:'Portfolio Mgmt' },
+    { id:'w19t2', title:'PM Test 3 — Capstone', type:'test', days:'Tue', subject:'Portfolio Mgmt' },
+    { id:'w19t3', title:'Spaced Recall: Alts Test 4', type:'spaced', days:'Wed', subject:'Alt Investments' },
+    { id:'w19t4', title:'Spaced Recall: Econ Test 4', type:'spaced', days:'Thu', subject:'Economics' },
+    { id:'w19t5', title:'Code of Ethics and Standards', type:'reading', days:'Fri', subject:'Ethics' },
+  ]},
+  { w:20, phase:2, label:'Ethics II', tasks:[
+    { id:'w20t1', title:'Guidance for Standards I-VII (Pt 1)', type:'reading', days:'Mon', subject:'Ethics' },
+    { id:'w20t2', title:'Guidance for Standards I-VII (Pt 2)', type:'reading', days:'Tue', subject:'Ethics' },
+    { id:'w20t3', title:'Application of Code and Standards', type:'reading', days:'Wed', subject:'Ethics' },
+    { id:'w20t4', title:'Ethics Test 1', type:'test', days:'Thu', subject:'Ethics' },
+    { id:'w20t5', title:'Ethics Test 2', type:'test', days:'Fri', subject:'Ethics' },
+  ]},
+  { w:21, phase:2, label:'Ethics III & Final Prep', tasks:[
+    { id:'w21t1', title:'Ethics Test 3 — Capstone', type:'test', days:'Mon', subject:'Ethics' },
+    { id:'w21t2', title:'Spaced Recall: PM Test 4', type:'spaced', days:'Tue', subject:'Portfolio Mgmt' },
+    { id:'w21t3', title:'Spaced Recall: Ethics Test 4', type:'spaced', days:'Wed', subject:'Ethics' },
+    { id:'w21t4', title:'Deep Review of All Error Logs', type:'review', days:'Thu', subject:'All Subjects' },
+    { id:'w21t5', title:'Formula Dump Preparation', type:'review', days:'Fri', subject:'All Subjects' },
+  ]},
+  // ── PHASE 3: MOCK SPRINT ────────────────────────────────────
+  { w:22, phase:3, label:'Sprint: Mock 1', tasks:[
+    { id:'w22t1', title:'QBank Sweep: Corp Issuers & Quant', type:'review', days:'Mon', subject:'All Subjects' },
+    { id:'w22t2', title:'QBank Sweep: Equity & FSA', type:'review', days:'Tue', subject:'All Subjects' },
+    { id:'w22t3', title:'QBank Sweep: Fixed Income & Deriv', type:'review', days:'Wed', subject:'All Subjects' },
+    { id:'w22t4', title:'QBank Sweep: Alts & Econ', type:'review', days:'Thu', subject:'All Subjects' },
+    { id:'w22t5', title:'QBank Sweep: PM & Ethics', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w22t6', title:'Mock Exam 1', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w22t7', title:'Grade & Deep Review Mock 1', type:'review', days:'Sun', subject:'All Subjects' },
+  ]},
+  { w:23, phase:3, label:'Sprint: Mocks 2 & 3', tasks:[
+    { id:'w23t1', title:'Final Sprint: Corp Issuers Test 5', type:'test', days:'Mon', subject:'Corporate Issuers' },
+    { id:'w23t2', title:'Final Sprint: Quant Test 5', type:'test', days:'Tue', subject:'Quant Methods' },
+    { id:'w23t3', title:'Mock Exam 2', type:'mock', days:'Wed', subject:'All Subjects' },
+    { id:'w23t4', title:'Final Sprint: Equity Test 5', type:'test', days:'Thu', subject:'Equity Valuation' },
+    { id:'w23t5', title:'Final Sprint: FSA Test 5', type:'test', days:'Fri', subject:'FSA' },
+    { id:'w23t6', title:'Mock Exam 3', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w23t7', title:'Grade & Deep Review Mocks 2 & 3', type:'review', days:'Sun', subject:'All Subjects' },
+  ]},
+  { w:24, phase:3, label:'Sprint: Mocks 4 & 5', tasks:[
+    { id:'w24t1', title:'Final Sprint: FI Test 5', type:'test', days:'Mon', subject:'Fixed Income' },
+    { id:'w24t2', title:'Final Sprint: Derivatives Test 5', type:'test', days:'Tue', subject:'Derivatives' },
+    { id:'w24t3', title:'Mock Exam 4', type:'mock', days:'Wed', subject:'All Subjects' },
+    { id:'w24t4', title:'Final Sprint: Alts Test 5', type:'test', days:'Thu', subject:'Alt Investments' },
+    { id:'w24t5', title:'Final Sprint: Econ Test 5', type:'test', days:'Fri', subject:'Economics' },
+    { id:'w24t6', title:'Mock Exam 5', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w24t7', title:'Grade & Deep Review Mocks 4 & 5', type:'review', days:'Sun', subject:'All Subjects' },
+  ]},
+  { w:25, phase:3, label:'Sprint: Mocks 6 & 7', tasks:[
+    { id:'w25t1', title:'Final Sprint: PM Test 5', type:'test', days:'Mon', subject:'Portfolio Mgmt' },
+    { id:'w25t2', title:'Final Sprint: Ethics Test 5', type:'test', days:'Tue', subject:'Ethics' },
+    { id:'w25t3', title:'Mock Exam 6', type:'mock', days:'Wed', subject:'All Subjects' },
+    { id:'w25t4', title:'Ethics Standards Re-Read', type:'reading', days:'Thu', subject:'Ethics' },
+    { id:'w25t5', title:'Formula Dump Mastery', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w25t6', title:'Mock Exam 7', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w25t7', title:'Grade & Deep Review Mocks 6 & 7', type:'review', days:'Sun', subject:'All Subjects' },
+  ]},
+  { w:26, phase:3, label:'Sprint: Mock 8', tasks:[
+    { id:'w26t1', title:'Targeted QBank: Weakest Subject', type:'review', days:'Mon', subject:'All Subjects' },
+    { id:'w26t2', title:'Targeted QBank: 2nd Weakest', type:'review', days:'Tue', subject:'All Subjects' },
+    { id:'w26t3', title:'Targeted QBank: 3rd Weakest', type:'review', days:'Wed', subject:'All Subjects' },
+    { id:'w26t4', title:'Ethics Case Studies Review', type:'reading', days:'Thu', subject:'Ethics' },
+    { id:'w26t5', title:'Light Review & Rest', type:'review', days:'Fri', subject:'All Subjects' },
+    { id:'w26t6', title:'Mock Exam 8 — Final Gauge', type:'mock', days:'Sat', subject:'All Subjects' },
+    { id:'w26t7', title:'Grade & Final Error Review', type:'review', days:'Sun', subject:'All Subjects' },
+  ]},
+  { w:27, phase:3, label:'Exam Week', tasks:[
+    { id:'w27t1', title:'Formula Memorization & Dump', type:'review', days:'Mon', subject:'All Subjects' },
+    { id:'w27t2', title:'Mental Rest & Light Ethics', type:'review', days:'Tue', subject:'Ethics' },
+    { id:'w27t3', title:'Exam Logistics Prep', type:'review', days:'Wed', subject:'All Subjects' },
+    { id:'w27t4', title:'Exam Eve — Visualization & Rest', type:'review', days:'Thu', subject:'All Subjects' },
+    { id:'w27t5', title:'EXAM DAY — CFA Level 2', type:'test', days:'Fri', subject:'All Subjects' },
+  ]},
+];
+
+const SUBJECTS = ['Corporate Issuers','Quant Methods','Equity Valuation','FSA','Fixed Income','Derivatives','Alt Investments','Economics','Portfolio Mgmt','Ethics'];
+const PHASE_NAMES = { 1:'Phase 1 — Base Building', 2:'Phase 2 — Acceleration', 3:'Phase 3 — Mock Sprint' };
+const PHASE_COLORS = { 1:'var(--phase1)', 2:'var(--phase2)', 3:'var(--phase3)' };
+const PHASE_HEX = { 1:'#8fc4b4', 2:'#c8a96e', 3:'#c47a7a' };
+
+/* ─────────────────────────────────────
+   STATE & STORAGE
+───────────────────────────────────── */
+let state = {};      // task completion { taskId: bool }
+let profile = null;  // { name, examDate, startDate, level, hours }
+let SCHEDULE = [];   // runtime schedule with computed dates
+let charts = {};     // Chart.js instances keyed by canvas id
+
+const STORAGE_KEYS = { profile: 'cfaTracker_profile_v1', state: 'cfaTracker_state_v1' };
+
+function loadStorage() {
+  try { profile = JSON.parse(localStorage.getItem(STORAGE_KEYS.profile)); } catch(e) { profile = null; }
+  try { state = JSON.parse(localStorage.getItem(STORAGE_KEYS.state) || '{}'); } catch(e) { state = {}; }
+}
+function saveState() { localStorage.setItem(STORAGE_KEYS.state, JSON.stringify(state)); }
+function saveProfile() { localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile)); }
+
+/* ─────────────────────────────────────
+   ONBOARDING
+───────────────────────────────────── */
+let selectedLevel = 'Intermediate';
+
+function selectLevel(btn) {
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedLevel = btn.dataset.level;
+}
+
+function submitOnboarding() {
+  const name = document.getElementById('f-name').value.trim();
+  const exam = document.getElementById('f-exam').value;
+  const start = document.getElementById('f-start').value;
+  const hours = parseFloat(document.getElementById('f-hours').value) || 1.5;
+
+  if (!name) { showToast('Please enter your name', 'error'); return; }
+  if (!exam || !start) { showToast('Please fill in both dates', 'error'); return; }
+  if (new Date(start) >= new Date(exam)) { showToast('Start date must be before exam date', 'error'); return; }
+
+  profile = { name, examDate: exam, startDate: start, level: selectedLevel, hours };
+  saveProfile();
+  initApp();
+}
+
+function editProfile() {
+  if (!profile) return;
+  document.getElementById('f-name').value = profile.name || '';
+  document.getElementById('f-exam').value = profile.examDate || '';
+  document.getElementById('f-start').value = profile.startDate || '';
+  document.getElementById('f-hours').value = profile.hours || 1.5;
+  document.querySelectorAll('.level-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.level === profile.level);
+  });
+  selectedLevel = profile.level;
+  document.getElementById('onboarding').classList.remove('hidden');
+}
+
+/* ─────────────────────────────────────
+   SCHEDULE GENERATION
+   Dynamically computes week dates based on profile.startDate.
+   Phase splits: P1=45%, P2=35%, P3=20% of total weeks (min 1 week each).
+───────────────────────────────────── */
+function buildSchedule() {
+  const start = new Date(profile.startDate);
+  SCHEDULE = SCHEDULE_TEMPLATE.map(week => {
+    const weekStart = new Date(start);
+    weekStart.setDate(weekStart.getDate() + (week.w - 1) * 7);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    return {
+      ...week,
+      week: week.w,
+      dates: formatDateRange(weekStart, weekEnd),
+      weekStart
+    };
+  });
+}
+
+function formatDateRange(start, end) {
+  const ms = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const s = `${ms[start.getMonth()]} ${start.getDate()}`;
+  const e = `${ms[end.getMonth()]} ${end.getDate()}`;
+  return `${s}–${e}`;
+}
+
+/* ─────────────────────────────────────
+   COMPUTED HELPERS
+───────────────────────────────────── */
+function getCurrentWeekNum() {
+  const start = new Date(profile.startDate);
+  const today = new Date();
+  const diffDays = Math.floor((today - start) / 86400000);
+  if (diffDays < 0) return 1;
+  return Math.min(Math.max(Math.floor(diffDays / 7) + 1, 1), SCHEDULE.length);
+}
+
+function isChecked(id) { return !!state[id]; }
+
+function getWeekPct(week) {
+  if (!week || !week.tasks.length) return 0;
+  return Math.round(week.tasks.filter(t => isChecked(t.id)).length / week.tasks.length * 100);
+}
+
+function getPhasePct(phaseNum) {
+  const tasks = SCHEDULE.filter(w => w.phase === phaseNum).flatMap(w => w.tasks);
+  if (!tasks.length) return 0;
+  return Math.round(tasks.filter(t => isChecked(t.id)).length / tasks.length * 100);
+}
+
+function getOverall() {
+  const all = SCHEDULE.flatMap(w => w.tasks);
+  const done = all.filter(t => isChecked(t.id)).length;
+  return { done, total: all.length, pct: all.length ? Math.round(done / all.length * 100) : 0 };
+}
+
+function getSubjectStats(subj) {
+  const tasks = SCHEDULE.flatMap(w => w.tasks).filter(t => t.subject === subj);
+  const done = tasks.filter(t => isChecked(t.id)).length;
+  return { total: tasks.length, done, pct: tasks.length ? Math.round(done/tasks.length*100) : 0 };
+}
+
+function getTestStats() {
+  const all = SCHEDULE.flatMap(w => w.tasks).filter(t => (t.type==='test'||t.type==='spaced') && t.title !== 'EXAM DAY — CFA Level 2');
+  const done = all.filter(t => isChecked(t.id)).length;
+  return { done, total: all.length };
+}
+
+function getMockStats() {
+  const all = SCHEDULE.flatMap(w => w.tasks).filter(t => t.type === 'mock');
+  const done = all.filter(t => isChecked(t.id)).length;
+  return { done, total: all.length };
+}
+
+function getWeeklyConsistency() {
+  // Returns array of { week, pct } for weeks that have started
+  const curWeek = getCurrentWeekNum();
+  return SCHEDULE.filter(w => w.week <= curWeek).map(w => ({ week: w.week, pct: getWeekPct(w), label: w.label }));
+}
+
+/* ─────────────────────────────────────
+   RENDER FUNCTIONS
+───────────────────────────────────── */
+function renderDashboard() {
+  const today = new Date();
+  const exam = new Date(profile.examDate);
+  const daysLeft = Math.max(0, Math.ceil((exam - today) / 86400000));
+  const weeksLeft = Math.ceil(daysLeft / 7);
+  const overall = getOverall();
+  const curWeekNum = getCurrentWeekNum();
+  const curWeek = SCHEDULE.find(w => w.week === curWeekNum) || SCHEDULE[0];
+
+  // Greeting & subtitle
+  document.getElementById('dash-greeting').textContent = `${profile.name}'s Progress`;
+  document.getElementById('dash-subtitle').textContent = `CFA Level 2 · ${formatDisplayDate(exam)} Exam · ${profile.level} · ${profile.hours}h/day target`;
+
+  // Countdown
+  document.getElementById('days-left').textContent = daysLeft;
+  document.getElementById('weeks-left').textContent = weeksLeft;
+  document.getElementById('hours-target').textContent = profile.hours;
+
+  // Overall bar
+  document.getElementById('overall-pct-label').textContent = overall.pct + '%';
+  document.getElementById('overall-bar').style.width = overall.pct + '%';
+  document.getElementById('overall-tasks-label').textContent = `${overall.done} / ${overall.total} tasks complete`;
+
+  // Stats cards
+  document.getElementById('stat-week').textContent = 'W' + curWeekNum;
+  document.getElementById('stat-week-phase').textContent = PHASE_NAMES[curWeek.phase];
+  document.getElementById('stat-week-bar').style.width = getWeekPct(curWeek) + '%';
+
+  const wDone = curWeek.tasks.filter(t => isChecked(t.id)).length;
+  const wTotal = curWeek.tasks.length;
+  const wPct = getWeekPct(curWeek);
+  document.getElementById('stat-week-tasks').textContent = `${wDone}/${wTotal}`;
+  document.getElementById('stat-week-pct').textContent = wPct + '% done';
+  document.getElementById('stat-week-task-bar').style.width = wPct + '%';
+
+  const ts = getTestStats(); const ms = getMockStats();
+  document.getElementById('stat-tests').textContent = `${ts.done}/${ts.total}`;
+  document.getElementById('stat-test-bar').style.width = Math.round(ts.done/ts.total*100) + '%';
+  document.getElementById('stat-mocks').textContent = `${ms.done}/${ms.total}`;
+  document.getElementById('stat-mock-bar').style.width = Math.round(ms.done/ms.total*100) + '%';
+
+  // Phase cards
+  const pr = document.getElementById('phases-row');
+  pr.innerHTML = '';
+  [1,2,3].forEach(p => {
+    const pct = getPhasePct(p);
+    const phaseWeeks = SCHEDULE.filter(w => w.phase === p);
+    const startDate = phaseWeeks[0]?.dates.split('–')[0] || '';
+    const endDate = phaseWeeks[phaseWeeks.length-1]?.dates.split('–')[1] || '';
+    pr.innerHTML += `
+      <div class="phase-card" style="--phase-color:${PHASE_COLORS[p]}">
+        <div class="phase-name">Phase ${p}</div>
+        <div class="phase-title">${PHASE_NAMES[p].replace(`Phase ${p} — `, '')}</div>
+        <div class="phase-dates">${startDate} — ${endDate}</div>
+        <div class="phase-pct" style="color:${PHASE_COLORS[p]}">${pct}%</div>
+        <div class="progress-bar-wrap"><div class="progress-bar" style="background:${PHASE_COLORS[p]};width:${pct}%"></div></div>
+      </div>`;
+  });
+
+  // Timeline
+  const container = document.getElementById('week-timeline');
+  container.innerHTML = '';
+  SCHEDULE.forEach(w => {
+    const pct = getWeekPct(w);
+    const isCur = w.week === curWeekNum;
+    const color = PHASE_HEX[w.phase];
+    const row = document.createElement('div');
+    row.className = `week-row${isCur ? ' current' : ''}${pct===100 ? ' done' : ''}`;
+    row.style.borderLeftColor = isCur ? color : 'transparent';
+    row.innerHTML = `
+      <div class="week-label">Wk ${w.week} · ${w.dates}</div>
+      <div class="week-tasks">${w.label}
+        <div class="progress-bar-wrap" style="margin-top:4px"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div>
+      </div>
+      <div class="week-pct-col" style="color:${color}">${pct}%</div>`;
+    row.onclick = () => { switchTab('checklist'); document.getElementById('week-select').value = w.week; renderChecklist(); };
+    container.appendChild(row);
+  });
+}
+
+function renderChecklist() {
+  const sel = document.getElementById('week-select');
+  const weekNum = parseInt(sel.value);
+  const week = SCHEDULE.find(w => w.week === weekNum);
+  if (!week) return;
+  const pct = getWeekPct(week);
+  const done = week.tasks.filter(t => isChecked(t.id)).length;
+  const color = PHASE_HEX[week.phase];
+
+  document.getElementById('week-header-card').innerHTML = `
+    <div>
+      <div class="week-info-phase">${PHASE_NAMES[week.phase]}</div>
+      <div class="week-info-title">Week ${week.week} — ${week.label}</div>
+      <div class="week-of" style="margin-top:3px">${week.dates}</div>
+    </div>
+    <div class="week-progress-mini">
+      <div>
+        <div style="font-size:0.65rem;color:var(--muted);text-align:right">${done}/${week.tasks.length} tasks</div>
+        <div class="week-pct-big" style="color:${color}">${pct}%</div>
+      </div>
+      <div style="width:80px"><div class="progress-bar-wrap" style="height:5px"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div></div>
+    </div>`;
+
+  const area = document.getElementById('checklist-area');
+  area.innerHTML = '';
+  week.tasks.forEach(t => {
+    const checked = isChecked(t.id);
+    const labelMap = { reading:'Reading', test:'Subject Test', review:'Review', mock:'Mock Exam', spaced:'Spaced Recall' };
+    const label = t.title === 'EXAM DAY — CFA Level 2' ? 'EXAM' : (labelMap[t.type] || t.type);
+    const item = document.createElement('div');
+    item.className = `check-item${checked ? ' checked' : ''}`;
+    item.innerHTML = `
+      <div class="check-box">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <polyline points="1.5,5 4,7.5 8.5,2" stroke="#0d0f14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="check-content">
+        <div class="check-title">${t.title}</div>
+        <div class="check-meta">
+          <span class="check-badge badge-${t.type}">${label}</span>
+          <span class="check-days">${t.days} · ${t.subject}</span>
+        </div>
+      </div>`;
+    item.onclick = () => { toggleTask(t.id, item); };
+    area.appendChild(item);
+  });
+}
+
+function renderSchedule() {
+  document.getElementById('schedule-subtitle').textContent = `${SCHEDULE.length} weeks · Exam ${formatDisplayDate(new Date(profile.examDate))}`;
+  const grid = document.getElementById('schedule-grid');
+  grid.innerHTML = '';
+  const curWeekNum = getCurrentWeekNum();
+
+  [1,2,3].forEach(phase => {
+    const weeks = SCHEDULE.filter(w => w.phase === phase);
+    const color = PHASE_HEX[phase];
+    const block = document.createElement('div');
+    block.className = 'phase-block';
+    block.innerHTML = `
+      <div class="phase-block-header">
+        <div class="phase-dot" style="background:${color}"></div>
+        <div>
+          <div class="phase-block-title">${PHASE_NAMES[phase]}</div>
+          <div class="phase-block-sub">${getPhasePct(phase)}% complete</div>
+        </div>
+      </div>
+      <div class="weeks-grid">
+        ${weeks.map(w => {
+          const pct = getWeekPct(w);
+          const isCur = w.week === curWeekNum;
+          return `<div class="schedule-week${isCur?' current-week':''}" style="border-top-color:${color}">
+            <div class="sw-header">
+              <span class="sw-num">WEEK ${w.week}${isCur?' · NOW':''}</span>
+              <span class="sw-dates">${w.dates}</span>
+            </div>
+            <div class="sw-tasks">${w.tasks.map(t=>`<div class="sw-task"><span class="sw-task-bullet">▸</span><span>${t.title}</span></div>`).join('')}</div>
+            <div class="sw-done-bar">
+              <div style="flex:1"><div class="progress-bar-wrap"><div class="progress-bar" style="background:${color};width:${pct}%"></div></div></div>
+              <span class="sw-done-pct">${pct}%</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    grid.appendChild(block);
+  });
+}
+
+/* ─────────────────────────────────────
+   ANALYTICS & CHARTS
+───────────────────────────────────── */
+const CHART_DEFAULTS = {
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#7a7871', font: { family: 'DM Mono', size: 10 } } },
+    y: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#7a7871', font: { family: 'DM Mono', size: 10 } }, max: 100, min: 0 }
+  },
+  animation: { duration: 600, easing: 'easeInOutQuart' }
+};
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+function renderAnalytics() {
+  const overall = getOverall();
+  const ts = getTestStats();
+  const ms = getMockStats();
+  const consData = getWeeklyConsistency();
+  const doneWeeks = consData.filter(w => w.pct > 0).length;
+  const avgConsistency = doneWeeks ? Math.round(consData.filter(w=>w.pct>0).reduce((a,b)=>a+b.pct,0)/doneWeeks) : 0;
+
+  // Insight cards
+  document.getElementById('insight-grid').innerHTML = `
+    <div class="insight-card">
+      <div class="insight-label">Overall completion</div>
+      <div class="insight-val" style="color:var(--accent)">${overall.pct}%</div>
+      <div class="insight-sub">${overall.done} of ${overall.total} tasks done</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Tests completed</div>
+      <div class="insight-val" style="color:var(--blue)">${ts.done}/${ts.total}</div>
+      <div class="insight-sub">${ts.total ? Math.round(ts.done/ts.total*100) : 0}% of subject tests</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Mocks done</div>
+      <div class="insight-val" style="color:var(--accent3)">${ms.done}/${ms.total}</div>
+      <div class="insight-sub">${ms.total ? Math.round(ms.done/ms.total*100) : 0}% of mock exams</div>
+    </div>`;
+
+  // Chart 1: Subject-wise completion
+  const subjPcts = SUBJECTS.map(s => getSubjectStats(s).pct);
+  const subjColors = subjPcts.map(p => p === 100 ? '#6bbd8b' : p > 50 ? '#c8a96e' : '#8fc4b4');
+  destroyChart('chart-subjects');
+  charts['chart-subjects'] = new Chart(document.getElementById('chart-subjects'), {
+    type: 'bar',
+    data: {
+      labels: SUBJECTS.map(s => s.length > 12 ? s.slice(0,11)+'…' : s),
+      datasets: [{ data: subjPcts, backgroundColor: subjColors, borderRadius: 4, borderSkipped: false }]
+    },
+    options: { ...CHART_DEFAULTS, plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>`${ctx.raw}%`}} } }
+  });
+
+  // Chart 2: Tests done vs pending (doughnut)
+  destroyChart('chart-tests');
+  charts['chart-tests'] = new Chart(document.getElementById('chart-tests'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Done', 'Pending'],
+      datasets: [{ data: [ts.done, ts.total - ts.done], backgroundColor: ['#6bbd8b','#1a1e28'], borderColor: ['#6bbd8b','rgba(255,255,255,0.07)'], borderWidth: 1 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '68%',
+      plugins: { legend: { display: true, position: 'bottom', labels: { color:'#7a7871', font:{family:'DM Mono',size:10}, padding: 12 } },
+        tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw}` } } },
+      animation: { duration: 600 }
+    }
+  });
+
+  // Chart 3: Weekly consistency
+  destroyChart('chart-consistency');
+  charts['chart-consistency'] = new Chart(document.getElementById('chart-consistency'), {
+    type: 'line',
+    data: {
+      labels: consData.map(w => `W${w.week}`),
+      datasets: [{
+        data: consData.map(w => w.pct),
+        borderColor: '#c8a96e',
+        backgroundColor: 'rgba(200,169,110,0.08)',
+        borderWidth: 2,
+        tension: 0.35,
+        fill: true,
+        pointBackgroundColor: '#c8a96e',
+        pointRadius: 3
+      }]
+    },
+    options: { ...CHART_DEFAULTS, plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>`${ctx.raw}%`}} } }
+  });
+
+  // Chart 4: Mock progress with target trajectory
+  const mockWeeks = SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock');
+  const mockLabels = mockWeeks.map((_,i) => `Mock ${i+1}`);
+  const mockDone = mockWeeks.map(t => isChecked(t.id) ? 1 : 0).reduce((acc,v,i)=>{ acc.push((acc[i-1]||0)+v); return acc; }, []);
+  const mockTarget = mockWeeks.map((_,i) => Math.round((i+1)/mockWeeks.length*ms.total));
+  destroyChart('chart-mocks');
+  charts['chart-mocks'] = new Chart(document.getElementById('chart-mocks'), {
+    type: 'line',
+    data: {
+      labels: mockLabels,
+      datasets: [
+        { label:'Completed', data: mockDone, borderColor:'#c47a7a', backgroundColor:'rgba(196,122,122,0.08)', borderWidth:2, tension:0.3, fill:true, pointBackgroundColor:'#c47a7a', pointRadius:4 },
+        { label:'Target', data: mockTarget, borderColor:'rgba(255,255,255,0.15)', borderDash:[4,4], borderWidth:1.5, tension:0, fill:false, pointRadius:0 }
+      ]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: { ...CHART_DEFAULTS.scales, y: { ...CHART_DEFAULTS.scales.y, max: ms.total, min: 0 } },
+      plugins: { legend: { display:true, position:'bottom', labels:{ color:'#7a7871', font:{family:'DM Mono',size:10}, padding:12 } } }
+    }
+  });
+}
+
+/* ─────────────────────────────────────
+   EXPORT PDF
+   Builds a self-contained report div, renders to canvas, saves as PDF.
+───────────────────────────────────── */
+async function exportPDF() {
+  showToast('Generating your report…', 'success');
+
+  const overall = getOverall();
+  const ts = getTestStats();
+  const ms = getMockStats();
+  const exam = new Date(profile.examDate);
+  const today = new Date();
+  const daysLeft = Math.max(0, Math.ceil((exam - today) / 86400000));
+  const subjRows = SUBJECTS.map(s => { const st = getSubjectStats(s); return `
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:12px;color:#e8e6df">${s}</span>
+        <span style="font-size:12px;font-family:DM Mono,monospace;color:#c8a96e">${st.pct}%</span>
+      </div>
+      <div style="height:5px;background:#1a1e28;border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${st.pct}%;background:${st.pct===100?'#6bbd8b':st.pct>50?'#c8a96e':'#8fc4b4'};border-radius:3px"></div>
+      </div>
+    </div>`; }).join('');
+
+  const report = document.getElementById('export-report');
+  report.style.display = 'block';
+  report.innerHTML = `
+    <div style="border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:24px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div style="font-family:DM Serif Display,Georgia,serif;font-size:28px;color:#c8a96e;margin-bottom:4px">CFA Level 2 Progress Report</div>
+        <div style="font-size:12px;color:#7a7871;letter-spacing:0.08em;text-transform:uppercase">${profile.name} · Generated ${formatDisplayDate(today)}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;color:#7a7871;margin-bottom:2px">Exam Date</div>
+        <div style="font-family:DM Serif Display,Georgia,serif;font-size:18px;color:#e8e6df">${formatDisplayDate(exam)}</div>
+        <div style="font-size:11px;color:#7a7871;margin-top:2px">${daysLeft} days remaining</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px">
+      ${[
+        {label:'Overall',val:overall.pct+'%',sub:`${overall.done}/${overall.total} tasks`,col:'#c8a96e'},
+        {label:'Tests done',val:`${ts.done}/${ts.total}`,sub:`${ts.total?Math.round(ts.done/ts.total*100):0}% complete`,col:'#6ea8d8'},
+        {label:'Mocks done',val:`${ms.done}/${ms.total}`,sub:`${ms.total?Math.round(ms.done/ms.total*100):0}% complete`,col:'#c47a7a'},
+        {label:'Level',val:profile.level,sub:`${profile.hours}h/day target`,col:'#8fc4b4'},
+      ].map(c=>`<div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px">
+        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a7871;margin-bottom:6px">${c.label}</div>
+        <div style="font-family:DM Mono,monospace;font-size:22px;font-weight:500;color:${c.col}">${c.val}</div>
+        <div style="font-size:10px;color:#7a7871;margin-top:3px">${c.sub}</div>
+      </div>`).join('')}
+    </div>
+    <div style="margin-bottom:28px">
+      <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#7a7871;margin-bottom:16px">Subject-wise completion</div>
+      ${subjRows}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:16px">
+        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a7871;margin-bottom:12px">Phase progress</div>
+        ${[1,2,3].map(p=>{const pct=getPhasePct(p);return`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;color:#e8e6df">${PHASE_NAMES[p]}</span><span style="font-size:12px;font-family:DM Mono,monospace;color:${PHASE_HEX[p]}">${pct}%</span></div><div style="height:4px;background:#1a1e28;border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${PHASE_HEX[p]};border-radius:2px"></div></div></div>`;}).join('')}
+      </div>
+      <div style="background:#13161d;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:16px">
+        <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a7871;margin-bottom:12px">Study profile</div>
+        ${[
+          ['Study level', profile.level],
+          ['Daily target', profile.hours + ' hours/day'],
+          ['Start date', formatDisplayDate(new Date(profile.startDate))],
+          ['Exam date', formatDisplayDate(exam)],
+          ['Total weeks', SCHEDULE.length + ' weeks'],
+        ].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="font-size:11px;color:#7a7871">${k}</span><span style="font-size:11px;color:#e8e6df">${v}</span></div>`).join('')}
+      </div>
+    </div>
+    <div style="margin-top:28px;border-top:1px solid rgba(255,255,255,0.07);padding-top:16px;font-size:10px;color:#555048;text-align:center">
+      CFA Level 2 Precision Study Tracker · Generated ${new Date().toLocaleString()}
+    </div>`;
+
+  try {
+    await new Promise(r => setTimeout(r, 300)); // Let fonts render
+    const canvas = await html2canvas(report, { backgroundColor: '#0d0f14', scale: 2, useCORS: true, logging: false });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [900, canvas.height / 2] });
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 900, canvas.height / 2);
+    pdf.save(`CFA-L2-Report-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`);
+    showToast('Report exported! ✓', 'success');
+  } catch(err) {
+    console.error(err);
+    showToast('Export failed — try again', 'error');
+  } finally {
+    report.style.display = 'none';
+  }
+}
+
+/* ─────────────────────────────────────
+   TASK TOGGLE
+───────────────────────────────────── */
+function toggleTask(taskId, itemEl) {
+  state[taskId] = !state[taskId];
+  saveState();
+  itemEl.classList.toggle('checked', !!state[taskId]);
+  const cb = itemEl.querySelector('.check-box');
+  if (state[taskId]) {
+    cb.style.background = 'var(--green)';
+    cb.style.borderColor = 'var(--green)';
+    cb.querySelector('svg').style.display = 'block';
+  } else {
+    cb.style.background = '';
+    cb.style.borderColor = '';
+    cb.querySelector('svg').style.display = 'none';
+  }
+  // Partial re-render (only nav & header, avoid full re-render flicker)
+  updateWeekHeader();
+  // Lazy-update dashboard if visible
+  if (document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
+  if (document.getElementById('view-analytics').classList.contains('active')) renderAnalytics();
+}
+
+function updateWeekHeader() {
+  const sel = document.getElementById('week-select');
+  const weekNum = parseInt(sel.value);
+  const week = SCHEDULE.find(w => w.week === weekNum);
+  if (!week) return;
+  const pct = getWeekPct(week);
+  const done = week.tasks.filter(t => isChecked(t.id)).length;
+  const color = PHASE_HEX[week.phase];
+  const header = document.getElementById('week-header-card');
+  if (header) {
+    header.querySelector('.week-pct-big').textContent = pct + '%';
+    header.querySelector('.week-pct-big').style.color = color;
+    const progressBar = header.querySelector('.progress-bar');
+    if (progressBar) progressBar.style.width = pct + '%';
+    const countEl = header.querySelector('.week-of') ? header.querySelector('div:first-child div:last-child') : null;
+  }
+}
+
+function resetWeek() {
+  const weekNum = parseInt(document.getElementById('week-select').value);
+  const week = SCHEDULE.find(w => w.week === weekNum);
+  if (!week) return;
+  week.tasks.forEach(t => { state[t.id] = false; });
+  saveState();
+  renderChecklist();
+  showToast('Week reset', 'success');
+}
+
+/* ─────────────────────────────────────
+   TAB SWITCHING
+───────────────────────────────────── */
+function switchTab(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${name}'`)) b.classList.add('active');
+  });
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'checklist') renderChecklist();
+  if (name === 'schedule') renderSchedule();
+  if (name === 'analytics') renderAnalytics();
+}
+
+/* ─────────────────────────────────────
+   UTILITY
+───────────────────────────────────── */
+function formatDisplayDate(d) {
+  const ms = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${d.getDate()} ${ms[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast${type ? ' ' + type : ''}`;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function populateWeekSelect() {
+  const sel = document.getElementById('week-select');
+  sel.innerHTML = '';
+  const curWeekNum = getCurrentWeekNum();
+  SCHEDULE.forEach(w => {
+    const opt = document.createElement('option');
+    opt.value = w.week;
+    opt.textContent = `Week ${w.week} — ${w.label} (${w.dates})`;
+    if (w.week === curWeekNum) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+/* ─────────────────────────────────────
+   APP INIT
+───────────────────────────────────── */
+function initApp() {
+  // Hide onboarding
+  document.getElementById('onboarding').classList.add('hidden');
+  // Show nav
+  document.getElementById('main-nav').style.display = 'flex';
+  // Show all views
+  document.querySelectorAll('.view').forEach(v => v.style.display = '');
+  // Update nav
+  document.getElementById('nav-name').textContent = profile.name;
+  document.getElementById('nav-exam').textContent = 'Exam: ' + formatDisplayDate(new Date(profile.examDate));
+  // Build schedule
+  buildSchedule();
+  populateWeekSelect();
+  // Render active view
+  renderAll();
+}
+
+function renderAll() {
+  renderDashboard();
+  renderChecklist();
+  renderSchedule();
+  renderAnalytics();
+}
+
+/* ─────────────────────────────────────
+   BOOT
+───────────────────────────────────── */
+loadStorage();
+if (profile && profile.name && profile.examDate && profile.startDate) {
+  initApp();
+} else {
+  // Show onboarding, hide nav
+  document.getElementById('main-nav').style.display = 'none';
+  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+}
+</script>
+</body>
+</html>
