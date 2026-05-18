@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CFA L2 — Study Ops IV</title>
+<title>CFA L2 — Study Ops IV (Gemini AI Powered)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -40,7 +40,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* ══ ONBOARDING ══ */
 .ob{position:fixed;inset:0;background:rgba(8,10,14,.99);z-index:2000;display:flex;align-items:center;justify-content:center;padding:1.5rem}
 .ob.h{display:none}
-.ob-m{width:100%;max-width:440px}
+.ob-m{width:100%;max-width:440px;max-height:90vh;overflow-y:auto;padding-right:0.5rem;}
 .ob-eyebrow{font-family:var(--dm);font-size:.5rem;letter-spacing:.35em;text-transform:uppercase;color:var(--chalk4);margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem}
 .ob-eyebrow::before{content:'';width:24px;height:1px;background:var(--amber)}
 .ob-title{font-family:var(--fr);font-size:3.2rem;font-weight:300;font-style:italic;color:var(--chalk);line-height:.95;margin-bottom:.4rem;letter-spacing:-.01em}
@@ -590,6 +590,11 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <div class="lvl-g"><button class="lvl-b" data-level="Beginner" onclick="selLevel(this)">Beginner</button><button class="lvl-b on" data-level="Intermediate" onclick="selLevel(this)">Intermediate</button><button class="lvl-b" data-level="Advanced" onclick="selLevel(this)">Advanced</button></div>
     </div>
     <div class="fg-full"><label class="fl">Weekday study hours/day</label><input class="fi" type="number" id="f-hours" placeholder="1.5" value="1.5" min="0.5" max="12" step="0.5"></div>
+    <div class="fg-full">
+      <label class="fl">Google Gemini API Key (Required for AI)</label>
+      <input class="fi" type="password" id="f-apikey" placeholder="Paste key here..." value="AIzaSyC7az4yOzVgjLqvMMXZhTd07UeLZfXwApI">
+      <div style="font-family:var(--dm);font-size:.48rem;color:var(--chalk4);margin-top:4px">Get one free at aistudio.google.com/app/apikey</div>
+    </div>
   </div>
   <button class="ob-btn" onclick="submitOB()">Initialize Study Ops →</button>
 </div>
@@ -743,14 +748,14 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   <div class="plan-inner">
     <div class="plan-eye">AI Daily Planner</div>
     <div class="plan-title">Today's optimal study plan</div>
-    <div class="plan-meta" id="plan-meta">Claude builds a plan based on your weak areas and available time</div>
+    <div class="plan-meta" id="plan-meta">Gemini builds a plan based on your weak areas and available time</div>
     <div class="plan-options">
       <div class="plan-opt on" id="plan-time-1" onclick="selPlanTime(this,'1')"><span class="plan-opt-ttl">1 hour</span><span class="plan-opt-sub">Light session</span></div>
       <div class="plan-opt" id="plan-time-2" onclick="selPlanTime(this,'2')"><span class="plan-opt-ttl">2 hours</span><span class="plan-opt-sub">Standard session</span></div>
       <div class="plan-opt" id="plan-time-3" onclick="selPlanTime(this,'3')"><span class="plan-opt-ttl">3 hours</span><span class="plan-opt-sub">Deep dive</span></div>
       <div class="plan-opt" id="plan-time-4" onclick="selPlanTime(this,'4+')"><span class="plan-opt-ttl">4+ hours</span><span class="plan-opt-sub">Full day grind</span></div>
     </div>
-    <div class="plan-body" id="plan-body" style="color:var(--chalk4)">Press "Generate Plan" to get Claude's recommendation based on your current progress and weak areas.</div>
+    <div class="plan-body" id="plan-body" style="color:var(--chalk4)">Press "Generate Plan" to get Gemini's recommendation based on your current progress and weak areas.</div>
     <button class="plan-gen-btn" id="plan-gen-btn" onclick="generateDailyPlan()">Generate Today's Plan</button>
     <button class="plan-close-btn" onclick="closePlan()">Close</button>
   </div>
@@ -844,13 +849,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
   <div id="weak-wrap"></div>
   <div class="action-row">
-    <button class="abt quiz" onclick="openQuiz()"><span class="abt-ico">🧠</span><div class="abt-txt"><span class="abt-main">AI Quiz</span><span class="abt-sub">Claude generates MCQs</span></div></button>
+    <button class="abt quiz" onclick="openQuiz()"><span class="abt-ico">🧠</span><div class="abt-txt"><span class="abt-main">AI Quiz</span><span class="abt-sub">Gemini generates MCQs</span></div></button>
     <button class="abt flash" onclick="openFc()"><span class="abt-ico">🃏</span><div class="abt-txt"><span class="abt-main">Flashcards</span><span class="abt-sub">AI flip-card drill</span></div></button>
     <button class="abt battle" onclick="openBattle()"><span class="abt-ico">⚡</span><div class="abt-txt"><span class="abt-main">Battle Mode</span><span class="abt-sub">Weak-area rapid drill</span></div></button>
     <button class="abt qbank" onclick="openQB()"><span class="abt-ico">📋</span><div class="abt-txt"><span class="abt-main">QBank Log</span><span class="abt-sub">Track practice accuracy</span></div></button>
     <button class="abt velocity" onclick="openVel()"><span class="abt-ico">📊</span><div class="abt-txt"><span class="abt-main">Velocity</span><span class="abt-sub">Pace vs. target</span></div></button>
     <button class="abt radar" onclick="openRadar()"><span class="abt-ico">🎯</span><div class="abt-txt"><span class="abt-main">Confidence</span><span class="abt-sub">Radar self-assessment</span></div></button>
-    <button class="abt plan" onclick="openPlan()"><span class="abt-ico">🗓</span><div class="abt-txt"><span class="abt-main">AI Daily Plan</span><span class="abt-sub">Claude builds your day</span></div></button>
+    <button class="abt plan" onclick="openPlan()"><span class="abt-ico">🗓</span><div class="abt-txt"><span class="abt-main">AI Daily Plan</span><span class="abt-sub">Gemini builds your day</span></div></button>
   </div>
   <div class="smart-bar">
     <div class="sb-blk"><div class="sb-lbl">Today</div><div class="sb-val" id="slog-today">0h</div></div>
@@ -1000,6 +1005,36 @@ function loadStorage(){
   state=ls('state',{});scores=ls('scores',{});notes=ls('notes',{});studyLog=ls('studyLog',{});timerState=ls('timer',{});qbankLog=ls('qbank',[]);confidence=ls('confidence',{});
 }
 function save(k,d){localStorage.setItem(SK[k],JSON.stringify(d))}
+
+/* ─── GEMINI AI HELPER ─── */
+async function fetchGemini(prompt, isJson = false) {
+  const key = profile?.geminiKey;
+  if (!key) throw new Error('Missing API Key');
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+  
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: {}
+  };
+  
+  if (isJson) {
+    payload.generationConfig.responseMimeType = "application/json";
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!res.ok) {
+    const e = await res.json();
+    throw new Error(e.error?.message || 'API Error');
+  }
+
+  const d = await res.json();
+  return d.candidates[0].content.parts[0].text;
+}
 
 /* ─── HELPERS ─── */
 function todayKey(){return new Date().toISOString().slice(0,10)}
@@ -1189,7 +1224,7 @@ function closePlan(){document.getElementById('plan-o').classList.add('h')}
 function selPlanTime(el,time){document.querySelectorAll('.plan-opt').forEach(e=>e.classList.remove('on'));el.classList.add('on');planTime=time}
 async function generateDailyPlan(){
   const btn=document.getElementById('plan-gen-btn');btn.disabled=true;btn.textContent='Generating…';
-  const body=document.getElementById('plan-body');body.innerHTML='<span style="color:var(--chalk4)">Claude is building your plan…</span>';
+  const body=document.getElementById('plan-body');body.innerHTML='<span style="color:var(--chalk4)">Gemini is building your plan…</span>';
   const overall=getOverall();
   const curN=getCurWeekNum();
   const curWeek=SCHEDULE.find(w=>w.week===curN)||SCHEDULE[0];
@@ -1198,6 +1233,7 @@ async function generateDailyPlan(){
   const weakSubjs=SUBJECTS.map(s=>{const ss=all.filter(x=>x.task.subject===s&&x.task.type!=='mock');if(!ss.length)return null;return{subj:s,avg:Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length)}}).filter(x=>x&&x.avg<65).sort((a,b)=>a.avg-b.avg).map(x=>x.subj);
   const confWeak=SUBJECTS.filter(s=>(confidence[s]||5)<5);
   const pressure=calcPressure();
+  
   const prompt=`You are a CFA Level 2 exam coach. Build a focused daily study plan.
 
 Student: ${profile?.name||'Student'} | Level: ${profile?.level||'Intermediate'}
@@ -1209,14 +1245,14 @@ Weak subjects (by score): ${weakSubjs.slice(0,3).join(', ')||'None identified ye
 Low confidence subjects: ${confWeak.join(', ')||'None'}
 Schedule status: ${pressure.label}
 
-Give a concrete, time-blocked plan for today. Format it clearly with time slots. Be direct and specific — what exactly to do, in what order, and how long. Include 1-2 tactical tips. Keep it under 280 words.`;
+Give a concrete, time-blocked plan for today. Format it clearly with time slots. Be direct and specific — what exactly to do, in what order, and how long. Include 1-2 tactical tips. Keep it under 280 words. Do NOT use markdown headers like ###.`;
+  
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    const data=await resp.json();
-    const text=data.content.map(i=>i.text||'').join('');
+    if(!profile?.geminiKey){ showToast('Gemini API key missing. Edit profile to add it.','err'); throw new Error('No key');}
+    const text = await fetchGemini(prompt, false);
     body.innerHTML=text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
     if(!body.innerHTML.startsWith('<p>'))body.innerHTML='<p>'+body.innerHTML+'</p>';
-  }catch(err){body.innerHTML='<span style="color:var(--rose)">Failed to generate. Check connection.</span>';console.error(err)}
+  }catch(err){body.innerHTML='<span style="color:var(--rose)">Failed to generate. Check your API key.</span>';console.error(err)}
   btn.disabled=false;btn.textContent='Regenerate Plan';
 }
 
@@ -1238,16 +1274,15 @@ function setExplainDepth(btn,depth){
 }
 async function fetchExplain(task,depth){
   const body=document.getElementById('explain-body');
-  body.innerHTML='<span style="color:var(--chalk4)">Generating…</span>';
+  body.innerHTML='<span style="color:var(--chalk4)">Gemini is generating…</span>';
   const depthMap={intro:'Give a clear 3-4 paragraph overview of this topic for a CFA Level 2 candidate. Explain what it is, why it matters, and the key concepts.',deep:'Give an in-depth explanation of this topic for CFA Level 2. Cover the theory, key formulas, worked examples, and common exam traps. Be thorough.',formulas:'List ONLY the key formulas for this topic with a one-line explanation of each. Use plain text for formulas.',tricks:'Give 5-7 specific exam tips, tricks, and common traps for this CFA Level 2 topic. Be tactical and direct.'};
   const prompt=`CFA Level 2 topic: "${task.title}" (Subject: ${task.subject})\n\n${depthMap[depth]}\n\nFormat your response with clear structure. Use **bold** for important terms.`;
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
-    const data=await resp.json();
-    const text=data.content.map(i=>i.text||'').join('');
+    if(!profile?.geminiKey){ showToast('Gemini API key missing.','err'); throw new Error('No key');}
+    const text = await fetchGemini(prompt, false);
     body.innerHTML=text.replace(/###\s*(.*)/g,'<h4>$1</h4>').replace(/##\s*(.*)/g,'<h4>$1</h4>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
     if(!body.innerHTML.startsWith('<h4>')&&!body.innerHTML.startsWith('<p>'))body.innerHTML='<p>'+body.innerHTML+'</p>';
-  }catch(err){body.innerHTML='<span style="color:var(--rose)">Failed to fetch explanation.</span>'}
+  }catch(err){body.innerHTML='<span style="color:var(--rose)">Failed to fetch explanation. Check your API key.</span>'}
 }
 
 /* ══ ONBOARDING ══ */
@@ -1258,13 +1293,26 @@ function submitOB(){
   const exam=document.getElementById('f-exam').value;
   const start=document.getElementById('f-start').value;
   const hours=parseFloat(document.getElementById('f-hours').value)||1.5;
+  const geminiKey=document.getElementById('f-apikey').value.trim();
+  
   if(!name){showToast('Please enter your name','err');return}
   if(!exam||!start){showToast('Please fill in both dates','err');return}
   if(new Date(start)>=new Date(exam)){showToast('Start must be before exam','err');return}
-  profile={name,examDate:exam,startDate:start,level:selLevelVal,hours};
+  
+  profile={name,examDate:exam,startDate:start,level:selLevelVal,hours,geminiKey};
   save('profile',profile);initApp();
 }
-function editProfile(){if(!profile)return;document.getElementById('f-name').value=profile.name||'';document.getElementById('f-exam').value=profile.examDate||'';document.getElementById('f-start').value=profile.startDate||'';document.getElementById('f-hours').value=profile.hours||1.5;document.querySelectorAll('.lvl-b').forEach(b=>b.classList.toggle('on',b.dataset.level===profile.level));selLevelVal=profile.level;document.getElementById('ob').classList.remove('h')}
+function editProfile(){
+  if(!profile)return;
+  document.getElementById('f-name').value=profile.name||'';
+  document.getElementById('f-exam').value=profile.examDate||'';
+  document.getElementById('f-start').value=profile.startDate||'';
+  document.getElementById('f-hours').value=profile.hours||1.5;
+  document.getElementById('f-apikey').value=profile.geminiKey||'';
+  document.querySelectorAll('.lvl-b').forEach(b=>b.classList.toggle('on',b.dataset.level===profile.level));
+  selLevelVal=profile.level;
+  document.getElementById('ob').classList.remove('h');
+}
 function buildSched(){
   const[y,m,d]=profile.startDate.split('-').map(Number);
   const start=new Date(Date.UTC(y,m-1,d));
@@ -1383,20 +1431,22 @@ function updQuizScore(){document.getElementById('quiz-session-score').textConten
 async function generateQuizQ(){
   const btn=document.getElementById('quiz-gen-btn');btn.disabled=true;btn.textContent='Generating…';
   document.getElementById('quiz-expl').classList.remove('show');
-  document.getElementById('quiz-options').innerHTML=`<div class="quiz-loading"><div class="ql-dot"></div><div class="ql-dot"></div><div class="ql-dot"></div><span>Claude is generating…</span></div>`;
+  document.getElementById('quiz-options').innerHTML=`<div class="quiz-loading"><div class="ql-dot"></div><div class="ql-dot"></div><div class="ql-dot"></div><span>Gemini is generating…</span></div>`;
   document.getElementById('quiz-q').textContent='';quizAnswered=false;
+  
   const subj=quizSubject||SUBJECTS[Math.floor(Math.random()*SUBJECTS.length)];
   document.getElementById('quiz-meta').textContent=`Subject: ${subj}`;
-  const prompt=`You are a CFA Level 2 exam tutor. Generate one hard multiple-choice question for: ${subj}.\n\nRespond ONLY with valid JSON, no markdown:\n{"question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"correct":0,"explanation":"..."}\n\nThe correct field is 0-indexed. Make it exam-level difficulty. Vary which option is correct.`;
+  
+  const prompt=`You are a CFA Level 2 exam tutor. Generate one hard multiple-choice question for: ${subj}.\n\nRespond ONLY with valid JSON using this exact schema:\n{"question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"correct":0,"explanation":"..."}\n\nThe correct field is 0-indexed. Make it exam-level difficulty. Vary which option is correct.`;
+  
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    const data=await resp.json();
-    const raw=data.content.map(i=>i.text||'').join('');
-    const q=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    if(!profile?.geminiKey){ showToast('Gemini API key missing. Edit profile.','err'); throw new Error('No key');}
+    const raw = await fetchGemini(prompt, true);
+    const q=JSON.parse(raw.trim());
     document.getElementById('quiz-q').textContent=q.question;
     document.getElementById('quiz-options').innerHTML=q.options.map((opt,i)=>`<button class="quiz-opt" onclick="answerQuiz(this,${i},${q.correct},'${encodeURIComponent(q.explanation)}')"><span class="quiz-opt-lbl">${['A','B','C','D'][i]}</span>${opt.replace(/^[ABCD]\)\s*/,'')}</button>`).join('');
     document.getElementById('quiz-expl').classList.remove('show');
-  }catch(err){document.getElementById('quiz-q').textContent='Failed to generate. Check connection.';document.getElementById('quiz-options').innerHTML='';console.error(err)}
+  }catch(err){document.getElementById('quiz-q').textContent='Failed to generate. Check your API key and connection.';document.getElementById('quiz-options').innerHTML='';console.error(err)}
   btn.disabled=false;btn.textContent='Next Question';
 }
 function answerQuiz(btn,chosen,correct,explEnc){
@@ -1427,14 +1477,15 @@ function updFcDisp(){
 async function generateFlashcards(){
   if(!fcSubject){showToast('Select a subject first','err');return}
   const btn=document.getElementById('fc-gen-btn');btn.disabled=true;btn.textContent='Generating…';
-  const prompt=`You are a CFA Level 2 tutor. Generate 8 flashcards for: ${fcSubject}.\n\nRespond ONLY with valid JSON array, no markdown:\n[{"q":"question or concept","a":"concise answer (1-3 sentences)"},...]`;
+  
+  const prompt=`You are a CFA Level 2 tutor. Generate 8 flashcards for: ${fcSubject}.\n\nRespond ONLY with a valid JSON array of objects using this exact schema:\n[{"q":"question or concept","a":"concise answer (1-3 sentences)"}]`;
+  
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})});
-    const data=await resp.json();
-    const raw=data.content.map(i=>i.text||'').join('');
-    fcCards=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    if(!profile?.geminiKey){ showToast('Gemini API key missing. Edit profile.','err'); throw new Error('No key');}
+    const raw = await fetchGemini(prompt, true);
+    fcCards=JSON.parse(raw.trim());
     fcIdx=0;document.getElementById('fc-card').classList.remove('flipped');fcFlipped=false;updFcDisp();showToast(`${fcCards.length} flashcards generated ✓`,'ok');
-  }catch(err){showToast('Failed to generate flashcards','err');console.error(err)}
+  }catch(err){showToast('Failed to generate flashcards. Check API key.','err');console.error(err)}
   btn.disabled=false;btn.textContent='Generate Flashcards';
 }
 
@@ -1805,8 +1856,13 @@ function initApp(){
 }
 
 loadStorage();
-if(profile?.name&&profile?.examDate&&profile?.startDate)initApp();
-else{document.getElementById('main-nav').style.display='none';document.querySelectorAll('.view').forEach(v=>v.style.display='none')}
+if(profile?.name&&profile?.examDate&&profile?.startDate){
+  initApp();
+}else{
+  document.getElementById('main-nav').style.display='none';
+  document.querySelectorAll('.view').forEach(v=>v.style.display='none');
+  document.getElementById('ob').classList.remove('h');
+}
 </script>
 </body>
 </html>
