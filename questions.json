@@ -1,0 +1,247 @@
+[
+  {
+    "subject": "Equity Valuation",
+    "question": "A firm has a required return of 10%, an expected dividend of $2.00, and a constant growth rate of 4%. Using the Gordon Growth Model, what is the intrinsic value of the stock?",
+    "options": ["$20.00", "$28.57", "$33.33"],
+    "answer": 2,
+    "explanation": "V = D1 / (r - g) = 2.00 / (0.10 - 0.04) = 2.00 / 0.06 = $33.33."
+  },
+  {
+    "subject": "Fixed Income",
+    "question": "Which of the following best describes the concept of negative convexity in bond pricing?",
+    "options": ["Bond price rises more than expected when yields fall", "Price appreciation is less than the price decline for equal yield changes", "Duration decreases as interest rates rise"],
+    "answer": 1,
+    "explanation": "Negative convexity means the price-yield curve is concave. The gain from a yield decrease is smaller than the loss from an equal yield increase (common in callable bonds)."
+  },
+  {
+    "subject": "Derivatives",
+    "question": "A European put option has a strike of $50, current stock price of $45, risk-free rate of 5%, and 1 year to expiry. Using put-call parity, if the call is worth $3.00, what is the put approximately worth? (PV of strike = $47.62)",
+    "options": ["$2.38", "$5.62", "$8.00"],
+    "answer": 1,
+    "explanation": "Put-Call Parity: P = C - S + PV(K). P = 3.00 - 45 + 47.62 = $5.62."
+  },
+  {
+    "subject": "Quant Methods",
+    "question": "In a multiple regression, the F-statistic tests which of the following null hypotheses?",
+    "options": ["Each individual slope coefficient equals zero", "All slope coefficients simultaneously equal zero", "The intercept equals zero"],
+    "answer": 1,
+    "explanation": "The F-statistic tests H0: all slope coefficients = 0 simultaneously. Individual t-tests evaluate each coefficient separately."
+  },
+  {
+    "subject": "FSA",
+    "question": "Under IFRS, when a company acquires 25% of another firm's voting stock and has significant influence, how should this investment be reported?",
+    "options": ["At fair value through profit or loss", "Using the equity method", "Using full consolidation"],
+    "answer": 1,
+    "explanation": "Ownership of 20-50% with significant influence requires the equity method under both IFRS and US GAAP."
+  },
+  {
+    "subject": "Ethics",
+    "question": "An analyst uses a complex proprietary model to generate recommendations. Standard V(B) Communication with Clients requires the analyst to:",
+    "options": ["Share the exact source code of the model", "Explain the basic process and logic of the model to clients", "Guarantee the model's accuracy"],
+    "answer": 1,
+    "explanation": "Standard V(B) requires members to describe the basic format and general principles of the investment processes used."
+  },
+  {
+    "subject": "Ethics",
+    "question": "A member is offered a free weekend at a luxury resort by a corporate issuer she covers. To comply with Independence and Objectivity, the member should:",
+    "options": ["Accept the trip if her firm permits it", "Refuse the trip completely", "Accept the trip but pay for her own commercial travel and accommodations"],
+    "answer": 2,
+    "explanation": "Best practice under Standard I(B) Independence and Objectivity is for the analyst's firm to pay for commercial transportation and hotel accommodations to maintain independence."
+  },
+  {
+    "subject": "Economics",
+    "question": "According to the Mundell-Fleming model, an expansionary monetary policy under flexible exchange rates and high capital mobility will cause the domestic currency to:",
+    "options": ["Appreciate, leading to a decrease in net exports", "Appreciate, leading to an increase in net exports", "Depreciate, leading to an increase in net exports"],
+    "answer": 2,
+    "explanation": "Expansionary monetary policy lowers domestic interest rates, causing capital outflows. This leads to currency depreciation, making exports cheaper and increasing net exports."
+  },
+  {
+    "subject": "Economics",
+    "question": "In the Cobb-Douglas production function, what does the exponent on the capital term represent?",
+    "options": ["Total factor productivity", "The output elasticity of capital", "The marginal product of labor"],
+    "answer": 1,
+    "explanation": "In Y = A * K^alpha * L^beta, the exponent alpha represents the output elasticity of capital."
+  },
+  {
+    "subject": "Corporate Issuers",
+    "question": "When evaluating a mutually exclusive project with a lower IRR but a higher NPV than the alternative, a company should:",
+    "options": ["Accept the project with the higher IRR", "Accept the project with the higher NPV", "Reject both projects"],
+    "answer": 1,
+    "explanation": "For mutually exclusive projects, the NPV rule always takes precedence over the IRR rule because NPV directly measures the expected increase in firm value."
+  },
+  {
+    "subject": "Corporate Issuers",
+    "question": "According to the pecking order theory, how do managers prefer to finance their companies?",
+    "options": ["Debt, then equity, then internal financing", "Equity, then debt, then internal financing", "Internal financing, then debt, then equity"],
+    "answer": 2,
+    "explanation": "The pecking order theory suggests managers prefer internal financing (retained earnings) first, followed by debt, and will only issue new equity as a last resort."
+  },
+  {
+    "subject": "Quant Methods",
+    "question": "When testing a time series for a unit root, which test is most commonly used?",
+    "options": ["Durbin-Watson test", "Augmented Dickey-Fuller (ADF) test", "Breusch-Pagan test"],
+    "answer": 1,
+    "explanation": "The Augmented Dickey-Fuller (ADF) test is specifically used to test for the presence of a unit root (non-stationarity) in a time series."
+  },
+  {
+    "subject": "Quant Methods",
+    "question": "In machine learning, which technique is most appropriate for clustering unlabeled data into distinct categories?",
+    "options": ["Logistic Regression", "K-Means Clustering", "Support Vector Machines"],
+    "answer": 1,
+    "explanation": "K-Means Clustering is an unsupervised learning technique used for clustering/grouping unlabeled data."
+  },
+  {
+    "subject": "Equity Valuation",
+    "question": "Which of the following models is most appropriate for valuing a company that currently pays no dividends but generates positive free cash flow?",
+    "options": ["Gordon Growth Model", "FCFF Model", "Residual Income Model"],
+    "answer": 1,
+    "explanation": "The FCFF model is highly appropriate for companies that generate positive free cash flows but do not currently pay dividends."
+  },
+  {
+    "subject": "Equity Valuation",
+    "question": "In the Residual Income Model, how is residual income calculated?",
+    "options": ["Net Income - (Equity Capital * Cost of Equity)", "Operating Income - (Total Capital * WACC)", "EBITDA - Depreciation"],
+    "answer": 0,
+    "explanation": "Residual Income is calculated as Net Income minus an equity charge (book value of equity multiplied by the cost of equity)."
+  },
+  {
+    "subject": "FSA",
+    "question": "Under the temporal method for translating foreign currency financial statements, how is inventory typically translated?",
+    "options": ["At the current exchange rate", "At the historical exchange rate", "At the average exchange rate"],
+    "answer": 1,
+    "explanation": "Under the temporal method, non-monetary assets measured at historical cost, such as inventory, are translated at the historical exchange rate."
+  },
+  {
+    "subject": "FSA",
+    "question": "When a company sponsors a defined benefit pension plan, how is the net pension asset or liability reported on the balance sheet?",
+    "options": ["Fair value of plan assets minus the PBO", "PBO minus the fair value of plan assets", "It is kept off-balance sheet"],
+    "answer": 0,
+    "explanation": "The net pension asset or liability is reported as the funded status, which is the fair value of plan assets minus the Projected Benefit Obligation (PBO)."
+  },
+  {
+    "subject": "Fixed Income",
+    "question": "An option-adjusted spread (OAS) on a callable bond is equal to the Z-spread:",
+    "options": ["Minus the option value (in spread terms)", "Plus the option value (in spread terms)", "Divided by duration"],
+    "answer": 0,
+    "explanation": "Z-spread = OAS + Option value. Therefore, OAS = Z-spread - Option value."
+  },
+  {
+    "subject": "Fixed Income",
+    "question": "In a binomial interest rate tree, what is the relationship between the upper and lower forward rates at any specific node?",
+    "options": ["They are independent", "The upper rate is the lower rate times e^(2*sigma)", "The upper rate is the lower rate plus 2*sigma"],
+    "answer": 1,
+    "explanation": "In a standard lognormal binomial interest rate tree, the upper node rate is equal to the lower node rate multiplied by e^(2*sigma)."
+  },
+  {
+    "subject": "Derivatives",
+    "question": "In the Black-Scholes-Merton model, the 'N(d2)' term represents:",
+    "options": ["The probability that the option will expire in the money in a risk-neutral world", "The delta of a call option", "The continuous dividend yield"],
+    "answer": 0,
+    "explanation": "In the BSM model, N(d2) is the risk-neutral probability that a European call option will expire in the money."
+  },
+  {
+    "subject": "Derivatives",
+    "question": "Which option 'Greek' measures the sensitivity of an option's price to a change in implied volatility?",
+    "options": ["Delta", "Gamma", "Vega"],
+    "answer": 2,
+    "explanation": "Vega measures the sensitivity of the option price to changes in the volatility of the underlying asset."
+  },
+  {
+    "subject": "Alt Investments",
+    "question": "In real estate valuation, the capitalization rate (cap rate) is defined as:",
+    "options": ["Gross potential income / Value", "Net operating income (NOI) / Value", "Value / Net operating income (NOI)"],
+    "answer": 1,
+    "explanation": "The capitalization rate is calculated by dividing the first-year Net Operating Income (NOI) by the current market value."
+  },
+  {
+    "subject": "Alt Investments",
+    "question": "Which of the following private equity firm valuation methods focuses primarily on multiples of EBITDA from comparable public companies?",
+    "options": ["Discounted Cash Flow", "Market/Comparables Approach", "Venture Capital Method"],
+    "answer": 1,
+    "explanation": "The market approach relies on multiples (like EV/EBITDA) derived from publicly traded comparable companies."
+  },
+  {
+    "subject": "Portfolio Mgmt",
+    "question": "According to the Fundamental Law of Active Management, the Information Ratio is roughly equal to the Information Coefficient multiplied by:",
+    "options": ["Tracking error", "The square root of breadth", "The transfer coefficient"],
+    "answer": 1,
+    "explanation": "The simplified Fundamental Law states: Information Ratio (IR) = Information Coefficient (IC) * sqrt(Breadth)."
+  },
+  {
+    "subject": "Portfolio Mgmt",
+    "question": "Which approach to calculating Value at Risk (VaR) assumes that returns follow a normal distribution?",
+    "options": ["Historical Simulation", "Parametric (Analytical) Method", "Monte Carlo Simulation"],
+    "answer": 1,
+    "explanation": "The Parametric (or Analytical) method for calculating VaR assumes that the returns of the portfolio follow a specific theoretical distribution, usually normal."
+  },
+  {
+    "subject": "Ethics",
+    "question": "Under the GIPS standards, firms must present a minimum of how many years of GIPS-compliant performance history initially?",
+    "options": ["3 years", "5 years", "10 years"],
+    "answer": 1,
+    "explanation": "To claim initial compliance with GIPS, a firm must present at least 5 years of GIPS-compliant performance."
+  },
+  {
+    "subject": "Quant Methods",
+    "question": "If an AR(1) model exhibits serial correlation in its residuals, what is the most appropriate corrective action?",
+    "options": ["Use White-corrected standard errors", "Take the natural logarithm of the data", "Add another lagged term (i.e., specify an AR(2) model)"],
+    "answer": 2,
+    "explanation": "If an AR(1) model's residuals exhibit serial correlation, adding another lag to make it an AR(2) model is the standard fix."
+  },
+  {
+    "subject": "Economics",
+    "question": "Under the neoclassical model of economic growth, long-term steady state growth in per capita output is driven entirely by:",
+    "options": ["Capital accumulation", "Technological progress", "Population growth"],
+    "answer": 1,
+    "explanation": "In the neoclassical model, once the economy reaches its steady state, the only way to sustain growth in output per capita is through technological progress."
+  },
+  {
+    "subject": "Corporate Issuers",
+    "question": "A stock dividend or stock split will have what effect on a company's leverage and liquidity ratios?",
+    "options": ["Increase them", "Decrease them", "No effect"],
+    "answer": 2,
+    "explanation": "Stock dividends and stock splits are purely accounting transactions. They do not affect cash, total equity, or total assets, so leverage and liquidity ratios remain unchanged."
+  },
+  {
+    "subject": "Equity Valuation",
+    "question": "Which valuation metric is most appropriate for a capital-intensive company with high levels of depreciation and amortization?",
+    "options": ["Price-to-Earnings (P/E)", "EV/EBITDA", "Price-to-Book (P/B)"],
+    "answer": 1,
+    "explanation": "EV/EBITDA is preferred for capital-intensive firms because EBITDA adds back depreciation and amortization."
+  },
+  {
+    "subject": "FSA",
+    "question": "When classifying a lease under IFRS, a lessee is required to recognize:",
+    "options": ["Operating leases only on the income statement", "A right-of-use asset and lease liability for virtually all leases", "Only finance leases on the balance sheet"],
+    "answer": 1,
+    "explanation": "Under IFRS 16, there is a single lessee accounting model requiring lessees to recognize a right-of-use asset and a lease liability for all leases."
+  },
+  {
+    "subject": "Fixed Income",
+    "question": "Credit Default Swaps (CDS) are typically quoted using a standard convention. The standard coupon rate for investment-grade CDS is usually:",
+    "options": ["100 bps (1%)", "500 bps (5%)", "10 bps (0.1%)"],
+    "answer": 0,
+    "explanation": "Standardized CDS contracts typically use a 100 bps (1%) fixed coupon for investment-grade debt and 500 bps for high-yield."
+  },
+  {
+    "subject": "Derivatives",
+    "question": "The value of a forward contract at initiation is typically:",
+    "options": ["Equal to the spot price", "Zero", "Equal to the forward price"],
+    "answer": 1,
+    "explanation": "By definition, a standard forward contract is priced such that no money exchanges hands at initiation, making its value exactly zero."
+  },
+  {
+    "subject": "Alt Investments",
+    "question": "In hedge fund fee structures, what is a 'high-water mark'?",
+    "options": ["The maximum amount of leverage the fund can use", "The highest historical NAV that must be exceeded before incentive fees are paid", "The point at which management fees decrease"],
+    "answer": 1,
+    "explanation": "A high-water mark ensures that the fund manager only earns an incentive fee on new profits generated above the fund's highest historical net asset value."
+  },
+  {
+    "subject": "Portfolio Mgmt",
+    "question": "When evaluating tracking error for an index fund, higher tracking error indicates:",
+    "options": ["Higher excess returns", "Closer adherence to the benchmark", "Greater deviation from the benchmark's returns"],
+    "answer": 2,
+    "explanation": "Tracking error measures the standard deviation of the difference between the portfolio's returns and the benchmark's returns. Higher tracking error means greater deviation."
+  }
+]
