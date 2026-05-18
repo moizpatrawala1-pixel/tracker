@@ -1396,9 +1396,38 @@ function sendWhatsApp(){
   const name=profile?.name||'Student';
   const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   const total=currentQuizQuestions.length;
-  const msg=`Hey! ${name} just finished the CFA Level 2 Daily Quiz on ${today} with a score of ${quizScore}/${total} (${Math.round(quizScore/total*100)}%). 📊`;
+  
+  // 1. Build the main score message
+  let msg=`Hey! ${name} just finished the CFA Level 2 Daily Quiz on ${today} with a score of ${quizScore}/${total} (${Math.round(quizScore/total*100)}%). 📊`;
+  
+  // 2. Identify wrong answers and append them to the message
+  let wrongCount = 0;
+  let wrongBreakdown = '';
+  
+  currentQuizQuestions.forEach((q, qi) => {
+    const chosen = quizAnswers[qi];
+    const correct = q.answer;
+    
+    if (chosen !== correct) {
+      wrongCount++;
+      // Grab the first 40 characters of the question so you know which one it is
+      const shortQ = q.question.length > 40 ? q.question.slice(0, 40) + '...' : q.question;
+      // Format: ❌ Q2 [Fixed Income]: "Which of the following..."
+      wrongBreakdown += `\n❌ *Q${qi + 1} [${q.subject}]:* "${shortQ}"`;
+    }
+  });
+
+  if (wrongCount > 0) {
+    msg += `\n\n*Areas for Review:*` + wrongBreakdown;
+  } else {
+    msg += `\n\n*Perfect score! No review needed.* 🏆`;
+  }
+
+  // 3. Generate the link and send
   const url=`https://wa.me/${TEACHER_PHONE}?text=${encodeURIComponent(msg)}`;
   window.open(url,'_blank');
+  
+  // Show close button after sending
   document.getElementById('quiz-close-btn').classList.add('visible');
   showToast('Opening WhatsApp…','ok');
 }
