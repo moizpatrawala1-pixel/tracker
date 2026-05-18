@@ -1436,7 +1436,7 @@ function renderDashboard(){
   const daysLeft=Math.max(0,Math.ceil((exam-today)/86400000));
   const overall=getOverall(),curN=getCurrentWeekNum();
   const curWeek=SCHEDULE.find(w=>w.week===curN)||SCHEDULE[0];
-  document.getElementById('dash-greeting').textContent=`${profile.name}'s Command`;
+  document.getElementById('dash-greeting').textContent=`${profile.name}'s Dashboard`;
   document.getElementById('dash-sub').textContent=`CFA Level 2 · ${fmtDate(exam)} · ${profile.level} · ${profile.hours}h/day`;
   document.getElementById('days-left').textContent=daysLeft;
   document.getElementById('overall-pct').textContent=overall.pct+'%';
