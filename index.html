@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CFA L2 — Study Ops IV (Gemini AI Powered)</title>
+<title>CFA L2 — Study Ops IV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -180,67 +180,6 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .tm-close-btn{position:absolute;top:.85rem;right:.85rem;background:none;border:none;color:var(--chalk4);cursor:pointer;font-family:var(--dm);font-size:.65rem;padding:.2rem;transition:color var(--ease)}
 .tm-close-btn:hover{color:var(--chalk)}
 
-/* ══ AI QUIZ ══ */
-#quiz-o .modal{max-width:540px}
-.quiz-inner{padding:2rem}
-.quiz-eye{font-family:var(--dm);font-size:.46rem;letter-spacing:.26em;text-transform:uppercase;color:var(--slate);margin-bottom:.35rem;opacity:.8}
-.quiz-title{font-family:var(--fr);font-size:1.25rem;font-style:italic;font-weight:300;margin-bottom:.2rem}
-.quiz-meta{font-family:var(--dm);font-size:.52rem;color:var(--chalk4);margin-bottom:1rem}
-.quiz-score-bar{display:flex;align-items:center;gap:.75rem;background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:.55rem .85rem;margin-bottom:1rem}
-.quiz-snum{font-family:var(--dm);font-size:1rem;font-weight:500;color:var(--slate);min-width:38px}
-.quiz-slbl{font-family:var(--dm);font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk4)}
-.quiz-subjs{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:1rem}
-.quiz-subj-b{background:var(--ink3);border:1px solid var(--line2);border-radius:12px;color:var(--chalk3);font-family:var(--dm);font-size:.52rem;letter-spacing:.04em;padding:.22rem .65rem;cursor:pointer;transition:all var(--ease)}
-.quiz-subj-b:hover,.quiz-subj-b.on{border-color:var(--slate);color:var(--slate);background:var(--slate-d)}
-.quiz-q{font-family:var(--ds);font-size:.97rem;line-height:1.6;color:var(--chalk);background:var(--ink3);border:1px solid var(--line2);border-radius:var(--r2);padding:.95rem 1.15rem;margin-bottom:.85rem;min-height:65px}
-.quiz-opts{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.85rem}
-.quiz-opt{background:var(--ink3);border:1px solid var(--line2);border-radius:var(--r);padding:.6rem .88rem;font-family:var(--ds);font-size:.92rem;color:var(--chalk2);cursor:pointer;transition:all var(--ease);text-align:left;display:flex;gap:.65rem;align-items:flex-start}
-.quiz-opt:hover:not(.disabled){border-color:var(--slate);color:var(--chalk)}
-.quiz-opt.correct{border-color:var(--sage);background:var(--sage-d);color:var(--sage)}
-.quiz-opt.wrong{border-color:var(--rose);background:var(--rose-d);color:var(--rose)}
-.quiz-opt.disabled{cursor:default;pointer-events:none}
-.quiz-opt-lbl{font-family:var(--dm);font-size:.52rem;color:var(--chalk4);flex-shrink:0;margin-top:3px}
-.quiz-expl{background:rgba(107,140,204,.05);border:1px solid rgba(107,140,204,.18);border-radius:var(--r);padding:.8rem 1rem;font-family:var(--ds);font-size:.88rem;color:var(--chalk2);line-height:1.65;margin-bottom:.85rem;display:none}
-.quiz-expl.show{display:block}
-.quiz-btns{display:flex;gap:.45rem}
-.quiz-gen{flex:1;background:var(--slate);border:none;border-radius:var(--r);color:var(--ink);font-family:var(--dm);font-size:.6rem;font-weight:500;letter-spacing:.16em;padding:.65rem;cursor:pointer;transition:all var(--ease);text-transform:uppercase}
-.quiz-gen:hover{background:#8ba8da;transform:translateY(-1px)}
-.quiz-gen:disabled{opacity:.35;cursor:not-allowed;transform:none}
-.quiz-close-btn{background:none;border:1px solid var(--line2);border-radius:var(--r);color:var(--chalk3);font-family:var(--dm);font-size:.6rem;padding:.65rem .8rem;cursor:pointer;transition:all var(--ease)}
-.quiz-close-btn:hover{border-color:var(--line3);color:var(--chalk)}
-.quiz-loading{display:flex;align-items:center;gap:.6rem;padding:.6rem;color:var(--chalk3);font-family:var(--dm);font-size:.7rem}
-.ql-dot{width:4px;height:4px;border-radius:50%;background:var(--slate);animation:ld .8s infinite ease-in-out}
-.ql-dot:nth-child(2){animation-delay:.16s}.ql-dot:nth-child(3){animation-delay:.32s}
-@keyframes ld{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
-
-/* ══ FLASHCARDS ══ */
-#fc-o .modal{max-width:500px}
-.fc-inner{padding:2rem;min-height:340px}
-.fc-eye{font-family:var(--dm);font-size:.46rem;letter-spacing:.26em;text-transform:uppercase;color:var(--amber);margin-bottom:.35rem;opacity:.8}
-.fc-title{font-family:var(--fr);font-size:1.25rem;font-style:italic;font-weight:300;margin-bottom:1rem}
-.fc-subjs{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:1rem}
-.fc-subj-b{background:var(--ink3);border:1px solid var(--line2);border-radius:12px;color:var(--chalk3);font-family:var(--dm);font-size:.52rem;letter-spacing:.04em;padding:.22rem .65rem;cursor:pointer;transition:all var(--ease)}
-.fc-subj-b:hover,.fc-subj-b.on{border-color:var(--amber);color:var(--amber);background:var(--amber-d)}
-.fc-card{position:relative;min-height:190px;perspective:1000px;margin-bottom:1rem;cursor:pointer}
-.fc-card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1)}
-.fc-card.flipped .fc-card-inner{transform:rotateY(180deg)}
-.fc-front,.fc-back{position:absolute;width:100%;min-height:190px;backface-visibility:hidden;border-radius:var(--r2);padding:1.4rem;display:flex;align-items:center;justify-content:center;text-align:center;flex-direction:column;gap:.45rem}
-.fc-front{background:var(--ink3);border:1px solid var(--line2)}
-.fc-back{background:rgba(232,168,56,.06);border:1px solid rgba(232,168,56,.2);transform:rotateY(180deg)}
-.fc-hint{font-family:var(--dm);font-size:.48rem;letter-spacing:.18em;text-transform:uppercase;color:var(--chalk4)}
-.fc-text{font-family:var(--ds);font-size:1.1rem;font-weight:300;color:var(--chalk);line-height:1.5}
-.fc-back .fc-text{color:var(--amber)}
-.fc-nav-row{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:1rem}
-.fc-nav-b{background:var(--ink3);border:1px solid var(--line2);border-radius:var(--r);color:var(--chalk2);font-family:var(--dm);font-size:.58rem;padding:.45rem .95rem;cursor:pointer;transition:all var(--ease);letter-spacing:.08em;text-transform:uppercase}
-.fc-nav-b:hover{border-color:var(--line3);color:var(--chalk)}
-.fc-prog{font-family:var(--dm);font-size:.55rem;color:var(--chalk4)}
-.fc-btns{display:flex;gap:.45rem}
-.fc-gen-b{flex:1;background:var(--amber);border:none;border-radius:var(--r);color:var(--ink);font-family:var(--dm);font-size:.6rem;font-weight:500;letter-spacing:.16em;padding:.65rem;cursor:pointer;transition:all var(--ease);text-transform:uppercase}
-.fc-gen-b:hover{background:var(--amber-l);transform:translateY(-1px)}
-.fc-gen-b:disabled{opacity:.35;cursor:not-allowed}
-.fc-close-b{background:none;border:1px solid var(--line2);border-radius:var(--r);color:var(--chalk3);font-family:var(--dm);font-size:.6rem;padding:.65rem .8rem;cursor:pointer;transition:all var(--ease)}
-.fc-close-b:hover{border-color:var(--line3);color:var(--chalk)}
-
 /* ══ QBANK ══ */
 #qb-o .modal{max-width:440px}
 .qb-inner{padding:1.75rem}
@@ -293,39 +232,6 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .battle-close-b{width:100%;background:none;border:1px solid var(--line2);border-radius:var(--r);color:var(--chalk3);font-family:var(--dm);font-size:.6rem;padding:.65rem;cursor:pointer;transition:all var(--ease)}
 .battle-close-b:hover{border-color:var(--line3);color:var(--chalk)}
 
-/* ══ AI DAILY PLAN MODAL ══ */
-#plan-o .modal{max-width:520px;max-height:85vh;overflow-y:auto}
-.plan-inner{padding:1.75rem}
-.plan-eye{font-family:var(--dm);font-size:.46rem;letter-spacing:.26em;text-transform:uppercase;color:var(--amber);margin-bottom:.35rem;opacity:.8}
-.plan-title{font-family:var(--fr);font-size:1.25rem;font-style:italic;font-weight:300;margin-bottom:.25rem}
-.plan-meta{font-family:var(--dm);font-size:.52rem;color:var(--chalk4);margin-bottom:1rem}
-.plan-options{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem}
-.plan-opt{background:var(--ink3);border:1px solid var(--line2);border-radius:var(--r);padding:.65rem .85rem;cursor:pointer;transition:all var(--ease);text-align:center}
-.plan-opt:hover{border-color:var(--line3)}
-.plan-opt.on{border-color:var(--amber);background:var(--amber-d)}
-.plan-opt-ttl{font-family:var(--dm);font-size:.58rem;color:var(--chalk2);display:block;margin-bottom:.18rem}
-.plan-opt-sub{font-family:var(--dm);font-size:.48rem;color:var(--chalk4)}
-.plan-body{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r2);padding:.9rem 1rem;margin-bottom:1rem;min-height:80px;font-family:var(--ds);font-size:.9rem;color:var(--chalk2);line-height:1.65}
-.plan-gen-btn{width:100%;background:var(--amber);border:none;border-radius:var(--r);color:var(--ink);font-family:var(--dm);font-size:.62rem;font-weight:500;letter-spacing:.18em;padding:.7rem;cursor:pointer;transition:all var(--ease);text-transform:uppercase;margin-bottom:.5rem}
-.plan-gen-btn:hover{background:var(--amber-l);transform:translateY(-1px)}
-.plan-gen-btn:disabled{opacity:.35;cursor:not-allowed}
-.plan-close-btn{width:100%;background:none;border:1px solid var(--line2);border-radius:var(--r);color:var(--chalk3);font-family:var(--dm);font-size:.6rem;padding:.65rem;cursor:pointer;transition:all var(--ease)}
-.plan-close-btn:hover{border-color:var(--line3);color:var(--chalk)}
-
-/* ══ EXPLAIN MODAL ══ */
-#explain-o .modal{max-width:540px;max-height:85vh;overflow-y:auto}
-.explain-inner{padding:1.75rem}
-.explain-eye{font-family:var(--dm);font-size:.46rem;letter-spacing:.26em;text-transform:uppercase;color:var(--violet);margin-bottom:.35rem;opacity:.8}
-.explain-title{font-family:var(--fr);font-size:1.2rem;font-style:italic;font-weight:300;margin-bottom:.9rem}
-.explain-body{font-family:var(--ds);font-size:.92rem;color:var(--chalk2);line-height:1.75;margin-bottom:1rem;min-height:60px}
-.explain-body h4{font-family:var(--fr);font-size:1rem;font-style:italic;font-weight:300;color:var(--amber);margin:1rem 0 .35rem}
-.explain-body strong{color:var(--chalk);font-weight:500}
-.explain-depth{display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap}
-.explain-d-btn{background:var(--ink3);border:1px solid var(--line2);border-radius:12px;color:var(--chalk3);font-family:var(--dm);font-size:.52rem;padding:.22rem .65rem;cursor:pointer;transition:all var(--ease)}
-.explain-d-btn:hover,.explain-d-btn.on{border-color:var(--violet);color:var(--violet);background:var(--violet-d)}
-.explain-close-btn{width:100%;background:none;border:1px solid var(--line2);border-radius:var(--r);color:var(--chalk3);font-family:var(--dm);font-size:.6rem;padding:.65rem;cursor:pointer;transition:all var(--ease)}
-.explain-close-btn:hover{border-color:var(--line3);color:var(--chalk)}
-
 /* ══ CONFIDENCE RADAR MODAL ══ */
 #radar-o .modal{max-width:480px}
 .radar-inner{padding:1.75rem}
@@ -367,22 +273,19 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sc-bar{margin-top:.55rem}
 
 /* ACTION ROW */
-.action-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.action-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1.2rem}
 .abt{display:flex;align-items:center;gap:.5rem;background:var(--ink2);border:1px solid var(--line2);border-radius:var(--r2);padding:.52rem .85rem;cursor:pointer;transition:all var(--ease);position:relative;overflow:hidden}
 .abt::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity var(--ease)}
 .abt:hover{transform:translateY(-2px)}
 .abt:hover::before{opacity:1}
 .abt-ico{font-size:.78rem;flex-shrink:0;position:relative;z-index:1}
-.abt-txt{display:flex;flex-direction:column;gap:.06rem;position:relative;z-index:1}
+.abt-txt{display:flex;flex-direction:column;gap:.06rem;position:relative;z-index:1;text-align:left}
 .abt-main{font-family:var(--dm);font-size:.52rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
 .abt-sub{font-family:var(--dm);font-size:.46rem;color:var(--chalk4)}
-.abt.quiz{border-color:rgba(107,140,204,.22);color:var(--slate)}.abt.quiz::before{background:var(--slate-d)}.abt.quiz:hover{border-color:var(--slate)}
-.abt.flash{border-color:rgba(232,168,56,.22);color:var(--amber)}.abt.flash::before{background:var(--amber-d)}.abt.flash:hover{border-color:var(--amber)}
 .abt.battle{border-color:rgba(232,85,85,.22);color:var(--rose)}.abt.battle::before{background:var(--rose-d)}.abt.battle:hover{border-color:var(--rose)}
 .abt.qbank{border-color:rgba(78,201,148,.22);color:var(--sage)}.abt.qbank::before{background:var(--sage-d)}.abt.qbank:hover{border-color:var(--sage)}
 .abt.velocity{border-color:rgba(107,140,204,.22);color:var(--slate)}.abt.velocity::before{background:var(--slate-d)}.abt.velocity:hover{border-color:var(--slate)}
 .abt.radar{border-color:rgba(155,114,232,.22);color:var(--violet)}.abt.radar::before{background:var(--violet-d)}.abt.radar:hover{border-color:var(--violet)}
-.abt.plan{border-color:rgba(232,168,56,.22);color:var(--amber)}.abt.plan::before{background:var(--amber-d)}.abt.plan:hover{border-color:var(--amber)}
 
 /* SMART BAR */
 .smart-bar{background:var(--ink2);border:1px solid var(--line);border-left:2px solid var(--amber);border-radius:var(--r2);padding:.8rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
@@ -494,7 +397,6 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .ci-ibtn{background:none;border:1px solid transparent;border-radius:2px;color:var(--chalk4);font-size:.62rem;padding:.18rem .36rem;cursor:pointer;transition:all var(--ease);font-family:var(--dm);white-space:nowrap}
 .ci-ibtn:hover{border-color:var(--line2);color:var(--chalk2)}
 .ci-ibtn.note-on{color:var(--violet);border-color:rgba(155,114,232,.22)}
-.ci-ibtn.explain{color:var(--amber);border-color:rgba(232,168,56,.22)}
 .ci-note-bubble{background:rgba(155,114,232,.05);border:1px solid rgba(155,114,232,.12);border-radius:3px;padding:.38rem .62rem;margin-top:.38rem;font-family:var(--dm);font-size:.62rem;color:var(--chalk2);line-height:1.55;white-space:pre-wrap}
 .score-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--dm);font-size:.48rem;padding:2px 6px;border-radius:14px;cursor:pointer;transition:all var(--ease);white-space:nowrap;border:1px solid var(--line);color:var(--chalk4);user-select:none}
 .score-chip:hover{border-color:var(--amber);color:var(--amber)}
@@ -570,7 +472,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 /* ══ RESPONSIVE ══ */
 @media(max-width:960px){.phases-grid,.stat-grid,.ana-grid,.ins-grid,.qb-ov-grid,.conf-mini-grid{grid-template-columns:1fr 1fr}.wks-grid{grid-template-columns:1fr}.nav{padding:0 1rem}.view{padding:1.2rem 1rem}.vel-row{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:580px){.stat-grid,.phases-grid{grid-template-columns:1fr}.vel-row{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.stat-grid,.phases-grid{grid-template-columns:1fr}.action-row{grid-template-columns:1fr 1fr}.vel-row{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -589,11 +491,6 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <div class="lvl-g"><button class="lvl-b" data-level="Beginner" onclick="selLevel(this)">Beginner</button><button class="lvl-b on" data-level="Intermediate" onclick="selLevel(this)">Intermediate</button><button class="lvl-b" data-level="Advanced" onclick="selLevel(this)">Advanced</button></div>
     </div>
     <div class="fg-full"><label class="fl">Weekday study hours/day</label><input class="fi" type="number" id="f-hours" placeholder="1.5" value="1.5" min="0.5" max="12" step="0.5"></div>
-    <div class="fg-full">
-      <label class="fl">Google Gemini API Key (Required for AI)</label>
-      <input class="fi" type="password" id="f-apikey" placeholder="Paste key here...">
-      <div style="font-family:var(--dm);font-size:.48rem;color:var(--chalk4);margin-top:4px">Get one free at aistudio.google.com/app/apikey</div>
-    </div>
   </div>
   <button class="ob-btn" onclick="submitOB()">Initialize Study Ops →</button>
 </div>
@@ -651,44 +548,6 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 </div>
 </div>
 
-<div class="overlay h" id="quiz-o">
-<div class="modal">
-  <div class="modal-bar" style="background:linear-gradient(90deg,var(--slate),transparent)"></div>
-  <div class="quiz-inner">
-    <div class="quiz-eye">AI Quiz Engine</div>
-    <div class="quiz-title">Test your knowledge</div>
-    <div class="quiz-meta" id="quiz-meta">Select a subject and generate a question</div>
-    <div class="quiz-score-bar"><div><div class="quiz-slbl">Session</div><div class="quiz-snum" id="quiz-session-score">0/0</div></div><div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:.2rem"><div class="quiz-slbl">Accuracy</div><div style="font-family:var(--dm);font-size:.9rem;font-weight:500" id="quiz-acc">—</div></div></div>
-    <div class="quiz-subjs" id="quiz-subj-row"></div>
-    <div id="quiz-content">
-      <div class="quiz-q" id="quiz-q" style="color:var(--chalk4)">Press "Generate Question" to start.</div>
-      <div class="quiz-opts" id="quiz-options"></div>
-      <div class="quiz-expl" id="quiz-expl"></div>
-    </div>
-    <div class="quiz-btns"><button class="quiz-gen" id="quiz-gen-btn" onclick="generateQuizQ()">Generate Question</button><button class="quiz-close-btn" onclick="closeQuiz()">Close</button></div>
-  </div>
-</div>
-</div>
-
-<div class="overlay h" id="fc-o">
-<div class="modal">
-  <div class="modal-bar" style="background:linear-gradient(90deg,var(--amber),transparent)"></div>
-  <div class="fc-inner">
-    <div class="fc-eye">AI Flashcard Drill</div>
-    <div class="fc-title">Flip to reveal answer</div>
-    <div class="fc-subjs" id="fc-subj-row"></div>
-    <div class="fc-card" id="fc-card" onclick="flipCard()">
-      <div class="fc-card-inner" id="fc-card-inner">
-        <div class="fc-front"><div class="fc-hint">tap to flip</div><div class="fc-text" id="fc-q-text">Generate flashcards to begin</div></div>
-        <div class="fc-back"><div class="fc-hint">answer</div><div class="fc-text" id="fc-a-text">—</div></div>
-      </div>
-    </div>
-    <div class="fc-nav-row"><button class="fc-nav-b" onclick="fcNav(-1)">← Prev</button><span class="fc-prog" id="fc-progress">0 / 0</span><button class="fc-nav-b" onclick="fcNav(1)">Next →</button></div>
-    <div class="fc-btns"><button class="fc-gen-b" id="fc-gen-btn" onclick="generateFlashcards()">Generate Flashcards</button><button class="fc-close-b" onclick="closeFc()">Close</button></div>
-  </div>
-</div>
-</div>
-
 <div class="overlay h" id="qb-o">
 <div class="modal">
   <div class="modal-bar" style="background:linear-gradient(90deg,var(--sage),transparent)"></div>
@@ -729,44 +588,6 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <div class="battle-result-sub" id="battle-res-sub">Battle complete</div>
       <button class="battle-close-b" onclick="closeBattle()">Done</button>
     </div>
-  </div>
-</div>
-</div>
-
-<div class="overlay h" id="plan-o">
-<div class="modal">
-  <div class="modal-bar" style="background:linear-gradient(90deg,var(--amber),transparent)"></div>
-  <div class="plan-inner">
-    <div class="plan-eye">AI Daily Planner</div>
-    <div class="plan-title">Today's optimal study plan</div>
-    <div class="plan-meta" id="plan-meta">Gemini builds a plan based on your weak areas and available time</div>
-    <div class="plan-options">
-      <div class="plan-opt on" id="plan-time-1" onclick="selPlanTime(this,'1')"><span class="plan-opt-ttl">1 hour</span><span class="plan-opt-sub">Light session</span></div>
-      <div class="plan-opt" id="plan-time-2" onclick="selPlanTime(this,'2')"><span class="plan-opt-ttl">2 hours</span><span class="plan-opt-sub">Standard session</span></div>
-      <div class="plan-opt" id="plan-time-3" onclick="selPlanTime(this,'3')"><span class="plan-opt-ttl">3 hours</span><span class="plan-opt-sub">Deep dive</span></div>
-      <div class="plan-opt" id="plan-time-4" onclick="selPlanTime(this,'4+')"><span class="plan-opt-ttl">4+ hours</span><span class="plan-opt-sub">Full day grind</span></div>
-    </div>
-    <div class="plan-body" id="plan-body" style="color:var(--chalk4)">Press "Generate Plan" to get Gemini's recommendation based on your current progress and weak areas.</div>
-    <button class="plan-gen-btn" id="plan-gen-btn" onclick="generateDailyPlan()">Generate Today's Plan</button>
-    <button class="plan-close-btn" onclick="closePlan()">Close</button>
-  </div>
-</div>
-</div>
-
-<div class="overlay h" id="explain-o">
-<div class="modal">
-  <div class="modal-bar" style="background:linear-gradient(90deg,var(--violet),transparent)"></div>
-  <div class="explain-inner">
-    <div class="explain-eye">AI Concept Explainer</div>
-    <div class="explain-title" id="explain-title">—</div>
-    <div class="explain-depth" id="explain-depth">
-      <button class="explain-d-btn on" data-depth="intro" onclick="setExplainDepth(this,'intro')">Quick overview</button>
-      <button class="explain-d-btn" data-depth="deep" onclick="setExplainDepth(this,'deep')">Deep dive</button>
-      <button class="explain-d-btn" data-depth="formulas" onclick="setExplainDepth(this,'formulas')">Formulas only</button>
-      <button class="explain-d-btn" data-depth="tricks" onclick="setExplainDepth(this,'tricks')">Exam tips</button>
-    </div>
-    <div class="explain-body" id="explain-body" style="color:var(--chalk4)">Generating explanation…</div>
-    <button class="explain-close-btn" onclick="closeExplain()">Close</button>
   </div>
 </div>
 </div>
@@ -835,13 +656,10 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   </div>
   <div id="weak-wrap"></div>
   <div class="action-row">
-    <button class="abt quiz" onclick="openQuiz()"><span class="abt-ico">🧠</span><div class="abt-txt"><span class="abt-main">AI Quiz</span><span class="abt-sub">Gemini generates MCQs</span></div></button>
-    <button class="abt flash" onclick="openFc()"><span class="abt-ico">🃏</span><div class="abt-txt"><span class="abt-main">Flashcards</span><span class="abt-sub">AI flip-card drill</span></div></button>
     <button class="abt battle" onclick="openBattle()"><span class="abt-ico">⚡</span><div class="abt-txt"><span class="abt-main">Battle Mode</span><span class="abt-sub">Weak-area rapid drill</span></div></button>
     <button class="abt qbank" onclick="openQB()"><span class="abt-ico">📋</span><div class="abt-txt"><span class="abt-main">QBank Log</span><span class="abt-sub">Track practice accuracy</span></div></button>
     <button class="abt velocity" onclick="openVel()"><span class="abt-ico">📊</span><div class="abt-txt"><span class="abt-main">Velocity</span><span class="abt-sub">Pace vs. target</span></div></button>
     <button class="abt radar" onclick="openRadar()"><span class="abt-ico">🎯</span><div class="abt-txt"><span class="abt-main">Confidence</span><span class="abt-sub">Radar self-assessment</span></div></button>
-    <button class="abt plan" onclick="openPlan()"><span class="abt-ico">🗓</span><div class="abt-txt"><span class="abt-main">AI Daily Plan</span><span class="abt-sub">Gemini builds your day</span></div></button>
   </div>
   <div class="smart-bar">
     <div class="sb-blk"><div class="sb-lbl">Today</div><div class="sb-val" id="slog-today">0h</div></div>
@@ -875,7 +693,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     <div>
       <div class="eyebrow">Checklist</div>
       <div class="pg-title" style="font-size:2rem">This Week's Tasks</div>
-      <div class="pg-sub">Click ✎ for notes · 💡 for AI explanation · Score chips to log · [/] to change week</div>
+      <div class="pg-sub">Click ✎ for notes · Score chips to log · [/] to change week</div>
     </div>
     <div class="wk-sel-row">
       <select class="wk-sel" id="week-sel" onchange="renderChecklist()"></select>
@@ -977,11 +795,8 @@ const AX={grid:{color:'rgba(230,235,255,0.04)',drawBorder:false},ticks:{color:'#
 let state={},scores={},notes={},studyLog={},timerState={},qbankLog=[],confidence={},profile=null,SCHEDULE=[],charts={};
 let activeScoreTask=null,activeNoteTask=null,noteSpaced=false;
 let tmInterval=null,tmSecsLeft=0,tmTotalSecs=0,tmRunning=false,tmMode='focus',tmSessions=0;
-let quizSubject=null,quizCorrect=0,quizTotal=0,quizAnswered=false;
-let fcSubject=null,fcCards=[],fcIdx=0,fcFlipped=false;
 let battleItems=[],battleIdx=0,battleKnow=0;
-let planTime='1',radarChart=null;
-let activeExplainTask=null,explainDepth='intro';
+let radarChart=null;
 
 const SK={profile:'cfaOpsV4_profile',state:'cfaOpsV4_state',scores:'cfaOpsV4_scores',notes:'cfaOpsV4_notes',studyLog:'cfaOpsV4_studyLog',timer:'cfaOpsV4_timer',qbank:'cfaOpsV4_qbank',confidence:'cfaOpsV4_confidence'};
 
@@ -991,36 +806,6 @@ function loadStorage(){
   state=ls('state',{});scores=ls('scores',{});notes=ls('notes',{});studyLog=ls('studyLog',{});timerState=ls('timer',{});qbankLog=ls('qbank',[]);confidence=ls('confidence',{});
 }
 function save(k,d){localStorage.setItem(SK[k],JSON.stringify(d))}
-
-/* ─── GEMINI AI HELPER ─── */
-async function fetchGemini(prompt, isJson = false) {
-  const key = profile?.geminiKey;
-  if (!key) throw new Error('Missing API Key');
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
-  
-  const payload = {
-    contents: [{ parts: [{ text: prompt }] }],
-    generationConfig: {}
-  };
-  
-  if (isJson) {
-    payload.generationConfig.responseMimeType = "application/json";
-  }
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-
-  if (!res.ok) {
-    const e = await res.json();
-    throw new Error(e.error?.message || 'API Error');
-  }
-
-  const d = await res.json();
-  return d.candidates[0].content.parts[0].text;
-}
 
 /* ─── HELPERS ─── */
 function todayKey(){return new Date().toISOString().slice(0,10)}
@@ -1204,73 +989,6 @@ function renderConfMini(){
   }).join('');
 }
 
-/* ══ AI DAILY PLAN ══ */
-function openPlan(){document.getElementById('plan-o').classList.remove('h')}
-function closePlan(){document.getElementById('plan-o').classList.add('h')}
-function selPlanTime(el,time){document.querySelectorAll('.plan-opt').forEach(e=>e.classList.remove('on'));el.classList.add('on');planTime=time}
-async function generateDailyPlan(){
-  const btn=document.getElementById('plan-gen-btn');btn.disabled=true;btn.textContent='Generating…';
-  const body=document.getElementById('plan-body');body.innerHTML='<span style="color:var(--chalk4)">Gemini is building your plan…</span>';
-  const overall=getOverall();
-  const curN=getCurWeekNum();
-  const curWeek=SCHEDULE.find(w=>w.week===curN)||SCHEDULE[0];
-  const pendingTasks=curWeek.tasks.filter(t=>!isChecked(t.id)).map(t=>t.title).join(', ');
-  const all=getScoreData();
-  const weakSubjs=SUBJECTS.map(s=>{const ss=all.filter(x=>x.task.subject===s&&x.task.type!=='mock');if(!ss.length)return null;return{subj:s,avg:Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length)}}).filter(x=>x&&x.avg<65).sort((a,b)=>a.avg-b.avg).map(x=>x.subj);
-  const confWeak=SUBJECTS.filter(s=>(confidence[s]||5)<5);
-  const pressure=calcPressure();
-  
-  const prompt=`You are a CFA Level 2 exam coach. Build a focused daily study plan.
-
-Student: ${profile?.name||'Student'} | Level: ${profile?.level||'Intermediate'}
-Available time today: ${planTime} hour(s)
-Current week: Week ${curN} — ${curWeek.label}
-Overall progress: ${overall.pct}% (${overall.done}/${overall.total} tasks)
-Pending this week: ${pendingTasks||'All done!'}
-Weak subjects (by score): ${weakSubjs.slice(0,3).join(', ')||'None identified yet'}
-Low confidence subjects: ${confWeak.join(', ')||'None'}
-Schedule status: ${pressure.label}
-
-Give a concrete, time-blocked plan for today. Format it clearly with time slots. Be direct and specific — what exactly to do, in what order, and how long. Include 1-2 tactical tips. Keep it under 280 words. Do NOT use markdown headers like ###.`;
-  
-  try{
-    if(!profile?.geminiKey){ showToast('Gemini API key missing. Edit profile to add it.','err'); throw new Error('No key');}
-    const text = await fetchGemini(prompt, false);
-    body.innerHTML=text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-    if(!body.innerHTML.startsWith('<p>'))body.innerHTML='<p>'+body.innerHTML+'</p>';
-  }catch(err){body.innerHTML='<span style="color:var(--rose)">Failed to generate. Check your API key.</span>';console.error(err)}
-  btn.disabled=false;btn.textContent='Regenerate Plan';
-}
-
-/* ══ AI EXPLAIN ══ */
-function openExplain(e,taskId){
-  e.stopPropagation();
-  const task=SCHEDULE.flatMap(w=>w.tasks).find(t=>t.id===taskId);if(!task)return;
-  activeExplainTask=task;
-  document.getElementById('explain-title').textContent=task.title;
-  document.getElementById('explain-body').innerHTML='<span style="color:var(--chalk4)">Generating explanation…</span>';
-  document.getElementById('explain-o').classList.remove('h');
-  fetchExplain(task,explainDepth);
-}
-function closeExplain(){document.getElementById('explain-o').classList.add('h');activeExplainTask=null}
-function setExplainDepth(btn,depth){
-  document.querySelectorAll('.explain-d-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');explainDepth=depth;
-  if(activeExplainTask)fetchExplain(activeExplainTask,depth);
-}
-async function fetchExplain(task,depth){
-  const body=document.getElementById('explain-body');
-  body.innerHTML='<span style="color:var(--chalk4)">Gemini is generating…</span>';
-  const depthMap={intro:'Give a clear 3-4 paragraph overview of this topic for a CFA Level 2 candidate. Explain what it is, why it matters, and the key concepts.',deep:'Give an in-depth explanation of this topic for CFA Level 2. Cover the theory, key formulas, worked examples, and common exam traps. Be thorough.',formulas:'List ONLY the key formulas for this topic with a one-line explanation of each. Use plain text for formulas.',tricks:'Give 5-7 specific exam tips, tricks, and common traps for this CFA Level 2 topic. Be tactical and direct.'};
-  const prompt=`CFA Level 2 topic: "${task.title}" (Subject: ${task.subject})\n\n${depthMap[depth]}\n\nFormat your response with clear structure. Use **bold** for important terms.`;
-  try{
-    if(!profile?.geminiKey){ showToast('Gemini API key missing.','err'); throw new Error('No key');}
-    const text = await fetchGemini(prompt, false);
-    body.innerHTML=text.replace(/###\s*(.*)/g,'<h4>$1</h4>').replace(/##\s*(.*)/g,'<h4>$1</h4>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-    if(!body.innerHTML.startsWith('<h4>')&&!body.innerHTML.startsWith('<p>'))body.innerHTML='<p>'+body.innerHTML+'</p>';
-  }catch(err){body.innerHTML='<span style="color:var(--rose)">Failed to fetch explanation. Check your API key.</span>'}
-}
-
 /* ══ ONBOARDING ══ */
 let selLevelVal='Intermediate';
 function selLevel(btn){document.querySelectorAll('.lvl-b').forEach(b=>b.classList.remove('on'));btn.classList.add('on');selLevelVal=btn.dataset.level}
@@ -1279,13 +997,12 @@ function submitOB(){
   const exam=document.getElementById('f-exam').value;
   const start=document.getElementById('f-start').value;
   const hours=parseFloat(document.getElementById('f-hours').value)||1.5;
-  const geminiKey=document.getElementById('f-apikey').value.trim();
   
   if(!name){showToast('Please enter your name','err');return}
   if(!exam||!start){showToast('Please fill in both dates','err');return}
   if(new Date(start)>=new Date(exam)){showToast('Start must be before exam','err');return}
   
-  profile={name,examDate:exam,startDate:start,level:selLevelVal,hours,geminiKey};
+  profile={name,examDate:exam,startDate:start,level:selLevelVal,hours};
   save('profile',profile);initApp();
 }
 function editProfile(){
@@ -1294,7 +1011,6 @@ function editProfile(){
   document.getElementById('f-exam').value=profile.examDate||'';
   document.getElementById('f-start').value=profile.startDate||'';
   document.getElementById('f-hours').value=profile.hours||1.5;
-  document.getElementById('f-apikey').value=profile.geminiKey||'';
   document.querySelectorAll('.lvl-b').forEach(b=>b.classList.toggle('on',b.dataset.level===profile.level));
   selLevelVal=profile.level;
   document.getElementById('ob').classList.remove('h');
@@ -1405,76 +1121,6 @@ function updTMDisp(){
 }
 function renderTMSess(){document.getElementById('tm-sess').textContent=`Sessions today: ${timerState.sessions||0} · ${Math.round(timerState[todayKey()]||0)} min`}
 
-/* ══ AI QUIZ ══ */
-function openQuiz(){
-  document.getElementById('quiz-o').classList.remove('h');
-  document.getElementById('quiz-subj-row').innerHTML=['All Subjects',...SUBJECTS].map(s=>`<button class="quiz-subj-b${(!quizSubject&&s==='All Subjects')||quizSubject===s?' on':''}" onclick="setQuizSubj(this,'${s}')">${s.length>14?s.slice(0,13)+'…':s}</button>`).join('');
-  updQuizScore();
-}
-function closeQuiz(){document.getElementById('quiz-o').classList.add('h')}
-function setQuizSubj(btn,subj){document.querySelectorAll('.quiz-subj-b').forEach(b=>b.classList.remove('on'));btn.classList.add('on');quizSubject=subj==='All Subjects'?null:subj}
-function updQuizScore(){document.getElementById('quiz-session-score').textContent=`${quizCorrect}/${quizTotal}`;document.getElementById('quiz-acc').textContent=quizTotal?Math.round(quizCorrect/quizTotal*100)+'%':'—'}
-async function generateQuizQ(){
-  const btn=document.getElementById('quiz-gen-btn');btn.disabled=true;btn.textContent='Generating…';
-  document.getElementById('quiz-expl').classList.remove('show');
-  document.getElementById('quiz-options').innerHTML=`<div class="quiz-loading"><div class="ql-dot"></div><div class="ql-dot"></div><div class="ql-dot"></div><span>Gemini is generating…</span></div>`;
-  document.getElementById('quiz-q').textContent='';quizAnswered=false;
-  
-  const subj=quizSubject||SUBJECTS[Math.floor(Math.random()*SUBJECTS.length)];
-  document.getElementById('quiz-meta').textContent=`Subject: ${subj}`;
-  
-  const prompt=`You are a CFA Level 2 exam tutor. Generate one hard multiple-choice question for: ${subj}.\n\nRespond ONLY with valid JSON using this exact schema:\n{"question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"correct":0,"explanation":"..."}\n\nThe correct field is 0-indexed. Make it exam-level difficulty. Vary which option is correct.`;
-  
-  try{
-    if(!profile?.geminiKey){ showToast('Gemini API key missing. Edit profile.','err'); throw new Error('No key');}
-    const raw = await fetchGemini(prompt, true);
-    const q=JSON.parse(raw.trim());
-    document.getElementById('quiz-q').textContent=q.question;
-    document.getElementById('quiz-options').innerHTML=q.options.map((opt,i)=>`<button class="quiz-opt" onclick="answerQuiz(this,${i},${q.correct},'${encodeURIComponent(q.explanation)}')"><span class="quiz-opt-lbl">${['A','B','C','D'][i]}</span>${opt.replace(/^[ABCD]\)\s*/,'')}</button>`).join('');
-    document.getElementById('quiz-expl').classList.remove('show');
-  }catch(err){document.getElementById('quiz-q').textContent='Failed to generate. Check your API key and connection.';document.getElementById('quiz-options').innerHTML='';console.error(err)}
-  btn.disabled=false;btn.textContent='Next Question';
-}
-function answerQuiz(btn,chosen,correct,explEnc){
-  if(quizAnswered)return;quizAnswered=true;quizTotal++;
-  document.querySelectorAll('.quiz-opt').forEach((b,i)=>{b.classList.add('disabled');if(i===correct)b.classList.add('correct');if(i===chosen&&chosen!==correct)b.classList.add('wrong')});
-  if(chosen===correct)quizCorrect++;
-  const expl=document.getElementById('quiz-expl');expl.textContent=decodeURIComponent(explEnc);expl.classList.add('show');
-  updQuizScore();
-}
-
-/* ══ FLASHCARDS ══ */
-function openFc(){
-  document.getElementById('fc-o').classList.remove('h');
-  document.getElementById('fc-subj-row').innerHTML=SUBJECTS.map(s=>`<button class="fc-subj-b${fcSubject===s?' on':''}" onclick="setFcSubj(this,'${s.replace(/'/g,"\\'")}')">  ${s.length>14?s.slice(0,13)+'…':s}</button>`).join('');
-  if(!fcSubject&&SUBJECTS.length){fcSubject=SUBJECTS[0];document.querySelector('.fc-subj-b')?.classList.add('on')}
-  updFcDisp();
-}
-function closeFc(){document.getElementById('fc-o').classList.add('h')}
-function setFcSubj(btn,subj){document.querySelectorAll('.fc-subj-b').forEach(b=>b.classList.remove('on'));btn.classList.add('on');fcSubject=subj}
-function flipCard(){const card=document.getElementById('fc-card');card.classList.toggle('flipped');fcFlipped=!fcFlipped}
-function fcNav(dir){if(!fcCards.length)return;document.getElementById('fc-card').classList.remove('flipped');fcFlipped=false;fcIdx=Math.max(0,Math.min(fcCards.length-1,fcIdx+dir));updFcDisp()}
-function updFcDisp(){
-  if(!fcCards.length){document.getElementById('fc-q-text').textContent='Generate flashcards to begin';document.getElementById('fc-a-text').textContent='—';document.getElementById('fc-progress').textContent='0 / 0';return}
-  document.getElementById('fc-q-text').textContent=fcCards[fcIdx].q;
-  document.getElementById('fc-a-text').textContent=fcCards[fcIdx].a;
-  document.getElementById('fc-progress').textContent=`${fcIdx+1} / ${fcCards.length}`;
-}
-async function generateFlashcards(){
-  if(!fcSubject){showToast('Select a subject first','err');return}
-  const btn=document.getElementById('fc-gen-btn');btn.disabled=true;btn.textContent='Generating…';
-  
-  const prompt=`You are a CFA Level 2 tutor. Generate 8 flashcards for: ${fcSubject}.\n\nRespond ONLY with a valid JSON array of objects using this exact schema:\n[{"q":"question or concept","a":"concise answer (1-3 sentences)"}]`;
-  
-  try{
-    if(!profile?.geminiKey){ showToast('Gemini API key missing. Edit profile.','err'); throw new Error('No key');}
-    const raw = await fetchGemini(prompt, true);
-    fcCards=JSON.parse(raw.trim());
-    fcIdx=0;document.getElementById('fc-card').classList.remove('flipped');fcFlipped=false;updFcDisp();showToast(`${fcCards.length} flashcards generated ✓`,'ok');
-  }catch(err){showToast('Failed to generate flashcards. Check API key.','err');console.error(err)}
-  btn.disabled=false;btn.textContent='Generate Flashcards';
-}
-
 /* ══ QBANK ══ */
 function openQB(){
   document.getElementById('qb-o').classList.remove('h');
@@ -1553,8 +1199,6 @@ function openVel(){
 function closeVel(){document.getElementById('vel-o').classList.add('h')}
 document.getElementById('vel-o').addEventListener('click',function(e){if(e.target===this)closeVel()});
 document.getElementById('radar-o').addEventListener('click',function(e){if(e.target===this)closeRadar()});
-document.getElementById('plan-o').addEventListener('click',function(e){if(e.target===this)closePlan()});
-document.getElementById('explain-o').addEventListener('click',function(e){if(e.target===this)closeExplain()});
 
 /* ══ TASK TOGGLE ══ */
 function togTask(taskId,itemEl){
@@ -1572,182 +1216,6 @@ function resetWeek(){
   const week=SCHEDULE.find(w=>w.week===wn);if(!week)return;
   week.tasks.forEach(t=>{state[t.id]=false});
   save('state',state);renderChecklist();showToast('Week reset','ok');
-}
-
-/* ══ DASHBOARD ══ */
-function renderDashboard(){
-  if(!profile)return;
-  const[ey,em,ed]=profile.examDate.split('-').map(Number);
-  const exam=new Date(Date.UTC(ey,em-1,ed));
-  const today=new Date();
-  const daysLeft=Math.max(0,Math.ceil((exam-today)/86400000));
-  const overall=getOverall(),curN=getCurWeekNum();
-  const curWeek=SCHEDULE.find(w=>w.week===curN)||SCHEDULE[0];
-  const pressure=calcPressure();
-
-  document.getElementById('dash-greeting').textContent=`${profile.name}'s Ops`;
-  document.getElementById('dash-sub').textContent=`CFA Level 2 · ${fmtDate(exam)} · ${profile.level} · ${profile.hours}h/day target`;
-  document.getElementById('days-left').textContent=daysLeft;
-  const pidx=document.getElementById('pressure-idx');
-  pidx.textContent=pressure.label;
-  pidx.style.cssText=`font-family:var(--dm);font-size:.48rem;padding:.18rem .62rem;border-radius:2px;color:${pressure.col};background:${pressure.col}1a;border:1px solid ${pressure.col}44`;
-
-  renderStudyLog();renderWeakAlert();updStreak();renderVelCards();renderHeatmap();renderQBOverview();renderConfMini();
-
-  const ts=getTestStats(),ms=getMockStats(),wPct=getWkPct(curWeek),wDone=curWeek.tasks.filter(t=>isChecked(t.id)).length;
-  document.getElementById('stat-grid').innerHTML=`
-    <div class="scard"><div style="position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--amber)"></div><div class="sc-lbl">Overall</div><div class="sc-val" style="color:var(--amber)">${overall.pct}%</div><div class="sc-sub">${overall.done}/${overall.total} tasks</div><div class="sc-bar"><div class="ptrack"><div class="pfill" style="background:var(--amber);width:${overall.pct}%"></div></div></div></div>
-    <div class="scard"><div style="position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--violet)"></div><div class="sc-lbl">Week ${curN} — ${PHASE_NAMES[curWeek.phase]}</div><div class="sc-val" style="color:var(--violet)">${wPct}%</div><div class="sc-sub">${wDone}/${curWeek.tasks.length} tasks</div><div class="sc-bar"><div class="ptrack"><div class="pfill" style="background:var(--violet);width:${wPct}%"></div></div></div></div>
-    <div class="scard"><div style="position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--slate)"></div><div class="sc-lbl">Tests Done</div><div class="sc-val" style="color:var(--slate)">${ts.done}/${ts.total}</div><div class="sc-sub">subject tests</div></div>
-    <div class="scard"><div style="position:absolute;top:0;left:0;right:0;height:1.5px;background:var(--rose)"></div><div class="sc-lbl">Mocks</div><div class="sc-val" style="color:var(--rose)">${ms.done}/${ms.total}</div><div class="sc-sub">completed</div></div>`;
-
-  const pg=document.getElementById('phases-grid');pg.innerHTML='';
-  [1,2,3].forEach(p=>{
-    const pct=getPhasePct(p),pw=SCHEDULE.filter(w=>w.phase===p);
-    const s=pw[0]?.dates.split('–')[0]||'',en=pw[pw.length-1]?.dates.split('–')[1]||'';
-    const col=PHASE_COL[p];
-    pg.innerHTML+=`<div class="phase-card" onclick="switchTab('schedule')"><div style="position:absolute;top:0;left:0;right:0;height:1.5px;background:${col}"></div><div class="phase-n">Phase ${p}</div><div class="phase-name">${PHASE_NAMES[p]}</div><div class="phase-dates">${s} — ${en}</div><div class="phase-pct" style="color:${col}">${pct}%</div><div class="ptrack"><div class="pfill" style="background:${col};width:${pct}%"></div></div></div>`;
-  });
-
-  const container=document.getElementById('week-tl');container.innerHTML='';
-  SCHEDULE.forEach(w=>{
-    const pct=getWkPct(w),isCur=w.week===curN,col=PHASE_COL[w.phase];
-    const row=document.createElement('div');
-    row.className=`wt-row${isCur?' cur':''}${pct===100?' done':''}`;
-    row.style.borderLeftColor=isCur?col:'transparent';
-    row.innerHTML=`<div class="wt-lbl"><strong>Wk ${w.week}</strong>${w.dates}</div><div><div class="wt-task">${w.label}</div><div style="margin-top:3px"><div class="ptrack"><div class="pfill" style="background:${col};width:${pct}%"></div></div></div></div><div class="wt-pct" style="color:${col}">${pct}%</div>`;
-    row.onclick=()=>{switchTab('checklist');document.getElementById('week-sel').value=w.week;renderChecklist()};
-    container.appendChild(row);
-  });
-}
-
-/* ══ CHECKLIST ══ */
-function renderFlaggedWrap(){
-  const flagged=SCHEDULE.flatMap(w=>w.tasks).filter(t=>notes[t.id]?.flagged&&!isChecked(t.id));
-  const el=document.getElementById('flagged-wrap');
-  if(!flagged.length){el.innerHTML='';return}
-  el.innerHTML=`<div class="flagged-wrap"><div class="fw-title">🔁 Spaced Repetition — ${flagged.length} flagged</div><div class="fw-list">${flagged.map(t=>`<div class="fw-item"><span style="color:var(--violet)">🔁</span>${t.title}<span style="font-family:var(--dm);font-size:.48rem;color:var(--chalk4);margin-left:auto">${t.subject}</span></div>`).join('')}</div></div>`;
-}
-function renderChecklist(){
-  const sel=document.getElementById('week-sel');
-  const wn=parseInt(sel.value);
-  const week=SCHEDULE.find(w=>w.week===wn);if(!week)return;
-  const pct=getWkPct(week),done=week.tasks.filter(t=>isChecked(t.id)).length,col=PHASE_COL[week.phase];
-  document.getElementById('wk-head').innerHTML=`<div style="position:absolute;top:0;left:0;right:0;height:1.5px;background:${col}"></div><div><div class="wkh-phase" style="color:${col}">Phase ${week.phase} · ${PHASE_NAMES[week.phase]}</div><div class="wkh-title">Week ${week.week} — ${week.label}</div><div class="wkh-dates">${week.dates}</div></div><div class="wkh-right"><div style="text-align:right"><div style="font-family:var(--dm);font-size:.48rem;color:var(--chalk4)">${done}/${week.tasks.length} tasks</div><div class="wkh-pct" style="color:${col}">${pct}%</div></div><div style="width:55px"><div class="ptrack" style="height:2px"><div class="pfill" style="background:${col};width:${pct}%"></div></div></div></div>`;
-  renderFlaggedWrap();
-  const area=document.getElementById('cl-area');area.innerHTML='';
-  week.tasks.forEach(t=>{
-    const checked=isChecked(t.id),isMock=t.type==='mock',scoreData=scores[t.id],noteData=notes[t.id];
-    const lblMap={reading:'Reading',test:'Test',review:'Review',mock:'Mock',spaced:'Spaced'};
-    const label=t.title==='EXAM DAY — CFA Level 2'?'EXAM':(lblMap[t.type]||t.type);
-    let scoreChip='';
-    if(isScoreable(t)&&t.title!=='EXAM DAY — CFA Level 2'){
-      const has=scoreData&&scoreData.got!=null;
-      let chipTxt=has?`${scoreData.got}/${scoreData.outof} · ${scoreData.pct}%`:'+ score';
-      if(has&&!isMock){
-        const allSame=Object.entries(scores).map(([id,s])=>{const tk=SCHEDULE.flatMap(w=>w.tasks).find(x=>x.id===id);return tk?{...s,task:tk}:null}).filter(x=>x&&x.task.subject===t.subject&&x.task.type!=='mock'&&x.task.id!==t.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
-        if(allSame.length){const diff=scoreData.pct-allSame[0].pct;chipTxt+=diff>0?` <span class="sdelta delta-up">↑${diff}</span>`:diff<0?` <span class="sdelta delta-dn">↓${Math.abs(diff)}</span>`:''}
-      }
-      scoreChip=`<span class="score-chip${has?' has':''}${isMock?' mock':''}" onclick="openScoreModal(event,'${t.id}')"><span class="score-chip-dot"></span>${chipTxt}</span>`;
-    }
-    const hasNote=noteData?.text,isFlagged=noteData?.flagged;
-    const item=document.createElement('div');
-    item.className=`ci${checked?' checked':''}${isFlagged?' flagged':''}`;
-    item.innerHTML=`<div class="ci-cb" onclick="togTask('${t.id}',this.closest('.ci'))"><svg width="8" height="8" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="ci-content">
-        <div class="ci-title">${t.title}${isFlagged?` <span style="font-family:var(--dm);font-size:.52rem;color:var(--violet)">🔁</span>`:''}${hasNote?` <span style="font-family:var(--dm);font-size:.52rem;color:var(--violet)">✎</span>`:''}</div>
-        <div class="ci-meta"><span class="ci-badge b-${t.type}">${label}</span><span class="ci-days">${t.days} · ${t.subject}</span>${scoreChip}</div>
-        ${hasNote?`<div class="ci-note-bubble">${noteData.text}</div>`:''}
-      </div>
-      <div class="ci-actions">
-        <button class="ci-ibtn explain" onclick="openExplain(event,'${t.id}')" title="AI Explain">💡</button>
-        <button class="ci-ibtn${hasNote||isFlagged?' note-on':''}" onclick="openNoteModal(event,'${t.id}')" title="Notes">✎</button>
-        ${t.title!=='EXAM DAY — CFA Level 2'?`<button class="ci-ibtn" onclick="openTM()" title="Focus timer">⏱</button>`:''}
-      </div>`;
-    area.appendChild(item);
-  });
-}
-
-/* ══ SCHEDULE ══ */
-function renderSchedule(){
-  const[ey,em,ed]=profile.examDate.split('-').map(Number);
-  const exam=new Date(Date.UTC(ey,em-1,ed));
-  document.getElementById('sch-sub').textContent=`${SCHEDULE.length} weeks · Exam ${fmtDate(exam)}`;
-  const grid=document.getElementById('sch-grid');grid.innerHTML='';
-  const curN=getCurWeekNum();
-  [1,2,3].forEach(phase=>{
-    const weeks=SCHEDULE.filter(w=>w.phase===phase),col=PHASE_COL[phase];
-    const block=document.createElement('div');
-    block.innerHTML=`<div class="sch-phase-hdr"><div class="sch-phase-dot" style="background:${col}"></div><div><div class="sch-phase-title">Phase ${phase} — ${PHASE_NAMES[phase]}</div><div class="sch-phase-sub">${getPhasePct(phase)}% complete · ${weeks.length} weeks</div></div></div><div class="wks-grid">${weeks.map(w=>{const pct=getWkPct(w),isCur=w.week===curN;return`<div class="sch-wk${isCur?' cur':''}" style="border-top-color:${col}"><div class="swh"><span class="swh-num">WK ${w.week}${isCur?' · NOW':''}</span><span class="swh-dates">${w.dates}</span></div><div class="sw-tasks">${w.tasks.map(t=>`<div class="sw-task"><span class="sw-bullet">▸</span><span>${t.title}</span></div>`).join('')}</div><div class="sw-done"><div style="flex:1"><div class="ptrack"><div class="pfill" style="background:${col};width:${pct}%"></div></div></div><span class="sw-pct">${pct}%</span></div></div>`}).join('')}</div>`;
-    grid.appendChild(block);
-  });
-}
-
-/* ══ ANALYTICS ══ */
-function renderAnalytics(){
-  const ap=document.querySelector('.a-panel.on');
-  if(ap?.id==='panel-scores')renderScoresPanel();
-  else if(ap?.id==='panel-completion')renderCompletionPanel();
-  else if(ap?.id==='panel-qbank')renderQBankPanel();
-}
-function switchATab(name,btn){
-  document.querySelectorAll('.a-tab').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.a-panel').forEach(p=>p.classList.remove('on'));
-  btn.classList.add('on');document.getElementById('panel-'+name).classList.add('on');
-  if(name==='scores')renderScoresPanel();
-  if(name==='completion')renderCompletionPanel();
-  if(name==='qbank')renderQBankPanel();
-}
-function renderScoresPanel(){
-  const all=getScoreData(),testS=all.filter(s=>s.task.type!=='mock'),mockS=all.filter(s=>s.task.type==='mock');
-  const avgT=testS.length?Math.round(testS.reduce((a,b)=>a+b.pct,0)/testS.length):null;
-  const avgM=mockS.length?Math.round(mockS.reduce((a,b)=>a+b.pct,0)/mockS.length):null;
-  const best=all.length?all.reduce((a,b)=>a.pct>b.pct?a:b):null;
-  document.getElementById('score-ins').innerHTML=`<div class="ins-card"><div class="ins-lbl">Avg test score</div><div class="ins-val" style="color:${avgT!=null?scoreCol(avgT):'var(--chalk4)'}">${avgT!=null?avgT+'%':'—'}</div><div class="ins-sub">${testS.length} tests logged</div></div><div class="ins-card"><div class="ins-lbl">Avg mock score</div><div class="ins-val" style="color:${avgM!=null?scoreCol(avgM):'var(--chalk4)'}">${avgM!=null?avgM+'%':'—'}</div><div class="ins-sub">${mockS.length} mocks done</div></div><div class="ins-card"><div class="ins-lbl">Best score</div><div class="ins-val" style="color:var(--sage)">${best?best.pct+'%':'—'}</div><div class="ins-sub">${best?best.task.title.slice(0,24)+(best.task.title.length>24?'…':''):' '}</div></div>`;
-  destroyChart('ch-subj');
-  const subjAvgs=SUBJECTS.map(s=>{const ss=all.filter(x=>x.task.subject===s&&x.task.type!=='mock');return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):null});
-  charts['ch-subj']=new Chart(document.getElementById('ch-subj'),{type:'bar',data:{labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s),datasets:[{data:subjAvgs.map(v=>v??0),backgroundColor:subjAvgs.map(v=>v==null?'rgba(20,24,36,.5)':v>=70?'rgba(78,201,148,.7)':v>=50?'rgba(232,168,56,.7)':'rgba(232,85,85,.7)'),borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:AX,y:{...AX,min:0,max:100,ticks:{...AX.ticks,callback:v=>v+'%'}}}}});
-  destroyChart('ch-dist');
-  if(all.length){const bins=[0,0,0,0,0];all.forEach(s=>{if(s.pct<50)bins[0]++;else if(s.pct<60)bins[1]++;else if(s.pct<70)bins[2]++;else if(s.pct<80)bins[3]++;else bins[4]++});charts['ch-dist']=new Chart(document.getElementById('ch-dist'),{type:'bar',data:{labels:['<50%','50–59%','60–69%','70–79%','80%+'],datasets:[{data:bins,backgroundColor:['rgba(232,85,85,.7)','rgba(232,168,56,.7)','rgba(107,140,204,.7)','rgba(78,201,148,.5)','rgba(78,201,148,.9)'],borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:AX,y:{...AX,min:0,ticks:{...AX.ticks,stepSize:1}}}}})}
-  destroyChart('ch-mock');
-  if(mockS.length){const sorted=[...mockS].sort((a,b)=>new Date(a.date)-new Date(b.date));charts['ch-mock']=new Chart(document.getElementById('ch-mock'),{type:'line',data:{labels:sorted.map((_,i)=>`Mock ${i+1}`),datasets:[{label:'Score %',data:sorted.map(s=>s.pct),borderColor:'#e85555',backgroundColor:'rgba(232,85,85,0.06)',borderWidth:2,tension:.35,fill:true,pointBackgroundColor:'#e85555',pointRadius:5},{label:'70% target',data:sorted.map(()=>70),borderColor:'rgba(78,201,148,.3)',borderDash:[5,4],borderWidth:1.5,fill:false,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#4a5268',font:{family:'DM Mono',size:10},padding:12}}},scales:{x:AX,y:{...AX,min:0,max:100,ticks:{...AX.ticks,callback:v=>v+'%'}}}}})}
-  const wrap=document.getElementById('scores-tbl-wrap');
-  if(!all.length){wrap.innerHTML=`<div class="no-scores"><strong>No scores logged yet</strong>Click "+ score" on any test in Checklist.</div>`;return}
-  const sorted=[...all].sort((a,b)=>new Date(b.date)-new Date(a.date));
-  wrap.innerHTML=`<table class="scores-tbl"><thead><tr><th></th><th>Test</th><th>Subject</th><th>Score</th><th>%</th><th></th><th>Date</th></tr></thead><tbody>${sorted.map((s,i)=>{const pCls=s.pct>=70?'spct-hi':s.pct>=50?'spct-md':'spct-lo';const barCol=s.pct>=70?'var(--sage)':s.pct>=50?'var(--amber)':'var(--rose)';const dateStr=new Date(s.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});const badge=s.task.type==='mock'?'<span class="ci-badge b-mock">Mock</span>':'<span class="ci-badge b-test">Test</span>';const sameSub=sorted.slice(i+1).filter(x=>x.task.subject===s.task.subject&&x.task.type===s.task.type);let delta='';if(sameSub.length){const diff=s.pct-sameSub[0].pct;delta=diff>0?`<span class="sdelta delta-up">↑${diff}</span>`:diff<0?`<span class="sdelta delta-dn">↓${Math.abs(diff)}</span>`:''}return`<tr><td>${badge}</td><td style="max-width:180px"><div style="font-family:var(--ds);font-size:.88rem">${s.task.title}</div>${s.note?`<div style="font-family:var(--dm);font-size:.52rem;color:var(--chalk4);font-style:italic;margin-top:2px">${s.note}</div>`:''}</td><td style="font-family:var(--dm);font-size:.58rem;color:var(--chalk4)">${s.task.subject}</td><td style="font-family:var(--dm);font-size:.68rem">${s.got}/${s.outof}</td><td><span class="spct-pill ${pCls}">${s.pct}%</span>${delta}</td><td><div class="mini-bar-w"><div class="mini-bar-f" style="width:${s.pct}%;background:${barCol}"></div></div></td><td style="font-family:var(--dm);font-size:.52rem;color:var(--chalk4)">${dateStr}</td></tr>`}).join('')}</tbody></table>`;
-}
-function renderCompletionPanel(){
-  const overall=getOverall(),ts=getTestStats(),ms=getMockStats();
-  document.getElementById('compl-ins').innerHTML=`<div class="ins-card"><div class="ins-lbl">Overall</div><div class="ins-val" style="color:var(--amber)">${overall.pct}%</div><div class="ins-sub">${overall.done} of ${overall.total} tasks done</div></div><div class="ins-card"><div class="ins-lbl">Tests completed</div><div class="ins-val" style="color:var(--slate)">${ts.done}/${ts.total}</div><div class="ins-sub">${ts.total?Math.round(ts.done/ts.total*100):0}% of tests</div></div><div class="ins-card"><div class="ins-lbl">Mocks done</div><div class="ins-val" style="color:var(--rose)">${ms.done}/${ms.total}</div><div class="ins-sub">${ms.total?Math.round(ms.done/ms.total*100):0}% of mocks</div></div>`;
-  destroyChart('ch-subj-compl');
-  const subjPcts=SUBJECTS.map(s=>getSubjStats(s).pct);
-  charts['ch-subj-compl']=new Chart(document.getElementById('ch-subj-compl'),{type:'bar',data:{labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s),datasets:[{data:subjPcts,backgroundColor:subjPcts.map(p=>p===100?'rgba(78,201,148,.9)':p>50?'rgba(232,168,56,.7)':'rgba(155,114,232,.6)'),borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:AX,y:{...AX,min:0,max:100,ticks:{...AX.ticks,callback:v=>v+'%'}}}}});
-  destroyChart('ch-doughnut');
-  charts['ch-doughnut']=new Chart(document.getElementById('ch-doughnut'),{type:'doughnut',data:{labels:['Done','Pending'],datasets:[{data:[ts.done,ts.total-ts.done],backgroundColor:['rgba(78,201,148,.8)','rgba(30,35,48,.8)'],borderColor:['rgba(78,201,148,.6)','rgba(100,140,255,0.06)'],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#4a5268',font:{family:'DM Mono',size:10},padding:12}}}}});
-  destroyChart('ch-cons');
-  const curN=getCurWeekNum();
-  const cons=SCHEDULE.filter(w=>w.week<=curN).map(w=>({week:w.week,pct:getWkPct(w)}));
-  charts['ch-cons']=new Chart(document.getElementById('ch-cons'),{type:'line',data:{labels:cons.map(w=>`W${w.week}`),datasets:[{data:cons.map(w=>w.pct),borderColor:'#e8a838',backgroundColor:'rgba(232,168,56,0.06)',borderWidth:2,tension:.35,fill:true,pointBackgroundColor:'#e8a838',pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:AX,y:{...AX,min:0,max:100,ticks:{...AX.ticks,callback:v=>v+'%'}}}}});
-  destroyChart('ch-mocks');
-  const mockWeeks=SCHEDULE.flatMap(w=>w.tasks).filter(t=>t.type==='mock');
-  const mockDone=mockWeeks.map(t=>isChecked(t.id)?1:0).reduce((acc,v,i)=>{acc.push((acc[i-1]||0)+v);return acc},[]);
-  charts['ch-mocks']=new Chart(document.getElementById('ch-mocks'),{type:'line',data:{labels:mockWeeks.map((_,i)=>`Mock ${i+1}`),datasets:[{label:'Completed',data:mockDone,borderColor:'#e85555',backgroundColor:'rgba(232,85,85,0.06)',borderWidth:2,tension:.3,fill:true,pointBackgroundColor:'#e85555',pointRadius:4},{label:'Target',data:mockWeeks.map((_,i)=>i+1),borderColor:'rgba(100,140,255,0.12)',borderDash:[4,4],borderWidth:1.5,fill:false,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:AX,y:{...AX,max:ms.total,min:0}},plugins:{legend:{display:true,position:'bottom',labels:{color:'#4a5268',font:{family:'DM Mono',size:10},padding:12}}}}});
-}
-function renderQBankPanel(){
-  const totalQ=qbankLog.reduce((s,e)=>s+e.done,0);
-  const totalC=qbankLog.reduce((s,e)=>s+e.correct,0);
-  const overallAcc=totalQ?Math.round(totalC/totalQ*100):null;
-  const bestSubj=SUBJECTS.map(s=>({s,avg:getQBankSubjAvg(s)})).filter(x=>x.avg!=null).sort((a,b)=>b.avg-a.avg)[0];
-  document.getElementById('qb-ins').innerHTML=`<div class="ins-card"><div class="ins-lbl">Sessions logged</div><div class="ins-val" style="color:var(--sage)">${qbankLog.length}</div><div class="ins-sub">${totalQ} questions</div></div><div class="ins-card"><div class="ins-lbl">Overall accuracy</div><div class="ins-val" style="color:${overallAcc!=null?scoreCol(overallAcc):'var(--chalk4)'}">${overallAcc!=null?overallAcc+'%':'—'}</div><div class="ins-sub">${totalC} correct</div></div><div class="ins-card"><div class="ins-lbl">Strongest subject</div><div class="ins-val" style="color:var(--sage);font-size:1.1rem">${bestSubj?bestSubj.avg+'%':'—'}</div><div class="ins-sub">${bestSubj?bestSubj.s:' '}</div></div>`;
-  destroyChart('ch-qb-subj');
-  const subjAccs=SUBJECTS.map(s=>getQBankSubjAvg(s));
-  charts['ch-qb-subj']=new Chart(document.getElementById('ch-qb-subj'),{type:'bar',data:{labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s),datasets:[{data:subjAccs.map(v=>v??0),backgroundColor:subjAccs.map(v=>v==null?'rgba(20,24,36,.5)':v>=70?'rgba(78,201,148,.7)':v>=50?'rgba(232,168,56,.7)':'rgba(232,85,85,.7)'),borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:AX,y:{...AX,min:0,max:100,ticks:{...AX.ticks,callback:v=>v+'%'}}}}});
-  destroyChart('ch-qb-trend');
-  if(qbankLog.length){const sorted=[...qbankLog].sort((a,b)=>new Date(a.date)-new Date(b.date));charts['ch-qb-trend']=new Chart(document.getElementById('ch-qb-trend'),{type:'line',data:{labels:sorted.map((e,i)=>`#${i+1}`),datasets:[{label:'Accuracy',data:sorted.map(e=>e.pct),borderColor:'#4ec994',backgroundColor:'rgba(78,201,148,0.07)',borderWidth:2,tension:.35,fill:true,pointBackgroundColor:sorted.map(e=>e.pct>=70?'#4ec994':e.pct>=50?'#e8a838':'#e85555'),pointRadius:5},{label:'70% target',data:sorted.map(()=>70),borderColor:'rgba(107,140,204,.25)',borderDash:[5,4],borderWidth:1.5,fill:false,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#4a5268',font:{family:'DM Mono',size:10},padding:12}},tooltip:{callbacks:{title:([ctx])=>{const e=sorted[ctx.dataIndex];return`${e.subject} — ${new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`}}}},scales:{x:AX,y:{...AX,min:0,max:100,ticks:{...AX.ticks,callback:v=>v+'%'}}}}})}
-  const wrap=document.getElementById('qb-tbl-wrap');
-  if(!qbankLog.length){wrap.innerHTML='<div class="no-scores"><strong>No QBank sessions yet</strong>Use the QBank Log button on the dashboard.</div>';return}
-  const sorted=[...qbankLog].sort((a,b)=>new Date(b.date)-new Date(a.date));
-  wrap.innerHTML=`<table class="scores-tbl"><thead><tr><th>Subject</th><th>Score</th><th>Accuracy</th><th></th><th>Date</th><th>Notes</th></tr></thead><tbody>${sorted.map(e=>{const pCls=e.pct>=70?'spct-hi':e.pct>=50?'spct-md':'spct-lo';const barCol=e.pct>=70?'var(--sage)':e.pct>=50?'var(--amber)':'var(--rose)';return`<tr><td style="font-family:var(--dm);font-size:.6rem">${e.subject}</td><td style="font-family:var(--dm);font-size:.68rem">${e.correct}/${e.done}</td><td><span class="spct-pill ${pCls}">${e.pct}%</span></td><td><div class="mini-bar-w"><div class="mini-bar-f" style="width:${e.pct}%;background:${barCol}"></div></div></td><td style="font-family:var(--dm);font-size:.52rem;color:var(--chalk4)">${new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</td><td style="font-family:var(--dm);font-size:.56rem;color:var(--chalk4)">${e.notes||'—'}</td></tr>`}).join('')}</tbody></table>`;
 }
 
 /* ══ TAB SWITCH ══ */
@@ -1768,64 +1236,10 @@ document.addEventListener('keydown',e=>{
   const map={'1':'dashboard','2':'checklist','3':'schedule','4':'analytics'};
   if(map[e.key])switchTab(map[e.key]);
   if(e.key==='t'||e.key==='T')openTM();
-  if(e.key==='q'||e.key==='Q')openQuiz();
-  if(e.key==='p'||e.key==='P')openPlan();
   if(e.key===']'){const s=document.getElementById('week-sel');const i=Array.from(s.options).findIndex(o=>o.selected);if(i<s.options.length-1){s.selectedIndex=i+1;renderChecklist()}}
   if(e.key==='['){const s=document.getElementById('week-sel');const i=Array.from(s.options).findIndex(o=>o.selected);if(i>0){s.selectedIndex=i-1;renderChecklist()}}
-  if(e.key==='Escape'){closeSM();closeNM();closeTM();closeQuiz();closeFc();closeQB();closeBattle();closeVel();closeRadar();closePlan();closeExplain()}
+  if(e.key==='Escape'){closeSM();closeNM();closeTM();closeQB();closeBattle();closeVel();closeRadar()}
 });
-
-/* ══ WEEK SELECT ══ */
-function popWeekSel(){
-  const sel=document.getElementById('week-sel');sel.innerHTML='';
-  const cur=getCurWeekNum();
-  SCHEDULE.forEach(w=>{const opt=document.createElement('option');opt.value=w.week;opt.textContent=`Week ${w.week} — ${w.label} (${w.dates})`;if(w.week===cur)opt.selected=true;sel.appendChild(opt)});
-}
-
-/* ══ EXPORT PDF ══ */
-async function renderChartPNG(config,w,h){
-  return new Promise(resolve=>{
-    const c=document.createElement('canvas');c.width=w*2;c.height=h*2;c.style.cssText='position:absolute;top:-9999px;left:-9999px';document.body.appendChild(c);
-    const ch=new Chart(c,config);ch.options.animation={duration:0,onComplete:()=>{const u=c.toDataURL('image/png');ch.destroy();document.body.removeChild(c);resolve(u)}};ch.update();
-  });
-}
-async function exportPDF(){
-  showToast('Building report…','ok');
-  const[ey,em,ed]=profile.examDate.split('-').map(Number);
-  const exam=new Date(Date.UTC(ey,em-1,ed));
-  const today=new Date();
-  const daysLeft=Math.max(0,Math.ceil((exam-today)/86400000));
-  const overall=getOverall(),ts=getTestStats(),ms=getMockStats();
-  const all=getScoreData(),testS=all.filter(s=>s.task.type!=='mock'),mockS=all.filter(s=>s.task.type==='mock');
-  const avgT=testS.length?Math.round(testS.reduce((a,b)=>a+b.pct,0)/testS.length):null;
-  const avgM=mockS.length?Math.round(mockS.reduce((a,b)=>a+b.pct,0)/mockS.length):null;
-  const ax={grid:{color:'rgba(230,235,255,0.04)',drawBorder:false},ticks:{color:'#4a5268',font:{family:'monospace',size:11}}};
-  const subjPcts=SUBJECTS.map(s=>getSubjStats(s).pct);
-  const[chartCompl,chartScores]=await Promise.all([
-    renderChartPNG({type:'bar',data:{labels:SUBJECTS.map(s=>s.length>14?s.slice(0,13)+'…':s),datasets:[{data:subjPcts,backgroundColor:subjPcts.map(p=>p===100?'rgba(78,201,148,.9)':p>50?'rgba(232,168,56,.7)':'rgba(155,114,232,.6)'),borderRadius:3,borderSkipped:false}]},options:{responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}}},840,240),
-    renderChartPNG({type:'bar',data:{labels:SUBJECTS.map(s=>s.length>12?s.slice(0,11)+'…':s),datasets:[{data:SUBJECTS.map(s=>{const ss=testS.filter(x=>x.task.subject===s);return ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):0}),backgroundColor:SUBJECTS.map(s=>{const ss=testS.filter(x=>x.task.subject===s);if(!ss.length)return'rgba(20,24,36,.4)';const avg=Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length);return avg>=70?'rgba(78,201,148,.8)':avg>=50?'rgba(232,168,56,.7)':'rgba(232,85,85,.7)'}),borderRadius:3,borderSkipped:false}]},options:{responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:ax,y:{...ax,min:0,max:100}}}},840,220),
-  ]);
-  const subjDetail=SUBJECTS.map(s=>{const st=getSubjStats(s);const ss=testS.filter(x=>x.task.subject===s);const avg=ss.length?Math.round(ss.reduce((a,b)=>a+b.pct,0)/ss.length):null;const col=st.pct===100?'#4ec994':st.pct>50?'#e8a838':'#9b72e8';return`<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-size:11px;color:#edf0f8;font-family:sans-serif">${s}</span><span style="font-size:11px;font-family:monospace;color:${col}">${st.pct}% done${avg!=null?' · avg '+avg+'%':''}</span></div><div style="height:2px;background:#1e2330;border-radius:1px;overflow:hidden"><div style="height:100%;width:${st.pct}%;background:${col};border-radius:1px"></div></div></div>`}).join('');
-  const rpt=document.getElementById('export-rpt');rpt.style.display='block';
-  rpt.innerHTML=`<div style="font-family:sans-serif;background:#080a0e;padding:44px;width:900px;color:#edf0f8"><div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:20px;margin-bottom:28px;border-bottom:1px solid rgba(230,235,255,0.06)"><div><div style="font-family:monospace;font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:#4a5268;margin-bottom:8px">CFA LEVEL 2 · STUDY OPS IV</div><div style="font-family:Georgia,serif;font-size:28px;color:#e8a838;line-height:1.1;font-style:italic">Progress Report</div><div style="font-family:monospace;font-size:11px;color:#4a5268;margin-top:5px">${profile.name} · Generated ${fmtDate(today)}</div></div><div style="text-align:right"><div style="font-family:monospace;font-size:9px;color:#4a5268;margin-bottom:2px;letter-spacing:0.1em;text-transform:uppercase">Exam Date</div><div style="font-family:Georgia,serif;font-size:20px;color:#edf0f8;font-style:italic">${fmtDate(exam)}</div><div style="font-family:monospace;font-size:11px;color:#e8a838;margin-top:2px">${daysLeft} days remaining</div></div></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px">${[{l:'Overall',v:overall.pct+'%',s:`${overall.done}/${overall.total} tasks`,c:'#e8a838'},{l:'Avg Test',v:avgT!=null?avgT+'%':'—',s:`${testS.length} tests`,c:avgT!=null?(avgT>=70?'#4ec994':avgT>=50?'#e8a838':'#e85555'):'#4a5268'},{l:'Avg Mock',v:avgM!=null?avgM+'%':'—',s:`${mockS.length}/5 mocks`,c:avgM!=null?(avgM>=70?'#4ec994':avgM>=50?'#e8a838':'#e85555'):'#4a5268'},{l:'Level',v:profile.level,s:`${profile.hours}h/day`,c:'#9b72e8'}].map(x=>`<div style="background:#0d1117;border:1px solid rgba(230,235,255,0.06);border-radius:5px;padding:12px 14px"><div style="font-family:monospace;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:#4a5268;margin-bottom:6px">${x.l}</div><div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:${x.c};line-height:1;font-style:italic">${x.v}</div><div style="font-size:9px;color:#4a5268;margin-top:4px">${x.s}</div></div>`).join('')}</div><div style="background:#0d1117;border:1px solid rgba(230,235,255,0.05);border-radius:7px;padding:18px;margin-bottom:14px"><div style="font-family:monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#4a5268;margin-bottom:12px">Completion by Subject</div><img src="${chartCompl}" style="width:100%;display:block;border-radius:4px"></div><div style="background:#0d1117;border:1px solid rgba(230,235,255,0.05);border-radius:7px;padding:18px;margin-bottom:14px"><div style="font-family:monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#4a5268;margin-bottom:12px">Avg Score by Subject</div><img src="${chartScores}" style="width:100%;display:block;border-radius:4px"></div><div style="background:#0d1117;border:1px solid rgba(230,235,255,0.05);border-radius:7px;padding:18px;margin-bottom:14px"><div style="font-family:monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#4a5268;margin-bottom:14px">Subject Detail</div>${subjDetail}</div><div style="border-top:1px solid rgba(230,235,255,0.04);padding-top:12px;font-family:monospace;font-size:9px;color:#2a3045;text-align:center;letter-spacing:0.1em">CFA Level 2 Study Ops IV · ${new Date().toLocaleString()}</div></div>`;
-  try{
-    await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,200)));
-    const canvas=await html2canvas(rpt.firstElementChild,{backgroundColor:'#080a0e',scale:1.5,useCORS:true,logging:false,width:900,windowWidth:900});
-    const{jsPDF}=window.jspdf;
-    const pw=900,ph=Math.round(canvas.height/1.5);
-    const pdf=new jsPDF({orientation:'portrait',unit:'px',format:[pw,ph]});
-    pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,pw,ph);
-    pdf.save(`CFA-L2-${profile.name.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`);
-    showToast('Report exported ✓','ok');
-  }catch(err){console.error(err);showToast('Export failed','err')}
-  finally{rpt.style.display='none';rpt.innerHTML=''}
-}
-
-/* ══ TOAST ══ */
-function showToast(msg,type=''){
-  const t=document.getElementById('toast');t.textContent=msg;t.className=`toast${type?' '+type:''}`;
-  t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3000);
-}
 
 /* ══ INIT ══ */
 function initApp(){
