@@ -13,14 +13,10 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  /* Warm dark palette — deep espresso tones */
   --bg:#0e0b08;--bg1:#131009;--bg2:#18140d;--bg3:#1e1912;--bg4:#251f16;--bg5:#2c2418;--bg6:#34291e;
   --border:rgba(255,240,200,0.055);--border2:rgba(255,240,200,0.10);--border3:rgba(255,240,200,0.18);
   --text:#f5ede0;--text2:#d4c5aa;--text3:#9e8d74;--text4:#5e5040;--text5:#332b1f;
-
-  /* Warm amber gold — the hero accent */
   --gold:#e8a422;--gold2:#f0b93a;--gold3:#f7cf6a;--gold-dim:rgba(232,164,34,0.12);--gold-glow:rgba(232,164,34,0.06);
-  /* Supporting palette — all warm-shifted */
   --green:#5ab870;--green-dim:rgba(90,184,112,0.10);
   --red:#d95050;--red-dim:rgba(217,80,80,0.10);
   --blue:#5488d4;--blue-dim:rgba(84,136,212,0.10);
@@ -28,11 +24,9 @@
   --teal:#3aaa8a;--teal-dim:rgba(58,170,138,0.10);
   --orange:#d4742a;--orange-dim:rgba(212,116,42,0.10);
   --amber:#c98518;--amber-dim:rgba(201,133,24,0.10);
-
   --serif:'Playfair Display',Georgia,serif;
   --mono:'JetBrains Mono',monospace;
   --sans:'Nunito Sans',sans-serif;
-
   --r:8px;--r2:13px;--r3:18px;
   --t:0.16s cubic-bezier(0.4,0,0.2,1);
   --shadow:0 4px 28px rgba(0,0,0,0.6);
@@ -41,35 +35,22 @@
 
 html{scroll-behavior:smooth}
 body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--sans);
-  min-height:100vh;
-  line-height:1.55;
-  overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
+  background:var(--bg);color:var(--text);font-family:var(--sans);
+  min-height:100vh;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased;
 }
-
-/* Warm paper texture overlay */
 body::before{
-  content:'';
-  position:fixed;inset:0;
+  content:'';position:fixed;inset:0;
   background-image:
     radial-gradient(ellipse 80% 60% at 50% -5%, rgba(232,164,34,0.07) 0%, transparent 60%),
     radial-gradient(ellipse 40% 40% at 85% 85%, rgba(90,184,112,0.03) 0%, transparent 55%),
     radial-gradient(ellipse 30% 30% at 10% 70%, rgba(212,116,42,0.03) 0%, transparent 55%);
   pointer-events:none;z-index:0;
 }
-/* Subtle grain */
 body::after{
-  content:'';
-  position:fixed;inset:0;
+  content:'';position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  background-size:200px 200px;
-  opacity:0.4;
-  pointer-events:none;z-index:0;
+  background-size:200px 200px;opacity:0.4;pointer-events:none;z-index:0;
 }
-
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bg6);border-radius:2px}
@@ -78,23 +59,12 @@ body::after{
 .ob-overlay{position:fixed;inset:0;background:rgba(14,11,8,0.97);backdrop-filter:blur(32px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem;}
 .ob-overlay.hidden{display:none}
 .ob-modal{
-  background:var(--bg2);
-  border:1px solid var(--border2);
-  border-radius:20px;
-  width:100%;max-width:500px;
-  padding:2.75rem;
-  position:relative;overflow:hidden;
-  box-shadow:var(--shadow2);
-  animation:aUp .44s cubic-bezier(0.34,1.56,0.64,1);
+  background:var(--bg2);border:1px solid var(--border2);border-radius:20px;
+  width:100%;max-width:500px;padding:2.75rem;position:relative;overflow:hidden;
+  box-shadow:var(--shadow2);animation:aUp .44s cubic-bezier(0.34,1.56,0.64,1);
 }
 .ob-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 5%,var(--gold) 35%,var(--gold2) 65%,transparent 95%)}
-.ob-modal::after{
-  content:'';position:absolute;
-  bottom:0;right:0;
-  width:240px;height:240px;
-  background:radial-gradient(circle, rgba(232,164,34,0.05) 0%, transparent 70%);
-  pointer-events:none;
-}
+.ob-modal::after{content:'';position:absolute;bottom:0;right:0;width:240px;height:240px;background:radial-gradient(circle, rgba(232,164,34,0.05) 0%, transparent 70%);pointer-events:none;}
 .ob-eyebrow{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem}
 .ob-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);flex-shrink:0}
 .ob-modal h2{font-family:var(--serif);font-size:2.1rem;color:var(--text);line-height:1.1;margin-bottom:0.3rem}
@@ -132,11 +102,7 @@ body::after{
 /* ══ SCORE MODAL ══ */
 .sm-overlay{position:fixed;inset:0;background:rgba(14,11,8,0.88);backdrop-filter:blur(24px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
 .sm-overlay.hidden{display:none}
-.sm-modal{
-  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);
-  width:100%;max-width:420px;padding:1.85rem;position:relative;overflow:hidden;
-  box-shadow:var(--shadow2);animation:aUp .26s cubic-bezier(0.4,0,0.2,1);
-}
+.sm-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);width:100%;max-width:420px;padding:1.85rem;position:relative;overflow:hidden;box-shadow:var(--shadow2);animation:aUp .26s cubic-bezier(0.4,0,0.2,1);}
 .sm-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
 .sm-tag{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
 .sm-title{font-family:var(--serif);font-size:1.25rem;line-height:1.25;margin-bottom:.2rem;color:var(--text)}
@@ -144,12 +110,7 @@ body::after{
 .sm-input-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.9rem}
 .sm-field{flex:1}
 .sm-field-lbl{font-family:var(--mono);font-size:0.53rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text4);display:block;margin-bottom:.34rem}
-.sm-num{
-  background:var(--bg4);border:1px solid var(--border);border-radius:var(--r);
-  color:var(--text);font-family:var(--mono);font-size:1.5rem;
-  padding:.6rem .75rem;width:100%;outline:none;text-align:center;
-  transition:border-color var(--t),box-shadow var(--t);-moz-appearance:textfield;
-}
+.sm-num{background:var(--bg4);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:1.5rem;padding:.6rem .75rem;width:100%;outline:none;text-align:center;transition:border-color var(--t),box-shadow var(--t);-moz-appearance:textfield;}
 .sm-num::-webkit-inner-spin-button,.sm-num::-webkit-outer-spin-button{-webkit-appearance:none}
 .sm-num:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim)}
 .sm-num[readonly]{opacity:.3;cursor:not-allowed}
@@ -196,13 +157,7 @@ body::after{
 /* ══ TIMER MODAL ══ */
 .timer-overlay{position:fixed;inset:0;background:rgba(14,11,8,0.94);backdrop-filter:blur(32px);z-index:1100;display:flex;align-items:center;justify-content:center;padding:1rem}
 .timer-overlay.hidden{display:none}
-.timer-modal{
-  background:var(--bg2);border:1px solid var(--border2);
-  border-radius:20px;width:100%;max-width:340px;
-  padding:2.1rem;position:relative;overflow:hidden;
-  text-align:center;box-shadow:var(--shadow2);
-  animation:aUp .28s cubic-bezier(0.4,0,0.2,1);
-}
+.timer-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;width:100%;max-width:340px;padding:2.1rem;position:relative;overflow:hidden;text-align:center;box-shadow:var(--shadow2);animation:aUp .28s cubic-bezier(0.4,0,0.2,1);}
 .timer-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent)}
 .timer-eyebrow{font-family:var(--mono);font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);margin-bottom:.8rem}
 .timer-task{font-family:var(--serif);font-size:.92rem;font-style:italic;color:var(--text3);margin-bottom:.6rem;min-height:1.4em}
@@ -224,15 +179,14 @@ body::after{
 .timer-close{position:absolute;top:.85rem;right:.85rem;background:none;border:none;color:var(--text4);cursor:pointer;font-size:.95rem;padding:.3rem;transition:color var(--t);border-radius:4px}
 .timer-close:hover{color:var(--text);background:var(--bg4)}
 
-/* ══ DAILY QUIZ MODAL — HARD-GATED ══ */
+/* ══ DAILY QUIZ MODAL ══ */
 .quiz-overlay{position:fixed;inset:0;background:rgba(14,11,8,0.96);backdrop-filter:blur(32px);z-index:1200;display:flex;align-items:center;justify-content:center;padding:1rem}
 .quiz-overlay.hidden{display:none}
 .quiz-modal{
-  background:var(--bg2);border:1px solid var(--border2);
-  border-radius:var(--r3);width:100%;max-width:660px;
-  max-height:90vh;overflow-y:auto;
-  padding:2.1rem;position:relative;
-  box-shadow:var(--shadow2);animation:aUp .28s cubic-bezier(0.4,0,0.2,1);
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r3);
+  width:100%;max-width:660px;max-height:90vh;overflow-y:auto;
+  padding:2.1rem;position:relative;box-shadow:var(--shadow2);
+  animation:aUp .28s cubic-bezier(0.4,0,0.2,1);
 }
 .quiz-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange),var(--orange),transparent)}
 .quiz-eyebrow{font-family:var(--mono);font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:.32rem;display:flex;align-items:center;gap:.5rem}
@@ -285,15 +239,56 @@ body::after{
 .quiz-close-btn.visible{display:block}
 .quiz-close-btn:hover{border-color:var(--border3);color:var(--text)}
 
-/* ══ QBANK WIDGET ══ */
-.qbank-widget{
-  background:var(--bg2);
-  border:1px solid var(--border);
+/* ══ LOCKOUT SCREEN ══ */
+#quiz-lockout{animation:aFade .4s ease}
+.lockout-header{text-align:center;margin-bottom:1.8rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.lockout-icon{font-size:2rem;margin-bottom:.75rem;display:block}
+.lockout-title{font-family:var(--serif);font-size:1.55rem;font-style:italic;color:var(--text);margin-bottom:.3rem}
+.lockout-sub{font-family:var(--mono);font-size:.62rem;color:var(--text3);letter-spacing:.04em}
+.lockout-score-row{display:inline-flex;align-items:center;gap:.65rem;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:.6rem 1.2rem;margin:.8rem auto 0;font-family:var(--mono);font-size:.66rem;color:var(--text3)}
+.lockout-score-badge{font-size:1.1rem;font-weight:300;padding:.1rem .55rem;border-radius:6px;font-family:var(--mono)}
+
+/* Gold countdown clock */
+.lockout-countdown-wrap{
+  text-align:center;margin:0 auto 2rem;
+  background:var(--bg3);
+  border:1px solid rgba(232,164,34,0.2);
   border-radius:var(--r2);
-  padding:1.35rem 1.45rem;
-  margin-bottom:1.2rem;
+  padding:1.4rem 1.8rem;
   position:relative;overflow:hidden;
 }
+.lockout-countdown-wrap::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,164,34,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.lockout-countdown-eyebrow{font-family:var(--mono);font-size:.5rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:.55rem}
+.lockout-countdown{font-family:var(--mono);font-size:3.2rem;font-weight:300;color:var(--gold);letter-spacing:.08em;line-height:1;text-shadow:0 0 40px rgba(232,164,34,0.2)}
+.lockout-countdown-lbl{font-family:var(--mono);font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text4);margin-top:.48rem;display:flex;justify-content:center;gap:2.6rem}
+
+/* Mistake feed */
+.lockout-review-title{font-family:var(--mono);font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text4);margin-bottom:.9rem;display:flex;align-items:center;gap:.6rem}
+.lockout-review-title::before,.lockout-review-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.lockout-perfect{text-align:center;padding:2rem 1rem;background:rgba(90,184,112,0.04);border:1px solid rgba(90,184,112,0.14);border-radius:var(--r2);font-family:var(--serif);font-size:1.15rem;font-style:italic;color:var(--green)}
+.lockout-perfect span{display:block;font-family:var(--mono);font-size:.6rem;font-style:normal;color:var(--text4);margin-top:.4rem;letter-spacing:.08em}
+.mistake-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--r2);padding:1.1rem 1.25rem;margin-bottom:.7rem;animation:aUp .3s ease}
+.mistake-card-num{font-family:var(--mono);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.mistake-card-tag{background:var(--red-dim);border:1px solid rgba(217,80,80,.2);border-radius:20px;padding:1px 7px;font-size:.46rem;color:var(--red)}
+.mistake-q-text{font-size:.86rem;color:var(--text);line-height:1.55;margin-bottom:.85rem;font-weight:400}
+.mistake-opts{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.8rem}
+.mistake-opt{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .75rem;border-radius:var(--r);border:1.5px solid transparent;font-size:.8rem;line-height:1.45}
+.mistake-opt.mis-wrong{background:rgba(217,80,80,0.07);border-color:rgba(217,80,80,0.25);color:var(--red)}
+.mistake-opt.mis-correct{background:rgba(90,184,112,0.07);border-color:rgba(90,184,112,0.25);color:var(--green)}
+.mistake-opt.mis-neutral{color:var(--text4)}
+.mistake-opt-badge{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.55rem;flex-shrink:0;margin-top:1px}
+.mistake-opt.mis-wrong .mistake-opt-badge{background:rgba(217,80,80,.18);color:var(--red)}
+.mistake-opt.mis-correct .mistake-opt-badge{background:rgba(90,184,112,.2);color:var(--green)}
+.mistake-opt.mis-neutral .mistake-opt-badge{background:var(--bg5);color:var(--text5)}
+.mistake-explanation{background:rgba(232,164,34,0.04);border:1px solid rgba(232,164,34,0.1);border-radius:var(--r);padding:.6rem .85rem;font-size:.78rem;color:var(--text3);line-height:1.58}
+.mistake-explanation strong{color:var(--gold);font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.28rem}
+
+/* ══ QBANK WIDGET ══ */
+.qbank-widget{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.35rem 1.45rem;margin-bottom:1.2rem;position:relative;overflow:hidden;}
 .qbank-widget::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),rgba(212,116,42,.15))}
 .qbw-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.05rem}
 .qbw-title{font-family:var(--mono);font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:.5rem}
@@ -327,20 +322,12 @@ body::after{
 
 /* ══ NAV ══ */
 .nav{
-  position:sticky;top:0;z-index:500;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 1.75rem;height:56px;
-  background:rgba(14,11,8,0.97);
-  backdrop-filter:blur(28px);
-  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.75rem;height:56px;background:rgba(14,11,8,0.97);
+  backdrop-filter:blur(28px);border-bottom:1px solid var(--border);
 }
 .nav-logo{display:flex;align-items:center;gap:.85rem}
-.nav-logo-mark{
-  width:30px;height:30px;border-radius:8px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--serif);font-size:.82rem;color:var(--bg);font-weight:700;flex-shrink:0;
-}
+.nav-logo-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:.82rem;color:var(--bg);font-weight:700;flex-shrink:0;}
 .nav-logo-text{line-height:1.25}
 .nav-logo-main{font-family:var(--serif);font-size:1rem;color:var(--text);letter-spacing:.01em}
 .nav-logo-sub{font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text4)}
@@ -389,13 +376,7 @@ body::after{
 .weak-tag{background:var(--red-dim);border:1px solid rgba(217,80,80,.18);border-radius:4px;padding:1px .58rem;font-family:var(--mono);font-size:.6rem;color:var(--red)}
 
 /* ══ STUDY LOG BAR ══ */
-.study-log-bar{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r2);padding:.95rem 1.4rem;
-  margin-bottom:1.2rem;
-  display:flex;align-items:center;gap:1.45rem;flex-wrap:wrap;
-  position:relative;overflow:hidden;
-}
+.study-log-bar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:.95rem 1.4rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:1.45rem;flex-wrap:wrap;position:relative;overflow:hidden;}
 .study-log-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),rgba(58,170,138,.15))}
 .slog-block{display:flex;flex-direction:column;gap:.16rem}
 .slog-label{font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text4)}
@@ -414,10 +395,7 @@ body::after{
 .ecp-num{font-family:var(--mono);font-size:1.6rem;font-weight:300;color:var(--gold)}
 .ecp-lbl{font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text4)}
 .top-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:.9rem}
-.overall-card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
-  padding:1.3rem 1.5rem;position:relative;overflow:hidden;
-}
+.overall-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.3rem 1.5rem;position:relative;overflow:hidden;}
 .overall-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),rgba(232,164,34,.15))}
 .overall-card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(232,164,34,0.05) 0%,transparent 70%);pointer-events:none}
 .oc-label{font-family:var(--mono);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text4);margin-bottom:.32rem}
@@ -425,11 +403,7 @@ body::after{
 .oc-tasks{font-family:var(--mono);font-size:.61rem;color:var(--text3);margin-top:.3rem}
 .oc-bar{margin-top:.9rem}
 .quick-stats{display:flex;flex-direction:column;gap:.52rem}
-.qs-card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
-  padding:.72rem 1.05rem;display:flex;align-items:center;gap:.78rem;
-  transition:border-color var(--t),transform var(--t);
-}
+.qs-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:.72rem 1.05rem;display:flex;align-items:center;gap:.78rem;transition:border-color var(--t),transform var(--t);}
 .qs-card:hover{border-color:var(--border2);transform:translateX(3px)}
 .qs-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.68rem;flex-shrink:0}
 .qs-info{flex:1}
@@ -438,12 +412,7 @@ body::after{
 .qs-sub{font-size:.66rem;color:var(--text3)}
 .qs-bar{width:54px}
 .phases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.78rem;margin-bottom:1.2rem}
-.phase-card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);
-  padding:1.1rem 1.2rem;
-  transition:transform var(--t),border-color var(--t);
-  position:relative;overflow:hidden;
-}
+.phase-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.1rem 1.2rem;transition:transform var(--t),border-color var(--t);position:relative;overflow:hidden;}
 .phase-card:hover{transform:translateY(-2px);border-color:var(--border2)}
 .phase-num{font-family:var(--mono);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text4);margin-bottom:.2rem}
 .phase-name{font-family:var(--serif);font-size:.9rem;font-style:italic;margin-bottom:.14rem;color:var(--text)}
@@ -585,11 +554,12 @@ body::after{
 /* ══ ANIMATIONS ══ */
 @keyframes aFade{from{opacity:0}to{opacity:1}}
 @keyframes aUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes countdownPulse{0%,100%{text-shadow:0 0 40px rgba(232,164,34,0.2)}50%{text-shadow:0 0 60px rgba(232,164,34,0.45)}}
 
 /* ══ RESPONSIVE ══ */
 @media(max-width:900px){.phases-grid,.top-row{grid-template-columns:1fr}.ana-grid{grid-template-columns:1fr}.ins-grid{grid-template-columns:repeat(2,1fr)}.wks-grid{grid-template-columns:1fr}.nav{padding:0 1rem}.view{padding:1.2rem 1rem 2.75rem}.qbw-grid{grid-template-columns:1fr 1fr}.qbw-subj-grid{grid-template-columns:repeat(5,1fr)}}
 @media(max-width:620px){.nav-tabs .tab-b{padding:.33rem .58rem;font-size:.52rem}.nav-student{display:none}.ins-grid{grid-template-columns:1fr}.qbw-grid{grid-template-columns:1fr 1fr}.qbw-subj-grid{grid-template-columns:repeat(5,1fr)}}
-@media(max-width:480px){.wt-row{grid-template-columns:88px 1fr 34px}.streak-lbl{display:none}.qbw-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.wt-row{grid-template-columns:88px 1fr 34px}.streak-lbl{display:none}.qbw-grid{grid-template-columns:1fr}.lockout-countdown{font-size:2.3rem}}
 </style>
 </head>
 <body>
@@ -695,28 +665,62 @@ body::after{
   </div>
 </div>
 
-<!-- ══ DAILY QUIZ MODAL — HARD-GATED ══ -->
+<!-- ══ DAILY QUIZ MODAL ══ -->
 <div class="quiz-overlay hidden" id="quiz-overlay">
-  <div class="quiz-modal">
-    <div class="quiz-eyebrow">
-      <span>Daily Quiz</span>
-      <span class="quiz-lockbadge">🔒 Complete All 5 to Exit</span>
-    </div>
-    <div class="quiz-title">5-Question CFA Daily</div>
-    <div class="quiz-sub" id="quiz-sub">Answer all questions — results sent to your teacher via WhatsApp</div>
-    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-prog-fill" style="width:0%"></div></div>
-    <div id="quiz-q-area"></div>
-    <div class="quiz-results" id="quiz-results" style="display:none">
-      <div class="quiz-results-score" id="quiz-score-big">—/5</div>
-      <div class="quiz-results-sub" id="quiz-score-sub">—</div>
-      <div class="quiz-results-bar"><div class="quiz-results-bar-fill" id="quiz-results-bar" style="width:0%"></div></div>
-      <div class="quiz-btn-row">
-        <button class="quiz-wa-btn" id="quiz-wa-btn" onclick="sendWhatsApp()">
-          <span style="font-size:1rem">💬</span> Send Results via WhatsApp
-        </button>
-        <button class="quiz-close-btn" id="quiz-close-btn" onclick="closeQuiz()">Close Quiz</button>
+  <div class="quiz-modal" id="quiz-modal-inner">
+
+    <!-- Active quiz header (shown when quiz not yet taken) -->
+    <div id="quiz-active-header">
+      <div class="quiz-eyebrow">
+        <span>Daily Quiz</span>
+        <span class="quiz-lockbadge">🔒 Complete All 5 to Exit</span>
+      </div>
+      <div class="quiz-title">5-Question CFA Daily</div>
+      <div class="quiz-sub" id="quiz-sub">Answer all questions — results sent to your teacher via WhatsApp</div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-prog-fill" style="width:0%"></div></div>
+      <div id="quiz-q-area"></div>
+      <div class="quiz-results" id="quiz-results" style="display:none">
+        <div class="quiz-results-score" id="quiz-score-big">—/5</div>
+        <div class="quiz-results-sub" id="quiz-score-sub">—</div>
+        <div class="quiz-results-bar"><div class="quiz-results-bar-fill" id="quiz-results-bar" style="width:0%"></div></div>
+        <div class="quiz-btn-row">
+          <button class="quiz-wa-btn" id="quiz-wa-btn" onclick="sendWhatsApp()">
+            <span style="font-size:1rem">💬</span> Send Results via WhatsApp
+          </button>
+          <button class="quiz-close-btn" id="quiz-close-btn" onclick="closeQuiz()">Close Quiz</button>
+        </div>
       </div>
     </div>
+
+    <!-- Lockout screen (shown when quiz already taken today) -->
+    <div id="quiz-lockout" style="display:none">
+      <!-- Header -->
+      <div class="lockout-header">
+        <span class="lockout-icon">🔒</span>
+        <div class="lockout-title">Quiz Complete for Today</div>
+        <div class="lockout-sub">Come back tomorrow for your next set of questions</div>
+        <div id="lockout-score-row" style="display:flex;justify-content:center;margin-top:.8rem"></div>
+      </div>
+
+      <!-- Midnight countdown -->
+      <div class="lockout-countdown-wrap">
+        <div class="lockout-countdown-eyebrow">Next quiz unlocks in</div>
+        <div class="lockout-countdown" id="lockout-countdown">00:00:00</div>
+        <div class="lockout-countdown-lbl">
+          <span>HH</span><span>MM</span><span>SS</span>
+        </div>
+      </div>
+
+      <!-- Mistake review feed -->
+      <div class="lockout-review-title">Mistake Review</div>
+      <div id="lockout-mistake-feed"></div>
+
+      <!-- Close button -->
+      <div style="text-align:center;margin-top:1.4rem">
+        <button class="quiz-close-btn visible" style="display:inline-block" onclick="closeQuizLockout()">Close</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -774,7 +778,6 @@ body::after{
 
   <div id="weak-alert-wrap"></div>
 
-  <!-- Study Log Bar -->
   <div class="study-log-bar">
     <div class="slog-block"><div class="slog-label">Today logged</div><div class="slog-val" id="slog-today">0h</div></div>
     <div class="slog-sep"></div>
@@ -789,7 +792,6 @@ body::after{
     </div>
   </div>
 
-  <!-- Top cards -->
   <div class="top-row">
     <div class="overall-card">
       <div class="oc-label">Overall Completion</div>
@@ -800,10 +802,8 @@ body::after{
     <div class="quick-stats" id="quick-stats"></div>
   </div>
 
-  <!-- Phases -->
   <div class="phases-grid" id="phases-grid"></div>
 
-  <!-- ══ QBANK LOGGER WIDGET — placed below phases ══ -->
   <div class="qbank-widget" id="qbank-widget">
     <div class="qbw-header">
       <div class="qbw-title">QBank Logger</div>
@@ -856,7 +856,6 @@ body::after{
     <div class="qbw-subj-grid" id="qbw-subj-grid"></div>
   </div>
 
-  <!-- All weeks timeline -->
   <div class="divider"><span class="divider-lbl">All Weeks</span></div>
   <div id="week-timeline"></div>
 </div>
@@ -945,7 +944,6 @@ body::after{
 /* ─── CONFIG ─── */
 const TEACHER_PHONE = '7738486780';
 
-/* ─── MASTER QUESTION BANK — loaded from questions.json ─── */
 let MASTER_QBANK = [];
 
 /* ─── SCHEDULE DATA ─── */
@@ -996,6 +994,7 @@ let quizSubmitted=false;
 let quizScore=0;
 let quizScoreHistory={};
 let currentQuizQuestions=[];
+let lockoutCountdownInterval=null;
 
 const SK={
   profile:'cfaOps_profile',state:'cfaOps_state',scores:'cfaOps_scores',
@@ -1043,7 +1042,6 @@ function getDailyQuestions(){
   const today=new Date();
   const daysPassed=Math.max(0,Math.floor((today-start)/86400000));
   const startIdx=(daysPassed*5)%MASTER_QBANK.length;
-  // Wrap around gracefully
   let slice=[];
   for(let i=0;i<5;i++){
     slice.push(MASTER_QBANK[(startIdx+i)%MASTER_QBANK.length]);
@@ -1285,33 +1283,148 @@ function timerComplete(){
 function updateTimerDisplay(){const m=Math.floor(timerSecondsLeft/60),s=timerSecondsLeft%60;document.getElementById('timer-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;const progress=timerTotalSeconds>0?timerSecondsLeft/timerTotalSeconds:1;document.getElementById('timer-ring-fill').style.strokeDashoffset=CIRC*(1-progress);document.getElementById('timer-mode').textContent=timerMode.toUpperCase();if(timerRunning){document.getElementById('nav-timer-lbl').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}else{document.getElementById('nav-timer-lbl').textContent='Focus'}}
 function renderTimerSessions(){const total=timerState[todayKey()]||0;document.getElementById('timer-sessions').textContent=`Sessions today: ${timerState.sessions||0} · ${Math.round(total)} min via timer`}
 
-/* ═══ DAILY QUIZ — HARD-GATED ═══ */
+/* ═══════════════════════════════════════════════════
+   DAILY QUIZ — with LOCKOUT, COUNTDOWN & MISTAKE REVIEW
+   ═══════════════════════════════════════════════════ */
+
 function openQuiz(){
-  quizAnswers={};quizSubmitted=false;quizScore=0;
-  document.getElementById('quiz-results').style.display='none';
-  document.getElementById('quiz-close-btn').classList.remove('visible');
-  document.getElementById('quiz-prog-fill').style.width='0%';
-  // Derive today's 5 questions
-  currentQuizQuestions=getDailyQuestions();
-  renderQuizQuestions();
-  checkQuizBadge();
-  document.getElementById('quiz-overlay').classList.remove('hidden');
+  const today = todayKey();
+  const alreadyTaken = !!quizScoreHistory[today];
+
+  if(alreadyTaken){
+    // Show lockout screen
+    showQuizLockout();
+    document.getElementById('quiz-overlay').classList.remove('hidden');
+  } else {
+    // Fresh quiz
+    quizAnswers={};quizSubmitted=false;quizScore=0;
+    document.getElementById('quiz-results').style.display='none';
+    document.getElementById('quiz-close-btn').classList.remove('visible');
+    document.getElementById('quiz-prog-fill').style.width='0%';
+    currentQuizQuestions=getDailyQuestions();
+    renderQuizQuestions();
+    document.getElementById('quiz-active-header').style.display='block';
+    document.getElementById('quiz-lockout').style.display='none';
+    checkQuizBadge();
+    document.getElementById('quiz-overlay').classList.remove('hidden');
+  }
 }
 
-// Hard-gated: clicking outside does nothing while quiz active
+/* ── LOCKOUT SCREEN ── */
+function showQuizLockout(){
+  document.getElementById('quiz-active-header').style.display='none';
+  document.getElementById('quiz-lockout').style.display='block';
+
+  const today = todayKey();
+  const rec = quizScoreHistory[today];
+
+  // Show today's score badge
+  const scoreRow = document.getElementById('lockout-score-row');
+  if(rec){
+    const pct = rec.pct;
+    const col = pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
+    scoreRow.innerHTML=`<div class="lockout-score-row" style="display:flex;align-items:center;gap:.65rem;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:.6rem 1.2rem;font-family:var(--mono);font-size:.66rem;color:var(--text3)">
+      <span style="font-size:.62rem;color:var(--text4);text-transform:uppercase;letter-spacing:.12em">Today's score</span>
+      <span class="lockout-score-badge" style="color:${col};border:1px solid ${col};background:${col}18;font-size:1.1rem;font-weight:300;padding:.1rem .55rem;border-radius:6px;font-family:var(--mono)">${rec.score}/${rec.total}</span>
+      <span style="color:${col}">${pct}%</span>
+    </div>`;
+  } else { scoreRow.innerHTML=''; }
+
+  // Start countdown
+  startLockoutCountdown();
+
+  // Render mistake feed
+  renderMistakeFeed(rec);
+}
+
+function closeQuizLockout(){
+  document.getElementById('quiz-overlay').classList.add('hidden');
+  if(lockoutCountdownInterval){clearInterval(lockoutCountdownInterval);lockoutCountdownInterval=null;}
+}
+
+/* ── COUNTDOWN TO MIDNIGHT ── */
+function getMidnightSecondsLeft(){
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24,0,0,0); // next midnight
+  return Math.max(0, Math.floor((midnight - now)/1000));
+}
+
+function startLockoutCountdown(){
+  if(lockoutCountdownInterval) clearInterval(lockoutCountdownInterval);
+  updateLockoutCountdown();
+  lockoutCountdownInterval = setInterval(()=>{
+    const secs = getMidnightSecondsLeft();
+    updateLockoutCountdown();
+    if(secs<=0){
+      clearInterval(lockoutCountdownInterval);
+      lockoutCountdownInterval=null;
+      // Quiz is now available again — close lockout and let them take it
+      document.getElementById('quiz-overlay').classList.add('hidden');
+      checkQuizBadge();
+      showToast('New quiz available! 🎯','ok');
+    }
+  }, 1000);
+}
+
+function updateLockoutCountdown(){
+  const secs = getMidnightSecondsLeft();
+  const h = Math.floor(secs/3600);
+  const m = Math.floor((secs%3600)/60);
+  const s = secs%60;
+  const display = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const el = document.getElementById('lockout-countdown');
+  if(el) el.textContent = display;
+}
+
+/* ── MISTAKE REVIEW FEED ── */
+function renderMistakeFeed(rec){
+  const feed = document.getElementById('lockout-mistake-feed');
+  if(!feed) return;
+
+  if(!rec || !rec.mistakes || rec.mistakes.length === 0){
+    feed.innerHTML = `<div class="lockout-perfect">Perfect Score! No mistakes to review 🏆<span>Come back tomorrow for a new challenge.</span></div>`;
+    return;
+  }
+
+  const optLetters = ['A','B','C','D'];
+  feed.innerHTML = rec.mistakes.map((m, i) => {
+    const opts = m.options.map((opt, oi) => {
+      let cls = 'mis-neutral';
+      let icon = '';
+      if(oi === m.correctAnswer){ cls='mis-correct'; icon='✓'; }
+      else if(oi === m.chosenAnswer){ cls='mis-wrong'; icon='✗'; }
+      return `<div class="mistake-opt ${cls}">
+        <div class="mistake-opt-badge">${icon||optLetters[oi]}</div>
+        <div>${opt}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="mistake-card">
+      <div class="mistake-card-num">
+        Mistake ${i+1}
+        <span class="mistake-card-tag">${m.subject||''}</span>
+      </div>
+      <div class="mistake-q-text">${m.question}</div>
+      <div class="mistake-opts">${opts}</div>
+      ${m.explanation?`<div class="mistake-explanation"><strong>📖 Explanation</strong>${m.explanation}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+/* ── HARD-GATE: clicking outside does nothing ── */
 document.getElementById('quiz-overlay').addEventListener('click',function(e){e.stopPropagation()});
 
 function closeQuiz(){
   if(!quizSubmitted){showToast('Complete all 5 questions first','err');return}
+  if(lockoutCountdownInterval){clearInterval(lockoutCountdownInterval);lockoutCountdownInterval=null;}
   document.getElementById('quiz-overlay').classList.add('hidden');
 }
 
 function renderQuizQuestions(){
   const area=document.getElementById('quiz-q-area');
-  // Empty state
   if(!currentQuizQuestions.length){
     area.innerHTML=`<div class="quiz-empty"><strong>You've completed all available questions!</strong>Check back soon — more questions will be added to your <em>questions.json</em> file.</div>`;
-    // Allow closing since there's nothing to submit
     quizSubmitted=true;
     document.getElementById('quiz-close-btn').classList.add('visible');
     return;
@@ -1342,7 +1455,6 @@ function renderQuizQuestions(){
 function selectQuizAnswer(qIdx,optIdx){
   if(quizSubmitted)return;
   quizAnswers[qIdx]=optIdx;
-  // Visual
   currentQuizQuestions[qIdx].options.forEach((_,oi)=>{
     const el=document.getElementById(`quiz-opt-${qIdx}-${oi}`);
     if(el)el.classList.remove('selected','correct','wrong','neutral-after','locked');
@@ -1353,16 +1465,33 @@ function selectQuizAnswer(qIdx,optIdx){
   if(answered===currentQuizQuestions.length&&!quizSubmitted)setTimeout(submitQuiz,350);
 }
 
+/* ── SUBMIT QUIZ — builds mistakes array ── */
 function submitQuiz(){
   if(quizSubmitted)return;
   quizSubmitted=true;
   const optLetters=['A','B','C','D'];
   quizScore=0;
+  const mistakes = []; // Task 2: collect mistakes
+
   currentQuizQuestions.forEach((q,qi)=>{
     const chosen=quizAnswers[qi];
     const correct=q.answer;
     const isCorrect=chosen===correct;
-    if(isCorrect)quizScore++;
+    if(isCorrect){
+      quizScore++;
+    } else {
+      // Task 2: build mistake object
+      mistakes.push({
+        question: q.question,
+        subject: q.subject||'',
+        options: q.options,
+        chosenAnswer: chosen,       // index of wrong answer chosen
+        correctAnswer: correct,     // index of correct answer
+        explanation: q.explanation||''
+      });
+    }
+
+    // Style the options
     q.options.forEach((_,oi)=>{
       const el=document.getElementById(`quiz-opt-${qi}-${oi}`);
       if(!el)return;
@@ -1375,10 +1504,20 @@ function submitQuiz(){
     const expEl=document.getElementById(`quiz-exp-${qi}`);
     if(expEl)expEl.classList.add('visible');
   });
+
+  // Save to history — including mistakes for review
   const total=currentQuizQuestions.length;
   const today=todayKey();
-  quizScoreHistory[today]={score:quizScore,total,pct:Math.round(quizScore/total*100),date:today};
+  quizScoreHistory[today]={
+    score:quizScore,
+    total,
+    pct:Math.round(quizScore/total*100),
+    date:today,
+    mistakes  // Task 2: saved for lockout review
+  };
   save('quizScoreHistory',quizScoreHistory);
+
+  // Update results panel
   const pct=Math.round(quizScore/total*100);
   const col=pct>=80?'var(--green)':pct>=60?'var(--gold)':'var(--red)';
   const msg=pct>=80?'Excellent! 🎯':pct>=60?'Good effort 📚':'Keep studying 💪';
@@ -1392,41 +1531,43 @@ function submitQuiz(){
   checkQuizBadge();
 }
 
+/* ── SEND WHATSAPP — Task 3: rich tutor context ── */
 function sendWhatsApp(){
   const name=profile?.name||'Student';
   const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-  const total=currentQuizQuestions.length;
-  
-  // 1. Build the main score message
-  let msg=`Hey! ${name} just finished the CFA Level 2 Daily Quiz on ${today} with a score of ${quizScore}/${total} (${Math.round(quizScore/total*100)}%). 📊`;
-  
-  // 2. Identify wrong answers and append them to the message
-  let wrongCount = 0;
-  let wrongBreakdown = '';
-  
-  currentQuizQuestions.forEach((q, qi) => {
-    const chosen = quizAnswers[qi];
-    const correct = q.answer;
-    
-    if (chosen !== correct) {
-      wrongCount++;
-      // Grab the first 40 characters of the question so you know which one it is
-      const shortQ = q.question.length > 40 ? q.question.slice(0, 40) + '...' : q.question;
-      // Format: ❌ Q2 [Fixed Income]: "Which of the following..."
-      wrongBreakdown += `\n❌ *Q${qi + 1} [${q.subject}]:* "${shortQ}"`;
-    }
-  });
+  const today_key=todayKey();
+  const rec=quizScoreHistory[today_key];
+  if(!rec){showToast('No quiz data to send','err');return;}
 
-  if (wrongCount > 0) {
-    msg += `\n\n*Areas for Review:*` + wrongBreakdown;
+  const total=rec.total;
+  const pct=rec.pct;
+  const scoreEmoji=pct>=80?'🟢':pct>=60?'🟡':'🔴';
+
+  // 1. Header line
+  let msg=`*CFA L2 Daily Quiz — ${today}*\n`;
+  msg+=`👤 ${name}\n`;
+  msg+=`📊 Score: *${rec.score}/${total} (${pct}%)* ${scoreEmoji}\n`;
+
+  // 2. Wrong answers detail (Task 3)
+  const mistakes=rec.mistakes||[];
+  if(mistakes.length===0){
+    msg+=`\n✅ *Perfect score — no review needed!* 🏆`;
   } else {
-    msg += `\n\n*Perfect score! No review needed.* 🏆`;
+    msg+=`\n❌ *${mistakes.length} question${mistakes.length>1?'s':''} to review:*\n`;
+    mistakes.forEach((m,i)=>{
+      const optLetters=['A','B','C','D'];
+      const shortQ=m.question.length>40?m.question.slice(0,40)+'…':m.question;
+      const chosenLabel=m.chosenAnswer!=null?optLetters[m.chosenAnswer]:'?';
+      const correctLabel=optLetters[m.correctAnswer];
+      msg+=`\n${i+1}. [${m.subject}] "${shortQ}"\n`;
+      msg+=`   Chose: ${chosenLabel} → Correct: ${correctLabel}\n`;
+    });
+    msg+=`\nPlease send video solutions for the above topics. 🙏`;
   }
 
-  // 3. Generate the link and send
   const url=`https://wa.me/${TEACHER_PHONE}?text=${encodeURIComponent(msg)}`;
   window.open(url,'_blank');
-  
+
   // Show close button after sending
   document.getElementById('quiz-close-btn').classList.add('visible');
   showToast('Opening WhatsApp…','ok');
@@ -1680,7 +1821,11 @@ function switchTab(name){
 document.addEventListener('keydown',e=>{
   if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;
   if(e.key==='Escape'){
-    if(!document.getElementById('quiz-overlay').classList.contains('hidden')){
+    // Quiz: hard-gated when active (not yet submitted), closeable when on lockout screen
+    const quizOpen=!document.getElementById('quiz-overlay').classList.contains('hidden');
+    if(quizOpen){
+      const lockoutVisible=document.getElementById('quiz-lockout').style.display!=='none';
+      if(lockoutVisible){closeQuizLockout();return;}
       if(!quizSubmitted){showToast('Complete all 5 questions first','err');return}
       closeQuiz();return;
     }
@@ -1759,7 +1904,6 @@ async function initApp(){
   buildSchedule();populateWeekSelect();
   timerTotalSeconds=25*60;timerSecondsLeft=25*60;
   updateTimerDisplay();
-  // Load question bank asynchronously
   await loadQBank();
   checkQuizBadge();
   renderDashboard();renderChecklist();renderSchedule();renderAnalytics();
