@@ -2203,8 +2203,25 @@ function showToast(msg,type=''){
 
 /* INIT */
 async function loadQBank(){
-  try{const res=await fetch('questions.json');if(!res.ok)throw new Error(`HTTP ${res.status}`);const data=await res.json();if(Array.isArray(data)&&data.length){MASTER_QBANK=data;console.log(`[CFA] QBank: ${MASTER_QBANK.length} questions`)}}
-  catch(err){console.warn('[CFA] questions.json not found:',err.message)}
+  try{
+    const res = await fetch('questions.json');
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    
+    // Fix 1: extract the questions array from the object
+    const raw = Array.isArray(data) ? data : (data.questions || []);
+    
+    if(raw.length){
+      // Fix 2: convert letter answers ("A","B","C") to numeric indices (0,1,2)
+      MASTER_QBANK = raw.map(q => ({
+        ...q,
+        options: Object.values(q.options),  // convert {A:"..", B:"..", C:".."} to array
+        answer: ['A','B','C','D'].indexOf(q.answer)  // "B" → 1
+      }));
+      console.log(`[CFA] QBank: ${MASTER_QBANK.length} questions`);
+    }
+  }
+  catch(err){ console.warn('[CFA] questions.json not found:', err.message) }
 }
 
 async function initApp(){
